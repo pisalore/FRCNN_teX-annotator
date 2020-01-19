@@ -48,5 +48,5 @@ def parse_pdf(path):
             else:
                 print(x)
 
-path = '2001.05994.pdf'
+path = '2001.05970.pdf'
 parse_pdf(path)
