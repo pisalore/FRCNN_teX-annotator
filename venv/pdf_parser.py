@@ -38,13 +38,15 @@ def parse_pdf(path):
         interpreter.process_page(page)
         # receive the LTPage object for the page.
         layout = device.get_result()
+        print('\n','----------------------------------------------------------------------------------------------------------')
+        print('PAGE NUMBER: ', i)
+        print('----------------------------------------------------------------------------------------------------------', '\n')
         for x in layout:
             if isinstance(x, LTTextBoxHorizontal):
                 results = x.get_text()
                 print(results)
             else:
                 print(x)
-        print('Page number: ', i)
 
-path = '2001.05970.pdf'
+path = '2001.05994.pdf'
 parse_pdf(path)
