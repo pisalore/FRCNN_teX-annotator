@@ -1,15 +1,11 @@
-def count_tex_istances(path):
+def find_tex_istances(path):
     print('Opening 2001.05970.tex file...')
     fp = open(path, 'rb')
-
-    objects = []
-
 # TITLES                                    category: 1
     title = '\\title'
     abstract = '\\begin{abstract}'
     section = 'section'
     num_sections = 0
-
     all_titles = []
 
 #FIGURES                                    category: 2
@@ -18,6 +14,7 @@ def count_tex_istances(path):
     sub_figure = '\\begin{subfigure}'
     num_sub_figure = 0
     is_subfigure = False
+    end = '\\end{figure}'
 
 #LISTS                                      category: 3
     list = '\\begin{itemize}'
@@ -26,9 +23,7 @@ def count_tex_istances(path):
 #TABLES                                     category: 4
     table = '\\begin{table}'
     num_tables = 0
-
-    end = '\\end{figure}'
-
+    
     for line in fp:
         string_line = str(line)
         if string_line.count(section) or string_line.count(title) or string_line.count(abstract):
@@ -51,6 +46,8 @@ def count_tex_istances(path):
                     string_line = string_line.replace('\\textbf{' + replace_values[i] + '}', replace_values[i])
 
             string_line = string_line.replace('\\', '').split('{')[1].split('}')[0]
+            #remove double spaces
+            string_line = string_line.replace('  ', ' ')
             title_to_add = [1, string_line]
             all_titles.append(title_to_add)
             print('Title num:   ', num_sections, '   ', string_line)
@@ -67,7 +64,7 @@ def count_tex_istances(path):
         elif string_line.count(table):
             num_tables += 1
             print('Table num:   ', num_tables, '   ', string_line)
-            
+
 #CHECK IF I'M IN A SUB-FIGURES LIST
         if (string_line.count(end) and is_subfigure):
             num_figures -= 1
@@ -80,6 +77,7 @@ def count_tex_istances(path):
     print('Tables:      ', num_tables)
     print(all_titles)
 
-path = '2001.05970.tex'
-count_tex_istances(path)
+path = '2001.05970.tex'   #path to .tex file
+find_tex_istances(path)
+
 
