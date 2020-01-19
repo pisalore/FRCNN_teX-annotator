@@ -30,20 +30,15 @@ def find_tex_istances(path):
             num_sections += 1
             # CHECK FOR COURSIVE TEXT
             if ('textit' in string_line):
-                replace_values = []
                 for i in range (string_line.count('textit')):
                     replace_value = string_line.split('textit{')[i + 1].split('}')[0]
-                    replace_values.append(replace_value)
-                for i in range (string_line.count('textit')):
-                    string_line = string_line.replace('\\textit{' + replace_values[i] + '}', replace_values[i])
+                    string_line = string_line.replace('\\textit{' + replace_value + '}', replace_value)
+
             # CHECK FOR BOLD TEXT
             if ('textbf' in string_line):
-                replace_values = []
                 for i in range (string_line.count('textbf')):
                     replace_value = string_line.split('textbf{')[i + 1].split('}')[0]
-                    replace_values.append(replace_value)
-                for i in range (string_line.count('textbf')):
-                    string_line = string_line.replace('\\textbf{' + replace_values[i] + '}', replace_values[i])
+                    string_line = string_line.replace('\\textbf{' + replace_value + '}', replace_value)
 
             string_line = string_line.replace('\\', '').split('{')[1].split('}')[0]
             #remove double spaces
