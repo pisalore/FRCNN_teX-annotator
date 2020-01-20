@@ -35,15 +35,21 @@ def find_tex_istances(path):
             num_sections += 1
             # CHECK FOR COURSIVE TEXT
             if ('textit' in string_line):
+                replaces_coursive_values = []
                 for i in range(string_line.count('textit')):
-                    replace_value = string_line.split('textit{')[i + 1].split('}')[0]
-                    string_line = string_line.replace('\\textit{' + replace_value + '}', replace_value)
+                    replace_coursive_value = string_line.split('textit{')[i + 1].split('}')[0]
+                    replaces_coursive_values.append(replace_coursive_value)
+                for replace_coursive_value in replaces_coursive_values:
+                    string_line = string_line.replace('\\textit{' + replace_coursive_value + '}', replace_coursive_value)
 
             # CHECK FOR BOLD TEXT
             if ('textbf' in string_line):
+                replaces_bold_values = []
                 for i in range(string_line.count('textbf')):
-                    replace_value = string_line.split('textbf{')[i + 1].split('}')[0]
-                    string_line = string_line.replace('\\textbf{' + replace_value + '}', replace_value)
+                    replace_bold_value = string_line.split('textbf{')[i + 1].split('}')[0]
+                    replaces_bold_values.append(replace_bold_value)
+                for replace_bold_value in replaces_bold_values:
+                    string_line = string_line.replace('\\textit{' + replace_bold_value + '}', replace_bold_value)
 
             string_line = string_line.replace('\\', '').split('{')[1].split('}')[0]
             # remove double spaces
@@ -77,6 +83,29 @@ def find_tex_istances(path):
         # SAVE FIGURE CAPTION IN ORDER TO HAVE A UNIVOCAL CORRESPONDENCE
         if (string_line.count(caption) and is_figure):
             is_figure = False
+
+            if ('textit' in string_line):
+                replaces_coursive_values = []
+                for i in range(string_line.count('textit')):
+                    replace_coursive_value = string_line.split('textit{')[i + 1].split('}')[0]
+                    replaces_coursive_values.append(replace_coursive_value)
+                for replace_coursive_value in replaces_coursive_values:
+                    string_line = string_line.replace('\\textit{' + replace_coursive_value + '}',
+                                                      replace_coursive_value)
+
+            # CHECK FOR BOLD TEXT
+            if ('textbf' in string_line):
+                replaces_bold_values = []
+                for i in range(string_line.count('textbf')):
+                    replace_bold_value = string_line.split('textbf{')[i + 1].split('}')[0]
+                    replaces_bold_values.append(replace_bold_value)
+                for replace_bold_value in replaces_bold_values:
+                    string_line = string_line.replace('\\textit{' + replace_bold_value + '}', replace_bold_value)
+
+            string_line = string_line.replace('\\', '').split('{')[1].split('}')[0]
+            # remove double spaces
+            string_line = string_line.replace('  ', ' ')
+
             figure_to_add = [2, string_line]
             all_figures.append(figure_to_add)
 
