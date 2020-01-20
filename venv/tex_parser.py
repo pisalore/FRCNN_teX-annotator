@@ -4,7 +4,7 @@ def find_tex_istances(path):
     # TITLES                                    category: 1
     title = '\\title'
     abstract = '\\begin{abstract}'
-    section = 'section'
+    section = '\\section'
     num_sections = 0
     all_titles = []
 
@@ -118,5 +118,5 @@ def find_tex_istances(path):
     print(all_figures)
 
 
-path = '2001.05970.tex'  # path to .tex file
+path = '2001.05994.tex'  # path to .tex file
 find_tex_istances(path)
