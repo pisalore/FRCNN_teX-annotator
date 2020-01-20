@@ -5,6 +5,7 @@ def find_tex_istances(path):
     title = '\\title'
     abstract = '\\begin{abstract}'
     section = '\\section'
+    subsection = '\\subsection'
     num_sections = 0
     all_titles = []
 
@@ -31,7 +32,7 @@ def find_tex_istances(path):
     for line in fp:
         string_line = str(line)
         # 1 category 1: titles
-        if string_line.count(section) or string_line.count(title) or string_line.count(abstract):
+        if string_line.count(section) or string_line.count(subsection) or string_line.count(title) or string_line.count(abstract):
             num_sections += 1
             # CHECK FOR COURSIVE TEXT
             if ('textit' in string_line):
@@ -118,5 +119,5 @@ def find_tex_istances(path):
     print(all_figures)
 
 
-path = '2001.05994.tex'  # path to .tex file
+path = '2001.05970.tex'  # path to .tex file
 find_tex_istances(path)
