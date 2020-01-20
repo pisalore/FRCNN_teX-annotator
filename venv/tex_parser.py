@@ -35,7 +35,7 @@ def find_tex_istances(path):
     sub_figure = '\\begin{subfigure}'
     num_sub_figure = 0
     is_figure = False
-    figure_counter = 0
+    figures_counter = 0
     is_subfigure = False
     caption = '\caption{'
     end_figure = '\\end{figure}'
@@ -92,7 +92,7 @@ def find_tex_istances(path):
             is_subfigure = False
 
         # SAVE FIGURE CAPTION IN ORDER TO HAVE A UNIVOCAL CORRESPONDENCE
-        if (string_line.count(caption) and is_figure):
+        if (string_line.count(caption) and (is_figure or is_subfigure)):
             is_figure = False
 
             if ('textit' in string_line):
@@ -106,8 +106,9 @@ def find_tex_istances(path):
             # remove double spaces
             string_line = string_line.replace('  ', ' ')
 
-            figure_to_add = [2, string_line]
+            figure_to_add = [2, figures_counter, string_line]
             all_figures.append(figure_to_add)
+            figures_counter += 1
 
     print('Titles:    ', num_sections)
     print('Figures:     ', num_figures)
@@ -118,5 +119,5 @@ def find_tex_istances(path):
     print(all_figures)
 
 
-path = '2001.05970.tex'  # path to .tex file
+path = '2001.05994.tex'  # path to .tex file
 find_tex_istances(path)
