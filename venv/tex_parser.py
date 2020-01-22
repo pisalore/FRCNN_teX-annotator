@@ -24,10 +24,12 @@ def string_refactor(string_line):
     return string_line
 
 
-
 def find_tex_istances(path):
     print('Opening 2001.05970.tex file...')
     fp = open(path, 'rb')
+
+    all_tex_objects = []
+
     # TITLES                                    category: 1
     title = '\\title'
     abstract = '\\begin{abstract}'
@@ -43,7 +45,6 @@ def find_tex_istances(path):
     num_sub_figure = 0
     is_figure = False
     is_subfigure = False
-    caption = '\caption{'
     end_figure = '\\end{figure}'
     all_figures = []
 
@@ -58,9 +59,14 @@ def find_tex_istances(path):
     item_counter = 0
     all_lists = []
 
+    caption = '\caption{'
+
     # TABLES                                     category: 4
     table = '\\begin{table}'
+    end_table = '\\end{table]'
+    is_table = False
     num_tables = 0
+    all_tables = []
 
     for line in fp:
         string_line = str(line)
@@ -76,26 +82,28 @@ def find_tex_istances(path):
                 string_line = refactor_bold_text(string_line)
             #string refacotr
             string_line = string_refactor(string_line)
+
             title_to_add = [1, num_sections, string_line]
             all_titles.append(title_to_add)
-            print('Title num:   ', num_sections, '   ', string_line)
+            #print('Title num:   ', num_sections, '   ', string_line)
         elif string_line.count(figure):
             # 2 category 2: figures
             is_figure = True
             num_figures += 1
-            print('Figure num:  ', num_figures, '   ', string_line)
+            #print('Figure num:  ', num_figures, '   ', string_line)
         elif string_line.count(sub_figure):
             is_subfigure = True
             num_sub_figure += 1
-            print('Subfigure num:   ', num_sub_figure, '   ', string_line)
+            #print('Subfigure num:   ', num_sub_figure, '   ', string_line)
         elif string_line.count(list) or string_line.count(enumerated_list):
             # 3 category 3: lists
             is_list = True
             num_lists += 1
-            print('List num:    ', num_lists, '   ', string_line)
+            #print('List num:    ', num_lists, '   ', string_line)
         elif string_line.count(table):
             num_tables += 1
-            print('Table num:   ', num_tables, '   ', string_line)
+            is_table = True
+            #print('Table num:   ', num_tables, '   ', string_line)
 
         # CHECK IF I'M IN A SUB-FIGURES LIST
         if (string_line.count(end_figure) and is_subfigure):
@@ -112,11 +120,24 @@ def find_tex_istances(path):
             # CHECK FOR BOLD TEXT
             if ('textbf' in string_line):
                 string_line = refactor_bold_text(string_line)
-
             string_line = string_refactor(string_line)
 
             figure_to_add = [2, num_figures, string_line]
             all_figures.append(figure_to_add)
+
+        if (string_line.count(caption) and is_table):
+            is_table = False
+
+            if ('textit' in string_line):
+                string_line = refactor_coursive_text(string_line)
+
+            # CHECK FOR BOLD TEXT
+            if ('textbf' in string_line):
+                string_line = refactor_bold_text(string_line)
+
+            string_line = string_refactor(string_line)
+            table_to_add = [4, num_tables, string_line]
+            all_tables.append(table_to_add)
 
         if string_line.count(item) and is_list:
             if ('textit' in string_line):
@@ -126,7 +147,7 @@ def find_tex_istances(path):
             if ('textbf' in string_line):
                 string_line = refactor_bold_text(string_line)
 
-            string_line = string_line.split('\item')[1].replace('\\n', '').replace('\\', '')
+            string_line = string_line.split('\\item')[1].replace('\\', '')
             item_to_add = [3, num_lists, item_counter, string_line]
             all_lists.append(item_to_add)
             item_counter += 1
@@ -136,16 +157,21 @@ def find_tex_istances(path):
             item_counter = 0
 
 
+#SAVE ALL OBJECTS AND RETURN
+    all_tex_objects.append(all_titles)          #TITLES
+    all_tex_objects.append(all_figures)         #FIGURES
+    all_tex_objects.append(all_lists)           #LISTS
+    all_tex_objects.append(all_tables)          #TABLES
 
     print('Titles:    ', num_sections)
     print('Figures:     ', num_figures)
     print('Subfigures:  ', num_sub_figure)
     print('List:        ', num_lists)
     print('Tables:      ', num_tables)
-    print(all_titles)
-    print(all_figures)
-    print(all_lists)
+
+    return all_tex_objects
 
 
-path = '2001.05994.tex'  # path to .tex file
-find_tex_istances(path)
+path = '2001.05970.tex'  # path to .tex file
+objects = find_tex_istances(path)
+print(objects[0])
