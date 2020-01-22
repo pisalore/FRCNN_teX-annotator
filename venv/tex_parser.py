@@ -16,6 +16,13 @@ def refactor_bold_text(string_line):
         string_line = string_line.replace('\\textbf{' + replace_bold_value + '}', replace_bold_value)
     return string_line
 
+def string_refactor(string_line):
+    #remove {}
+    string_line = string_line.replace('\\', '').split('{')[1].split('}')[0]
+    # remove double spaces
+    string_line = string_line.replace('  ', ' ')
+    return string_line
+
 
 
 def find_tex_istances(path):
@@ -67,10 +74,8 @@ def find_tex_istances(path):
             # CHECK FOR BOLD TEXT
             if ('textbf' in string_line):
                 string_line = refactor_bold_text(string_line)
-
-            string_line = string_line.replace('\\', '').split('{')[1].split('}')[0]
-            # remove double spaces
-            string_line = string_line.replace('  ', ' ')
+            #string refacotr
+            string_line = string_refactor(string_line)
             title_to_add = [1, num_sections, string_line]
             all_titles.append(title_to_add)
             print('Title num:   ', num_sections, '   ', string_line)
@@ -108,9 +113,7 @@ def find_tex_istances(path):
             if ('textbf' in string_line):
                 string_line = refactor_bold_text(string_line)
 
-            string_line = string_line.replace('\\', '').split('{')[1].split('}')[0]
-            # remove double spaces
-            string_line = string_line.replace('  ', ' ')
+            string_line = string_refactor(string_line)
 
             figure_to_add = [2, num_figures, string_line]
             all_figures.append(figure_to_add)
@@ -123,8 +126,7 @@ def find_tex_istances(path):
             if ('textbf' in string_line):
                 string_line = refactor_bold_text(string_line)
 
-            string_line = string_line.split('\\item')[1]
-            string_line = string_line.replace('\\n', '').replace('\\', '')
+            string_line = string_line.split('\item')[1].replace('\\n', '').replace('\\', '')
             item_to_add = [3, num_lists, item_counter, string_line]
             all_lists.append(item_to_add)
             item_counter += 1
