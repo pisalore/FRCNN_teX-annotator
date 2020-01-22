@@ -17,9 +17,7 @@ def refactor_bold_text(string_line):
     return string_line
 
 def string_refactor(string_line):
-    #remove {}
     string_line = string_line.replace('\\', '').split('{')[1].split('}')[0]
-    # remove double spaces
     string_line = string_line.replace('  ', ' ')
     return string_line
 
@@ -28,6 +26,7 @@ def find_tex_istances(path):
     print('Opening 2001.05970.tex file...')
     fp = open(path, 'rb')
 
+    #LIST WHICH WILL BE RETURNED FOR PDF PARSING COMPARISON
     all_tex_objects = []
 
     # TITLES                                    category: 1
@@ -59,6 +58,7 @@ def find_tex_istances(path):
     item_counter = 0
     all_lists = []
 
+    #CAPTION VALUE
     caption = '\caption{'
 
     # TABLES                                     category: 4
@@ -73,37 +73,31 @@ def find_tex_istances(path):
         # 1 category 1: titles
         if string_line.count(section) or string_line.count(subsection) or string_line.count(title) or string_line.count(abstract):
             num_sections += 1
-            # CHECK FOR COURSIVE TEXT
             if ('textit' in string_line):
                 string_line = refactor_coursive_text(string_line)
-
-            # CHECK FOR BOLD TEXT
             if ('textbf' in string_line):
                 string_line = refactor_bold_text(string_line)
-            #string refacotr
             string_line = string_refactor(string_line)
-
             title_to_add = [1, num_sections, string_line]
             all_titles.append(title_to_add)
-            #print('Title num:   ', num_sections, '   ', string_line)
+
+        # 2 category 2: figures
         elif string_line.count(figure):
-            # 2 category 2: figures
             is_figure = True
             num_figures += 1
-            #print('Figure num:  ', num_figures, '   ', string_line)
         elif string_line.count(sub_figure):
             is_subfigure = True
             num_sub_figure += 1
-            #print('Subfigure num:   ', num_sub_figure, '   ', string_line)
+
+        # 3 category 3: lists
         elif string_line.count(list) or string_line.count(enumerated_list):
-            # 3 category 3: lists
             is_list = True
             num_lists += 1
-            #print('List num:    ', num_lists, '   ', string_line)
+
+        # 3 category 3: tables
         elif string_line.count(table):
             num_tables += 1
             is_table = True
-            #print('Table num:   ', num_tables, '   ', string_line)
 
         # CHECK IF I'M IN A SUB-FIGURES LIST
         if (string_line.count(end_figure) and is_subfigure):
@@ -117,7 +111,6 @@ def find_tex_istances(path):
             if ('textit' in string_line):
                 string_line = refactor_coursive_text(string_line)
 
-            # CHECK FOR BOLD TEXT
             if ('textbf' in string_line):
                 string_line = refactor_bold_text(string_line)
             string_line = string_refactor(string_line)
@@ -125,6 +118,7 @@ def find_tex_istances(path):
             figure_to_add = [2, num_figures, string_line]
             all_figures.append(figure_to_add)
 
+        # SAVE LIST CAPTION IN ORDER TO HAVE A UNIVOCAL CORRESPONDENCE
         if (string_line.count(caption) and is_table):
             is_table = False
 
@@ -139,11 +133,11 @@ def find_tex_istances(path):
             table_to_add = [4, num_tables, string_line]
             all_tables.append(table_to_add)
 
+        # ITEMS IN LISTS
         if string_line.count(item) and is_list:
             if ('textit' in string_line):
                 string_line = refactor_coursive_text(string_line)
 
-            # CHECK FOR BOLD TEXT
             if ('textbf' in string_line):
                 string_line = refactor_bold_text(string_line)
 
@@ -152,6 +146,7 @@ def find_tex_istances(path):
             all_lists.append(item_to_add)
             item_counter += 1
 
+        #VERIFY IF A LISTS ENDS
         if string_line.count(end_enumerated_list or end_list):
             is_list = False
             item_counter = 0
@@ -174,4 +169,4 @@ def find_tex_istances(path):
 
 path = '2001.05970.tex'  # path to .tex file
 objects = find_tex_istances(path)
-print(objects[0])
+print(objects[3])
