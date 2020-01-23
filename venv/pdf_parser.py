@@ -14,10 +14,17 @@ from pdf2image.exceptions import (
     PDFSyntaxError
 )
 from tex_parser import find_tex_istances
+from difflib import SequenceMatcher
+
+def are_similar(string_a, string_b):
+    if SequenceMatcher(None, string_a, string_b).ratio() >= 0.7:
+        return True
+
 
 def parse_pdf(PDF_path, TEX_Path):
     page_counter = 0
     titles_counter = 0
+    titles_coordinates = []
     all_titles_found = False
     #FIRST PHASE: EXTRACT ALL TEX ISTANCES INSIDE TEX FILE
     tex_istances = find_tex_istances(TEX_Path)
@@ -51,17 +58,17 @@ def parse_pdf(PDF_path, TEX_Path):
         for x in layout:
             if isinstance(x, LTTextBoxHorizontal):
                 if not all_titles_found:
-                    if len(x.get_text()) > 4:
+                    if len(x.get_text().replace('\n', '').replace(' ', '')) > 5:
                         result = x.get_text().split('\n')[0].lower()
-                        if tex_istances[0][titles_counter][2].lower().count(result):
-                            print (x.get_text())
+                        result = ''.join([i for i in result if not i.isdigit()])
+                        if are_similar(tex_istances[0][titles_counter][2].lower(), result) and result != '':
+                            print (result)
                             titles_counter += 1
+                        # elif result.count(tex_istances[0][titles_counter][2].lower()):
+                        #     print(result)
+                        #     titles_counter += 1
                             if titles_counter == len(tex_istances[0]):
                                 all_titles_found = True
-
-                #print(result)
-            # else:
-            #     print(x)
 
 PDF_path = '2001.05970.pdf'
 TEX_path = '2001.05970.tex'
