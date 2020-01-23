@@ -27,7 +27,7 @@ def parse_pdf(PDF_path, TEX_Path):
     titles_coordinates = []
     all_titles_found = False
     #FIRST PHASE: EXTRACT ALL TEX ISTANCES INSIDE TEX FILE
-    tex_istances = find_tex_istances(TEX_Path)
+    tex_instances = find_tex_istances(TEX_Path)
     # Open a PDF file.
     fp = open(PDF_path, 'rb')
     # Create a PDF parser object associated with the file object.
@@ -59,17 +59,20 @@ def parse_pdf(PDF_path, TEX_Path):
             if isinstance(x, LTTextBoxHorizontal):
                 if not all_titles_found:
                     if len(x.get_text().replace('\n', '').replace(' ', '')) > 5:
-                        result = x.get_text().split('\n')[0].lower()
-                        result = ''.join([i for i in result if not i.isdigit()])
-                        if are_similar(tex_istances[0][titles_counter][2].lower(), result) and result != '':
-                            print (result)
-                            titles_counter += 1
-                        # elif result.count(tex_istances[0][titles_counter][2].lower()):
-                        #     print(result)
-                        #     titles_counter += 1
-                            if titles_counter == len(tex_istances[0]):
-                                all_titles_found = True
+                        pdf_title_result = x.get_text().split('\n')[0].lower()
+                        pdf_title_result = ''.join([i for i in pdf_title_result if not i.isdigit()])
+                        istance_to_remove = None
+                        for instance in tex_instances[0]:
+                            #tex_title = tex_istances[0][titles_counter][2].lower()
+                            if are_similar(instance[2].lower(), pdf_title_result) and pdf_title_result != '':
+                                print (pdf_title_result)
+                                titles_counter += 1
+                                istance_to_remove = instance
+                                if titles_counter == len(tex_instances[0]):
+                                    all_titles_found = True
+                        if(istance_to_remove is not None):
+                            tex_instances[0].remove(istance_to_remove)
 
-PDF_path = '2001.05970.pdf'
-TEX_path = '2001.05970.tex'
+PDF_path = '2001.05994.pdf'
+TEX_path = '2001.05994.tex'
 parse_pdf(PDF_path, TEX_path)
