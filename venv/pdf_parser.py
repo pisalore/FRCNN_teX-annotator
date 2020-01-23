@@ -18,6 +18,7 @@ from tex_parser import find_tex_istances
 def parse_pdf(PDF_path, TEX_Path):
     page_counter = 0
     titles_counter = 0
+    all_titles_found = False
     #FIRST PHASE: EXTRACT ALL TEX ISTANCES INSIDE TEX FILE
     tex_istances = find_tex_istances(TEX_Path)
     # Open a PDF file.
@@ -49,11 +50,15 @@ def parse_pdf(PDF_path, TEX_Path):
         print('----------------------------------------------------------------------------------------------------------', '\n')
         for x in layout:
             if isinstance(x, LTTextBoxHorizontal):
-                if len(x.get_text()) > 4:
-                    result = x.get_text().split('\n')[0].lower()
-                    if tex_istances[0][titles_counter][2].lower().count(result):
-                        print (x.get_text())
-                        titles_counter += 1
+                if not all_titles_found:
+                    if len(x.get_text()) > 4:
+                        result = x.get_text().split('\n')[0].lower()
+                        if tex_istances[0][titles_counter][2].lower().count(result):
+                            print (x.get_text())
+                            titles_counter += 1
+                            if titles_counter == len(tex_istances[0]):
+                                all_titles_found = True
+
                 #print(result)
             # else:
             #     print(x)
