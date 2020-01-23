@@ -16,10 +16,10 @@ from pdf2image.exceptions import (
 from tex_parser import find_tex_istances
 
 def parse_pdf(PDF_path, TEX_Path):
+    page_counter = 0
+    titles_counter = 0
     #FIRST PHASE: EXTRACT ALL TEX ISTANCES INSIDE TEX FILE
     tex_istances = find_tex_istances(TEX_Path)
-    print(tex_istances)
-
     # Open a PDF file.
     fp = open(PDF_path, 'rb')
     # Create a PDF parser object associated with the file object.
@@ -35,24 +35,28 @@ def parse_pdf(PDF_path, TEX_Path):
     # Create a PDF device object.
     # Set parameters for analysis.
     laparams = LAParams()
+    laparams.line_margin = 0.2
     # Create a PDF page aggregator object.
     device = PDFPageAggregator(rsrcmgr, laparams=laparams)
     interpreter = PDFPageInterpreter(rsrcmgr, device)
-    i = 0
     for page in PDFPage.create_pages(document):
-        i += 1
+        page_counter += 1
         interpreter.process_page(page)
         # receive the LTPage object for the page.
         layout = device.get_result()
         print('\n','----------------------------------------------------------------------------------------------------------')
-        print('PAGE NUMBER: ', i)
+        print('PAGE NUMBER: ', page_counter)
         print('----------------------------------------------------------------------------------------------------------', '\n')
         for x in layout:
             if isinstance(x, LTTextBoxHorizontal):
-                results = x.get_text()
-                print(results)
-            else:
-                print(x)
+                if len(x.get_text()) > 4:
+                    result = x.get_text().split('\n')[0].lower()
+                    if tex_istances[0][titles_counter][2].lower().count(result):
+                        print (x.get_text())
+                        titles_counter += 1
+                #print(result)
+            # else:
+            #     print(x)
 
 PDF_path = '2001.05970.pdf'
 TEX_path = '2001.05970.tex'
