@@ -1,5 +1,3 @@
-#from pdf_parser import parse_pdf
-
 def refactor_coursive_text(string_line):
     replaces_coursive_values = []
     for i in range(string_line.count('textit')):
@@ -168,6 +166,6 @@ def find_tex_istances(path):
     return all_tex_objects
 
 
-path = '2001.05970.tex'  # path to .tex file
-objects = find_tex_istances(path)
-print(objects[2])
+# path = '2001.05970.tex'  # path to .tex file
+# objects = find_tex_istances(path)
+# print(objects[2])

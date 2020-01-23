@@ -13,9 +13,15 @@ from pdf2image.exceptions import (
     PDFPageCountError,
     PDFSyntaxError
 )
-def parse_pdf(path):
+from tex_parser import find_tex_istances
+
+def parse_pdf(PDF_path, TEX_Path):
+    #FIRST PHASE: EXTRACT ALL TEX ISTANCES INSIDE TEX FILE
+    tex_istances = find_tex_istances(TEX_Path)
+    print(tex_istances)
+
     # Open a PDF file.
-    fp = open(path, 'rb')
+    fp = open(PDF_path, 'rb')
     # Create a PDF parser object associated with the file object.
     parser = PDFParser(fp)
     # Create a PDF document object that stores the document structure.
@@ -48,5 +54,6 @@ def parse_pdf(path):
             else:
                 print(x)
 
-# path = '2001.05970.pdf'
-# parse_pdf(path)
+PDF_path = '2001.05970.pdf'
+TEX_path = '2001.05970.tex'
+parse_pdf(PDF_path, TEX_path)
