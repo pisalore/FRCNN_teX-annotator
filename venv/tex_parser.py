@@ -1,3 +1,5 @@
+#from pdf_parser import parse_pdf
+
 def refactor_coursive_text(string_line):
     replaces_coursive_values = []
     for i in range(string_line.count('textit')):
@@ -20,7 +22,6 @@ def string_refactor(string_line):
     string_line = string_line.replace('\\', '').split('{')[1].split('}')[0]
     string_line = string_line.replace('  ', ' ')
     return string_line
-
 
 def find_tex_istances(path):
     print('Opening 2001.05970.tex file...')
@@ -69,7 +70,7 @@ def find_tex_istances(path):
     all_tables = []
 
     for line in fp:
-        string_line = str(line)
+        string_line = line.decode("utf-8")
         # 1 category 1: titles
         if string_line.count(section) or string_line.count(subsection) or string_line.count(title) or string_line.count(abstract):
             num_sections += 1
@@ -141,7 +142,7 @@ def find_tex_istances(path):
             if ('textbf' in string_line):
                 string_line = refactor_bold_text(string_line)
 
-            string_line = string_line.split('\\item')[1].replace('\\', '')
+            string_line = string_line.split('\\item')[1]
             item_to_add = [3, num_lists, item_counter, string_line]
             all_lists.append(item_to_add)
             item_counter += 1
@@ -153,10 +154,10 @@ def find_tex_istances(path):
 
 
 #SAVE ALL OBJECTS AND RETURN
-    all_tex_objects.append(all_titles)          #TITLES
-    all_tex_objects.append(all_figures)         #FIGURES
-    all_tex_objects.append(all_lists)           #LISTS
-    all_tex_objects.append(all_tables)          #TABLES
+    all_tex_objects.append(all_titles)          #TITLES     0
+    all_tex_objects.append(all_figures)         #FIGURES    1
+    all_tex_objects.append(all_lists)           #LISTS      2
+    all_tex_objects.append(all_tables)          #TABLES     3
 
     print('Titles:    ', num_sections)
     print('Figures:     ', num_figures)
@@ -169,4 +170,4 @@ def find_tex_istances(path):
 
 path = '2001.05970.tex'  # path to .tex file
 objects = find_tex_istances(path)
-print(objects[3])
+print(objects[2])
