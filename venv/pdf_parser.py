@@ -20,7 +20,6 @@ def are_similar(string_a, string_b):
     if SequenceMatcher(None, string_a, string_b).ratio() >= 0.7:
         return True
 
-
 def parse_pdf(PDF_path, TEX_Path):
     page_counter = 0
     titles_counter = 0
@@ -43,7 +42,7 @@ def parse_pdf(PDF_path, TEX_Path):
     # Create a PDF device object.
     # Set parameters for analysis.
     laparams = LAParams()
-    laparams.line_margin = 0.2
+    laparams.line_margin = 0.4
     # Create a PDF page aggregator object.
     device = PDFPageAggregator(rsrcmgr, laparams=laparams)
     interpreter = PDFPageInterpreter(rsrcmgr, device)
@@ -57,22 +56,23 @@ def parse_pdf(PDF_path, TEX_Path):
         print('----------------------------------------------------------------------------------------------------------', '\n')
         for x in layout:
             if isinstance(x, LTTextBoxHorizontal):
-                if not all_titles_found:
-                    if len(x.get_text().replace('\n', '').replace(' ', '')) > 5:
-                        pdf_title_result = x.get_text().split('\n')[0].lower()
-                        pdf_title_result = ''.join([i for i in pdf_title_result if not i.isdigit()])
-                        istance_to_remove = None
-                        for instance in tex_instances[0]:
-                            #tex_title = tex_istances[0][titles_counter][2].lower()
-                            if are_similar(instance[2].lower(), pdf_title_result) and pdf_title_result != '':
-                                print (pdf_title_result)
-                                titles_counter += 1
-                                istance_to_remove = instance
-                                if titles_counter == len(tex_instances[0]):
-                                    all_titles_found = True
-                        if(istance_to_remove is not None):
-                            tex_instances[0].remove(istance_to_remove)
+                lines = x.get_text().split('\n')
+                if '' in lines: lines.remove('')
 
-PDF_path = '2001.05994.pdf'
-TEX_path = '2001.05994.tex'
+                if not all_titles_found:
+                    for i in range (2 if len(lines) > 2 else len(lines)):
+
+                        pdf_title_result = lines[i].split('\n')[0].lower()
+                        pdf_title_result = ''.join([i for i in pdf_title_result if not i.isdigit()])
+
+                        for instance in tex_instances[0]:
+                            tex_title = instance[2].lower()
+                            if are_similar(tex_title, pdf_title_result) and pdf_title_result != '':
+                                print(pdf_title_result)
+                                titles_counter += 1
+
+
+
+PDF_path = 'pdf_files/2001.05970.pdf'
+TEX_path = 'tex_files/2001.05970.tex'
 parse_pdf(PDF_path, TEX_path)
