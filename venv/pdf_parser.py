@@ -56,19 +56,20 @@ def parse_pdf(PDF_path, TEX_Path):
         print('----------------------------------------------------------------------------------------------------------', '\n')
         for x in layout:
             if isinstance(x, LTTextBoxHorizontal):
-                lines = x.get_text().split('\n')
+                lines = x._objs                 #get_text().split('\n')
                 if '' in lines: lines.remove('')
 
                 if not all_titles_found:
                     for i in range (2 if len(lines) > 2 else len(lines)):
 
-                        pdf_title_result = lines[i].split('\n')[0].lower()
+                        pdf_title_result = lines[i].get_text().split('\n')[0].lower()
                         pdf_title_result = ''.join([i for i in pdf_title_result if not i.isdigit()])
 
                         for instance in tex_instances[0]:
                             tex_title = instance[2].lower()
                             if are_similar(tex_title, pdf_title_result) and pdf_title_result != '':
                                 print(pdf_title_result)
+
                                 titles_counter += 1
 
 
