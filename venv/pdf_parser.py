@@ -17,14 +17,25 @@ from tex_parser import find_tex_istances
 from difflib import SequenceMatcher
 
 def are_similar(string_a, string_b):
-    if SequenceMatcher(None, string_a, string_b).ratio() >= 0.7:
+    if SequenceMatcher(None, string_a, string_b).ratio() >= 0.75:
         return True
+
+def calculate_object_coordinates(bbox, document_length):
+    computed_coordinates = []
+
+    computed_y_left = document_length - bbox[1]
+    computed_coordinates.append(computed_y_left)
+    computed_y_right = document_length - bbox[3]
+    computed_coordinates.append(computed_y_right)
+
+    return computed_coordinates
+
+
 
 def parse_pdf(PDF_path, TEX_Path):
     page_counter = 0
     titles_counter = 0
     titles_coordinates = []
-    all_titles_found = False
     #FIRST PHASE: EXTRACT ALL TEX ISTANCES INSIDE TEX FILE
     tex_instances = find_tex_istances(TEX_Path)
     # Open a PDF file.
@@ -56,21 +67,21 @@ def parse_pdf(PDF_path, TEX_Path):
         print('----------------------------------------------------------------------------------------------------------', '\n')
         for x in layout:
             if isinstance(x, LTTextBoxHorizontal):
-                lines = x._objs                 #get_text().split('\n')
+                lines = x._objs
                 if '' in lines: lines.remove('')
+                for i in range(2 if len(lines) > 2 else len(lines)):
 
-                if not all_titles_found:
-                    for i in range (2 if len(lines) > 2 else len(lines)):
+                    pdf_title_result = lines[i].get_text().split('\n')[0].lower()
+                    pdf_title_result = ''.join([i for i in pdf_title_result if not i.isdigit()])
 
-                        pdf_title_result = lines[i].get_text().split('\n')[0].lower()
-                        pdf_title_result = ''.join([i for i in pdf_title_result if not i.isdigit()])
+                    for instance in tex_instances[0]:
+                        tex_title = instance[2].lower()
+                        if are_similar(tex_title, pdf_title_result) and pdf_title_result != '':
+                            titles_counter += 1
+                            print(titles_counter, pdf_title_result)
+                            titles_coordinates.append(calculate_object_coordinates(lines[i].bbox, 792))
 
-                        for instance in tex_instances[0]:
-                            tex_title = instance[2].lower()
-                            if are_similar(tex_title, pdf_title_result) and pdf_title_result != '':
-                                print(pdf_title_result)
-
-                                titles_counter += 1
+    print(titles_coordinates)
 
 
 
