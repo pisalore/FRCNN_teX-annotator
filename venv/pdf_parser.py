@@ -1,5 +1,5 @@
 from pdfminer.layout import LAParams
-from pdfminer.layout import LTTextBoxHorizontal
+from pdfminer.layout import LTTextBoxHorizontal, LTFigure, LTImage
 from pdfminer.pdfpage import PDFPage
 from pdfminer.converter import PDFPageAggregator
 from pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter
@@ -30,12 +30,13 @@ def calculate_object_coordinates(bbox, document_length):
 
     return computed_coordinates
 
-
-
 def parse_pdf(PDF_path, TEX_Path):
     page_counter = 0
     titles_counter = 0
     titles_coordinates = []
+
+    images_counter = 0
+    images_coordinates = []
     #FIRST PHASE: EXTRACT ALL TEX ISTANCES INSIDE TEX FILE
     tex_instances = find_tex_istances(TEX_Path)
     # Open a PDF file.
@@ -80,11 +81,14 @@ def parse_pdf(PDF_path, TEX_Path):
                             titles_counter += 1
                             print(titles_counter, pdf_title_result)
                             titles_coordinates.append(calculate_object_coordinates(lines[i].bbox, 792))
-
+            elif isinstance(x, LTImage) or isinstance(x, LTFigure):
+                images_counter += 1
+                images_coordinates.append(calculate_object_coordinates(x.bbox, 792))
     print(titles_coordinates)
+    print(images_coordinates)
 
 
 
-PDF_path = 'pdf_files/2001.05970.pdf'
-TEX_path = 'tex_files/2001.05970.tex'
+PDF_path = 'pdf_files/2001.05994.pdf'
+TEX_path = 'tex_files/2001.05994.tex'
 parse_pdf(PDF_path, TEX_path)
