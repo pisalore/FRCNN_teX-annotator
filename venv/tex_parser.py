@@ -22,7 +22,7 @@ def string_refactor(string_line):
     return string_line
 
 def find_tex_istances(path):
-    print('Opening 2001.05970.tex file...')
+    print('Opening ' + path)
     fp = open(path, 'rb')
 
     #LIST WHICH WILL BE RETURNED FOR PDF PARSING COMPARISON

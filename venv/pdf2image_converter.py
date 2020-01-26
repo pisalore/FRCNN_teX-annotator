@@ -14,6 +14,8 @@ save_dir = 'png_files'
 
 i = 0
 for page in images_from_path:
-    base_filename = os.path.splitext(os.path.basename(filename))[0] + '_' + str(i) +'.png'
+    base_filename = os.path.splitext(os.path.basename(filename))[0] + '_' + str(i + 1) +'.png'
     page.save(os.path.join(save_dir, base_filename), 'PNG')
     i += 1
+
+print('PDF file successfully converted.')

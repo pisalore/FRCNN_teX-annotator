@@ -6,7 +6,7 @@ from pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter
 from pdfminer.pdfparser import PDFParser
 from pdfminer.pdfdocument import PDFDocument
 from pdfminer.pdfdevice import PDFDevice
-import json
+import os.path
 from pdf2image import convert_from_path, convert_from_bytes
 from pdf2image.exceptions import (
     PDFInfoNotInstalledError,
@@ -35,6 +35,8 @@ def calculate_object_coordinates(page_counter, bbox, document_length):
     return computed_coordinates
 
 def parse_pdf(PDF_path, TEX_Path):
+    filename = os.path.basename(PDF_path).split('.pdf')[0]
+
     page_counter = 0
     titles_counter = 0
     titles_coordinates = []
@@ -64,6 +66,8 @@ def parse_pdf(PDF_path, TEX_Path):
     interpreter = PDFPageInterpreter(rsrcmgr, device)
     for page in PDFPage.create_pages(document):
         page_counter += 1
+        page_length = page.mediabox[3]
+
         interpreter.process_page(page)
         # receive the LTPage object for the page.
         layout = device.get_result()
@@ -84,16 +88,16 @@ def parse_pdf(PDF_path, TEX_Path):
                         if are_similar(tex_title, pdf_title_result) and pdf_title_result != '':
                             titles_counter += 1
                             print('Title num: ', titles_counter, pdf_title_result)
-                            titles_coordinates.append(calculate_object_coordinates(page_counter, lines[i].bbox, 792))
+                            titles_coordinates.append(calculate_object_coordinates(page_counter, lines[i].bbox, page_length))
             elif isinstance(x, LTImage) or isinstance(x, LTFigure):
+                print('Image num: ', images_counter + 1, tex_instances[1][images_counter][2])
                 images_counter += 1
-                print('Image num: ', images_counter, tex_instances[1][images_counter][2])
-                images_coordinates.append(calculate_object_coordinates(page_counter, x.bbox, 792))
+                images_coordinates.append(calculate_object_coordinates(page_counter, x.bbox, page_length))
     print(titles_coordinates)
     print(images_coordinates)
 
 
 
-PDF_path = 'pdf_files/2001.05994.pdf'
-TEX_path = 'tex_files/2001.05994.tex'
+PDF_path = 'pdf_files/2001.05970.pdf'
+TEX_path = 'tex_files/2001.05970.tex'
 parse_pdf(PDF_path, TEX_path)
