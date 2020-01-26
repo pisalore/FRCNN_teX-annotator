@@ -20,11 +20,15 @@ def are_similar(string_a, string_b):
     if SequenceMatcher(None, string_a, string_b).ratio() >= 0.75:
         return True
 
-def calculate_object_coordinates(bbox, document_length):
+def calculate_object_coordinates(page_counter, bbox, document_length):
     computed_coordinates = []
+    computed_coordinates.append(page_counter)
 
+    computed_coordinates.append(bbox[0])
     computed_y_left = document_length - bbox[1]
     computed_coordinates.append(computed_y_left)
+
+    computed_coordinates.append(bbox[2])
     computed_y_right = document_length - bbox[3]
     computed_coordinates.append(computed_y_right)
 
@@ -79,11 +83,12 @@ def parse_pdf(PDF_path, TEX_Path):
                         tex_title = instance[2].lower()
                         if are_similar(tex_title, pdf_title_result) and pdf_title_result != '':
                             titles_counter += 1
-                            print(titles_counter, pdf_title_result)
-                            titles_coordinates.append(calculate_object_coordinates(lines[i].bbox, 792))
+                            print('Title num: ', titles_counter, pdf_title_result)
+                            titles_coordinates.append(calculate_object_coordinates(page_counter, lines[i].bbox, 792))
             elif isinstance(x, LTImage) or isinstance(x, LTFigure):
                 images_counter += 1
-                images_coordinates.append(calculate_object_coordinates(x.bbox, 792))
+                print('Image num: ', images_counter, tex_instances[1][images_counter][2])
+                images_coordinates.append(calculate_object_coordinates(page_counter, x.bbox, 792))
     print(titles_coordinates)
     print(images_coordinates)
 
