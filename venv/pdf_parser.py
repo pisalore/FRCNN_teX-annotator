@@ -43,6 +43,9 @@ def parse_pdf(PDF_path, TEX_Path):
 
     images_counter = 0
     images_coordinates = []
+
+    lists_counter = 0
+    lists_coordinates = []
     #FIRST PHASE: EXTRACT ALL TEX ISTANCES INSIDE TEX FILE
     tex_instances = find_tex_istances(TEX_Path)
     # Open a PDF file.
@@ -71,33 +74,54 @@ def parse_pdf(PDF_path, TEX_Path):
         interpreter.process_page(page)
         # receive the LTPage object for the page.
         layout = device.get_result()
-        print('\n','----------------------------------------------------------------------------------------------------------')
+        print('##########################################################################################################')
         print('PAGE NUMBER: ', page_counter)
-        print('----------------------------------------------------------------------------------------------------------', '\n')
+        print('##########################################################################################################', '\n')
         for x in layout:
             if isinstance(x, LTTextBoxHorizontal):
                 lines = x._objs
                 if '' in lines: lines.remove('')
-                for i in range(2 if len(lines) > 2 else len(lines)):
+                for i in range(2 if len(lines) > 2 else len(lines)): #iterate over the first lines of a texbox since titles are always on the top
 
-                    pdf_title_result = lines[i].get_text().split('\n')[0].lower()
-                    pdf_title_result = ''.join([i for i in pdf_title_result if not i.isdigit()])
+                    pdf_line_result = lines[i].get_text().split('\n')[0].lower()
+                    pdf_line_result = ''.join([i for i in pdf_line_result if not i.isdigit()])
 
                     for instance in tex_instances[0]:
                         tex_title = instance[2].lower()
-                        if are_similar(tex_title, pdf_title_result) and pdf_title_result != '':
+                        if are_similar(tex_title, pdf_line_result) and pdf_line_result != '':
                             titles_counter += 1
-                            print('Title num: ', titles_counter, pdf_title_result)
+                            titles_found = True
+                            print('Title num: ', titles_counter, pdf_line_result)
                             titles_coordinates.append(calculate_object_coordinates(page_counter, lines[i].bbox, page_length))
+
+                for i in range(len(lines)):
+
+                    pdf_line_result = lines[i].get_text().split('\n')[0].lower()
+                    pdf_line_result = ''.join([i for i in pdf_line_result if not i.isdigit()])
+
+                    for instance in tex_instances[2]:
+                        tex_list_item = instance[3]
+                        if are_similar(tex_list_item[0:50], pdf_line_result[0:50]) and pdf_line_result != '':
+                            lists_counter += 1
+                            lists_coordinates.append(
+                                calculate_object_coordinates(page_counter, lines[i].bbox, page_length))
+
+
+
+
+
+
+
             elif isinstance(x, LTImage) or isinstance(x, LTFigure):
                 print('Image num: ', images_counter + 1, tex_instances[1][images_counter][2])
                 images_counter += 1
                 images_coordinates.append(calculate_object_coordinates(page_counter, x.bbox, page_length))
     print(titles_coordinates)
     print(images_coordinates)
+    print(lists_coordinates)
 
 
 
-PDF_path = 'pdf_files/2001.05970.pdf'
-TEX_path = 'tex_files/2001.05970.tex'
+PDF_path = 'pdf_files/2001.05994.pdf'
+TEX_path = 'tex_files/2001.05994.tex'
 parse_pdf(PDF_path, TEX_path)

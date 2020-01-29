@@ -21,6 +21,11 @@ def string_refactor(string_line):
     string_line = string_line.replace('  ', ' ')
     return string_line
 
+def clean_tex_string(string_line):
+    string_line = string_line.split('\\item')[1]
+    string_line = string_line.replace('$', '').replace('{', '').replace('\n', '').replace('}', '').replace('\\textrm', '')
+    return string_line
+
 def find_tex_istances(path):
     print('Opening ' + path)
     fp = open(path, 'rb')
@@ -117,7 +122,7 @@ def find_tex_istances(path):
             figure_to_add = [2, num_figures, string_line]
             all_figures.append(figure_to_add)
 
-        # SAVE LIST CAPTION IN ORDER TO HAVE A UNIVOCAL CORRESPONDENCE
+        # SAVE TABLES CAPTION IN ORDER TO HAVE A UNIVOCAL CORRESPONDENCE
         if (string_line.count(caption) and is_table):
             is_table = False
 
@@ -140,7 +145,8 @@ def find_tex_istances(path):
             if ('textbf' in string_line):
                 string_line = refactor_bold_text(string_line)
 
-            string_line = string_line.split('\\item')[1]
+            string_line = clean_tex_string(string_line)
+
             item_to_add = [3, num_lists, item_counter, string_line]
             all_lists.append(item_to_add)
             item_counter += 1
@@ -166,6 +172,6 @@ def find_tex_istances(path):
     return all_tex_objects
 
 
-# path = '2001.05970.tex'  # path to .tex file
-# objects = find_tex_istances(path)
-# print(objects[2])
+path = 'tex_files/2001.05970.tex'  # path to .tex file
+objects = find_tex_istances(path)
+print(objects[2])
