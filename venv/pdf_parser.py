@@ -45,7 +45,7 @@ def parse_pdf(PDF_path, TEX_Path):
     images_coordinates = []
 
     lists_counter = 0
-    lists_coordinates = []
+    lists_coordinates = [[]]
     #FIRST PHASE: EXTRACT ALL TEX ISTANCES INSIDE TEX FILE
     tex_instances = find_tex_istances(TEX_Path)
     # Open a PDF file.
@@ -78,6 +78,7 @@ def parse_pdf(PDF_path, TEX_Path):
         print('PAGE NUMBER: ', page_counter)
         print('##########################################################################################################', '\n')
         for x in layout:
+            # TEXTS (TITLES AND LISTS)
             if isinstance(x, LTTextBoxHorizontal):
                 lines = x._objs
                 if '' in lines: lines.remove('')
@@ -103,25 +104,28 @@ def parse_pdf(PDF_path, TEX_Path):
                         tex_list_item = instance[3]
                         if are_similar(tex_list_item[0:50], pdf_line_result[0:50]) and pdf_line_result != '':
                             lists_counter += 1
-                            lists_coordinates.append(
-                                calculate_object_coordinates(page_counter, lines[i].bbox, page_length))
-
-
-
-
-
-
-
+                            list_id = instance[1] - 1
+                            lists_coordinates[list_id].append(calculate_object_coordinates(page_counter, lines[i].bbox, page_length))
+            #FIGURES
             elif isinstance(x, LTImage) or isinstance(x, LTFigure):
                 print('Image num: ', images_counter + 1, tex_instances[1][images_counter][2])
                 images_counter += 1
                 images_coordinates.append(calculate_object_coordinates(page_counter, x.bbox, page_length))
+
+    for i in range(len(lists_coordinates)):
+        lower_left_point = lists_coordinates[i][-1][:3]
+        right_upper_point = lists_coordinates[i][0][3:5]
+        single_list_coordinates = lower_left_point + right_upper_point
+        lists_coordinates[i] = single_list_coordinates
+        print()
+
+
     print(titles_coordinates)
     print(images_coordinates)
     print(lists_coordinates)
 
 
 
-PDF_path = 'pdf_files/2001.05994.pdf'
-TEX_path = 'tex_files/2001.05994.tex'
+PDF_path = 'pdf_files/2001.05970.pdf'
+TEX_path = 'tex_files/2001.05970.tex'
 parse_pdf(PDF_path, TEX_path)

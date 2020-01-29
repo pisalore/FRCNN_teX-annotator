@@ -21,9 +21,9 @@ def string_refactor(string_line):
     string_line = string_line.replace('  ', ' ')
     return string_line
 
-def clean_tex_string(string_line):
+def clean_tex_item(string_line):
     string_line = string_line.split('\\item')[1]
-    string_line = string_line.replace('$', '').replace('{', '').replace('\n', '').replace('}', '').replace('\\textrm', '')
+    string_line = string_line.replace('$', '').replace('{', '').replace('\n', '').replace('}', '').replace('\\textrm', '').replace('\\rightarrow', '')
     return string_line
 
 def find_tex_istances(path):
@@ -145,7 +145,7 @@ def find_tex_istances(path):
             if ('textbf' in string_line):
                 string_line = refactor_bold_text(string_line)
 
-            string_line = clean_tex_string(string_line)
+            string_line = clean_tex_item(string_line)
 
             item_to_add = [3, num_lists, item_counter, string_line]
             all_lists.append(item_to_add)
