@@ -13,6 +13,7 @@ from pdf2image.exceptions import (
     PDFPageCountError,
     PDFSyntaxError
 )
+from pdf2image_converter import generate_images
 from tex_parser import find_tex_istances
 from images_annotator import annotate_img
 from difflib import SequenceMatcher
@@ -47,7 +48,8 @@ def parse_pdf(PDF_path, TEX_Path):
 
     lists_counter = 0
     lists_coordinates = [[]]
-    #FIRST PHASE: EXTRACT ALL TEX ISTANCES INSIDE TEX FILE
+    #FIRST PHASE: GENERATE IMAGES TO BE ANNOTATED AND EXTRACT ALL TEX ISTANCES INSIDE TEX FILE
+    generate_images(PDF_path)
     tex_instances = find_tex_istances(TEX_Path)
     # Open a PDF file.
     fp = open(PDF_path, 'rb')
@@ -118,12 +120,12 @@ def parse_pdf(PDF_path, TEX_Path):
         single_list_coordinates = lower_left_point + right_upper_point
         lists_coordinates[i] = single_list_coordinates
 
-    annotate_img(titles_coordinates, titles_coordinates[0][0])
-    annotate_img(images_coordinates, images_coordinates[0][0])
-    annotate_img(lists_coordinates, lists_coordinates[0][0])
+    annotate_img(filename, titles_coordinates, titles_coordinates[0][0], (0,0,255))
+    annotate_img(filename, images_coordinates, images_coordinates[0][0], (0,255,0))
+    annotate_img(filename, lists_coordinates, lists_coordinates[0][0], (255,0,0))
 
 
 
-PDF_path = 'pdf_files/2001.05970.pdf'
-TEX_path = 'tex_files/2001.05970.tex'
+PDF_path = 'pdf_files/2001.05994.pdf'
+TEX_path = 'tex_files/2001.05994.tex'
 parse_pdf(PDF_path, TEX_path)

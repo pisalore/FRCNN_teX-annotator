@@ -3,14 +3,15 @@ import cv2
 import matplotlib.pyplot as plt
 
 
-def annotate_img(coordinates, first_page):
+def annotate_img(filename, coordinates, first_page, color):
     current_page = first_page
-    img = cv2.imread('png_files/2001.05970_' + str(current_page) + '.png', 0)
+    file_path = 'png_files/' + filename + '_'
+    img = cv2.imread(file_path + str(current_page) + '.png')
     for i in range(len(coordinates)):
         page = coordinates[i][0]
         if current_page != page:
             current_page = page
-            img = cv2.imread('png_files/2001.05970_' + str(page) + '.png', 0)
+            img = cv2.imread(file_path + str(page) + '.png')
         start_point = []
         start_point.append(int(coordinates[i][1]))
         start_point.append(int(coordinates[i][2]))
@@ -19,8 +20,8 @@ def annotate_img(coordinates, first_page):
         end_point.append(int(coordinates[i][4]))
         start_point = tuple(start_point)
         end_point = tuple(end_point)
-        img = cv2.rectangle(img, start_point, end_point, (0, 255, 0), 3)
-        path = 'png_files/2001.05970_' + str(current_page) + '.png'
+        img = cv2.rectangle(img, start_point, end_point, color, 3)
+        path = file_path + str(current_page) + '.png'
         cv2.imwrite(path, img)
 
 
