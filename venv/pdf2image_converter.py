@@ -3,7 +3,7 @@ import tempfile
 from PyPDF2.pdf import PdfFileReader
 from pdf2image import convert_from_path
 
-filename = 'pdf_files/2001.05994.pdf'
+filename = 'pdf_files/2001.05970.pdf'
 print("Converting " + filename + " from pdf to PNG...")
 reader = PdfFileReader(open(filename,  mode="rb"))
 page_number = reader.getNumPages()

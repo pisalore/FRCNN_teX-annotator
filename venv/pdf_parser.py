@@ -123,7 +123,8 @@ def parse_pdf(PDF_path, TEX_Path):
     print(images_coordinates)
     print(lists_coordinates)
 
-    annotate_img(titles_coordinates)
+    annotate_img(titles_coordinates, titles_coordinates[0][0])
+    annotate_img(images_coordinates, images_coordinates[0][0])
 
 
 
