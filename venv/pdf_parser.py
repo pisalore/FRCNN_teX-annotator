@@ -118,11 +118,6 @@ def parse_pdf(PDF_path, TEX_Path):
         single_list_coordinates = lower_left_point + right_upper_point
         lists_coordinates[i] = single_list_coordinates
 
-
-    print(titles_coordinates)
-    print(images_coordinates)
-    print(lists_coordinates)
-
     annotate_img(titles_coordinates, titles_coordinates[0][0])
     annotate_img(images_coordinates, images_coordinates[0][0])
     annotate_img(lists_coordinates, lists_coordinates[0][0])
