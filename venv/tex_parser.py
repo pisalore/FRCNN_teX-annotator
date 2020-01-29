@@ -172,6 +172,6 @@ def find_tex_istances(path):
     return all_tex_objects
 
 
-path = 'tex_files/2001.05970.tex'  # path to .tex file
-objects = find_tex_istances(path)
-print(objects[2])
+# path = 'tex_files/2001.05970.tex'  # path to .tex file
+# objects = find_tex_istances(path)
+# print(objects[2])

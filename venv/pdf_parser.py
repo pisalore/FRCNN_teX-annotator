@@ -1,5 +1,5 @@
 from pdfminer.layout import LAParams
-from pdfminer.layout import LTTextBoxHorizontal, LTFigure, LTImage
+from pdfminer.layout import LTTextBoxHorizontal, LTFigure, LTImage, LTLine, LTRect
 from pdfminer.pdfpage import PDFPage
 from pdfminer.converter import PDFPageAggregator
 from pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter
@@ -14,6 +14,7 @@ from pdf2image.exceptions import (
     PDFSyntaxError
 )
 from tex_parser import find_tex_istances
+from images_annotator import annotate_img
 from difflib import SequenceMatcher
 
 def are_similar(string_a, string_b):
@@ -96,7 +97,6 @@ def parse_pdf(PDF_path, TEX_Path):
                             titles_coordinates.append(calculate_object_coordinates(page_counter, lines[i].bbox, page_length))
 
                 for i in range(len(lines)):
-
                     pdf_line_result = lines[i].get_text().split('\n')[0].lower()
                     pdf_line_result = ''.join([i for i in pdf_line_result if not i.isdigit()])
 
@@ -111,18 +111,19 @@ def parse_pdf(PDF_path, TEX_Path):
                 print('Image num: ', images_counter + 1, tex_instances[1][images_counter][2])
                 images_counter += 1
                 images_coordinates.append(calculate_object_coordinates(page_counter, x.bbox, page_length))
-
+    #SAVE CORRECT LISTS COORDINATES
     for i in range(len(lists_coordinates)):
         lower_left_point = lists_coordinates[i][-1][:3]
         right_upper_point = lists_coordinates[i][0][3:5]
         single_list_coordinates = lower_left_point + right_upper_point
         lists_coordinates[i] = single_list_coordinates
-        print()
 
 
     print(titles_coordinates)
     print(images_coordinates)
     print(lists_coordinates)
+
+    annotate_img(titles_coordinates)
 
 
 
