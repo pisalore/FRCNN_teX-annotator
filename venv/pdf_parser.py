@@ -123,6 +123,8 @@ def parse_pdf(PDF_path, TEX_Path):
                 images_counter += 1
                 images_coordinates.append(calculate_object_coordinates(page_counter, x.bbox, page_length))
     #SAVE CORRECT LISTS COORDINATES
+    if len(current_list_items) > 0 and len(lists_coordinates) == 0:
+        lists_coordinates.append(current_list_items)
     if len(lists_coordinates) > 0:
         for i in range(len(lists_coordinates)):
             lower_left_point = lists_coordinates[i][-1][:3]
