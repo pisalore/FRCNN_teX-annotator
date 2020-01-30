@@ -23,7 +23,7 @@ def string_refactor(string_line):
 
 def clean_tex_item(string_line):
     string_line = string_line.split('\\item')[1]
-    string_line = string_line.replace('$', '').replace('{', '').replace('\n', '').replace('}', '').replace('\\textrm', '').replace('\\rightarrow', '')
+    string_line = string_line.replace('$', '').replace('{', '').replace('\n', '').replace('}', '').replace('\\textrm', '').replace('\\rightarrow', '').replace('\\mathcal', '')
     return string_line
 
 def find_tex_istances(path):

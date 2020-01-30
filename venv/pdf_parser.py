@@ -46,8 +46,10 @@ def parse_pdf(PDF_path, TEX_Path):
     images_counter = 0
     images_coordinates = []
 
-    lists_counter = 0
-    lists_coordinates = [[]]
+    list_id = 0
+    current_list = 1
+    current_list_items = []
+    lists_coordinates = []
     #FIRST PHASE: GENERATE IMAGES TO BE ANNOTATED AND EXTRACT ALL TEX ISTANCES INSIDE TEX FILE
     generate_images(PDF_path)
     tex_instances = find_tex_istances(TEX_Path)
@@ -105,27 +107,34 @@ def parse_pdf(PDF_path, TEX_Path):
                     for instance in tex_instances[2]:
                         tex_list_item = instance[3]
                         if are_similar(tex_list_item[0:50], pdf_line_result[0:50]) and pdf_line_result != '':
-                            lists_counter += 1
-                            list_id = instance[1] - 1
-                            lists_coordinates[list_id].append(calculate_object_coordinates(page_counter, lines[i].bbox, page_length))
+                            if current_list == instance[1]:
+                                current_list_items.append(calculate_object_coordinates(page_counter, lines[i].bbox, page_length))
+                            else:
+                                if len(current_list_items) > 0:
+                                    lists_coordinates.append(current_list_items)
+                                    current_list_items = []
+                                list_id += 1 if len(lists_coordinates) > 0 else 0
+                                current_list = instance[1]
+                                current_list_items.append(calculate_object_coordinates(page_counter, lines[i].bbox, page_length))
+
             #FIGURES
             elif isinstance(x, LTImage) or isinstance(x, LTFigure):
-                print('Image num: ', images_counter + 1, tex_instances[1][images_counter][2])
+                print('Image num: ', images_counter + 1)            #, tex_instances[1][images_counter][2] verify tex parser for images
                 images_counter += 1
                 images_coordinates.append(calculate_object_coordinates(page_counter, x.bbox, page_length))
     #SAVE CORRECT LISTS COORDINATES
-    for i in range(len(lists_coordinates)):
-        lower_left_point = lists_coordinates[i][-1][:3]
-        right_upper_point = lists_coordinates[i][0][3:5]
-        single_list_coordinates = lower_left_point + right_upper_point
-        lists_coordinates[i] = single_list_coordinates
+    if len(lists_coordinates) > 0:
+        for i in range(len(lists_coordinates)):
+            lower_left_point = lists_coordinates[i][-1][:3]
+            right_upper_point = lists_coordinates[i][0][3:5]
+            single_list_coordinates = lower_left_point + right_upper_point
+            lists_coordinates[i] = single_list_coordinates
+    if len(titles_coordinates) != 0: annotate_img(filename, titles_coordinates, titles_coordinates[0][0], (0,0,255))
+    if len(images_coordinates) != 0: annotate_img(filename, images_coordinates, images_coordinates[0][0], (0,255,0))
+    if len(lists_coordinates) != 0 : annotate_img(filename, lists_coordinates, lists_coordinates[0][0], (255,0,0))
 
-    annotate_img(filename, titles_coordinates, titles_coordinates[0][0], (0,0,255))
-    annotate_img(filename, images_coordinates, images_coordinates[0][0], (0,255,0))
-    annotate_img(filename, lists_coordinates, lists_coordinates[0][0], (255,0,0))
 
 
-
-PDF_path = 'pdf_files/2001.05994.pdf'
-TEX_path = 'tex_files/2001.05994.tex'
+PDF_path = 'pdf_files/2001.08688.pdf'
+TEX_path = 'tex_files/2001.08688.tex'
 parse_pdf(PDF_path, TEX_path)
