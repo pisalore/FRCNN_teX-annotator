@@ -68,7 +68,7 @@ def parse_pdf(PDF_path, TEX_Path):
     # Create a PDF device object.
     # Set parameters for analysis.
     laparams = LAParams()
-    laparams.line_margin = 0.4
+    laparams.line_margin = 0.1
     # Create a PDF page aggregator object.
     device = PDFPageAggregator(rsrcmgr, laparams=laparams)
     interpreter = PDFPageInterpreter(rsrcmgr, device)

@@ -16,6 +16,11 @@ def refactor_bold_text(string_line):
         string_line = string_line.replace('\\textbf{' + replace_bold_value + '}', replace_bold_value)
     return string_line
 
+def refactor_tabular_string(string_line):
+    string_line = string_line.replace('\\begin{tabular}', '').replace('{', '').replace('}', ' ').replace('cm', '').replace('@', '').replace('.', '')
+    string_line = ''.join([i for i in string_line if not i.isdigit()])
+    return string_line
+
 def string_refactor(string_line):
     string_line = string_line.replace('\\', '').split('{')[1].split('}')[0]
     string_line = string_line.replace('  ', ' ')
@@ -67,8 +72,11 @@ def find_tex_istances(path):
 
     # TABLES                                     category: 4
     table = '\\begin{table}'
+    tabular = '\\begin{tabular}'
     end_table = '\\end{table]'
     is_table = False
+    is_tabular = False
+    table_keywords = []
     num_tables = 0
     all_tables = []
 
@@ -99,9 +107,16 @@ def find_tex_istances(path):
             num_lists += 1
 
         # 3 category 3: tables
-        elif string_line.count(table):
+        elif string_line.count(tabular):
             num_tables += 1
             is_table = True
+            is_tabular = True
+
+        if is_tabular and string_line.count('&') > 1:
+            table_keywords = string_line.split('&')
+            is_tabular = False
+
+
 
         # CHECK IF I'M IN A SUB-FIGURES LIST
         if (string_line.count(end_figure) and is_subfigure):
@@ -134,7 +149,7 @@ def find_tex_istances(path):
                 string_line = refactor_bold_text(string_line)
 
             string_line = string_refactor(string_line)
-            table_to_add = [4, num_tables, string_line]
+            table_to_add = [4, table_keywords, string_line]
             all_tables.append(table_to_add)
 
         # ITEMS IN LISTS
@@ -172,6 +187,5 @@ def find_tex_istances(path):
     return all_tex_objects
 
 
-# path = 'tex_files/2001.05970.tex'  # path to .tex file
-# objects = find_tex_istances(path)
-# print(objects[2])
+path = 'tex_files/2001.05970.tex'  # path to .tex file
+objects = find_tex_istances(path)
