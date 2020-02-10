@@ -113,10 +113,13 @@ def find_tex_istances(path):
             is_tabular = True
 
         if is_tabular and string_line.count('&') > 1:
-            table_keywords = string_line.split('&')
-            is_tabular = False
-
-
+            string_line = string_line.replace('\\', '').replace('\n', '')
+            if ('textit' in string_line):
+                string_line = refactor_coursive_text(string_line)
+            if ('textbf' in string_line):
+                string_line = refactor_bold_text(string_line)
+            string_line = string_line.replace('$', '').replace('{', '').replace('\n', '').replace('}', '')
+            table_keywords += string_line.split('&')
 
         # CHECK IF I'M IN A SUB-FIGURES LIST
         if (string_line.count(end_figure) and is_subfigure):
@@ -151,6 +154,8 @@ def find_tex_istances(path):
             string_line = string_refactor(string_line)
             table_to_add = [4, table_keywords, string_line]
             all_tables.append(table_to_add)
+            is_tabular = False
+            table_keywords = []
 
         # ITEMS IN LISTS
         if string_line.count(item) and is_list:
@@ -187,5 +192,5 @@ def find_tex_istances(path):
     return all_tex_objects
 
 
-path = 'tex_files/2001.05970.tex'  # path to .tex file
+path = 'tex_files/2001.10284.tex'  # path to .tex file
 objects = find_tex_istances(path)
