@@ -120,6 +120,7 @@ def find_tex_istances(path):
                 string_line = refactor_bold_text(string_line)
             string_line = string_line.replace('$', '').replace('{', '').replace('\n', '').replace('}', '')
             table_keywords += string_line.split('&')
+            is_tabular = False
 
         # CHECK IF I'M IN A SUB-FIGURES LIST
         if (string_line.count(end_figure) and is_subfigure):
@@ -154,7 +155,6 @@ def find_tex_istances(path):
             string_line = string_refactor(string_line)
             table_to_add = [4, table_keywords, string_line]
             all_tables.append(table_to_add)
-            is_tabular = False
             table_keywords = []
 
         # ITEMS IN LISTS
@@ -191,6 +191,6 @@ def find_tex_istances(path):
 
     return all_tex_objects
 
-
-path = 'tex_files/2001.10284.tex'  # path to .tex file
-objects = find_tex_istances(path)
+#
+# path = 'tex_files/2001.10284.tex'  # path to .tex file
+# objects = find_tex_istances(path)

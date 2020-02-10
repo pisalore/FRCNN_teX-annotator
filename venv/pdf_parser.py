@@ -50,6 +50,9 @@ def parse_pdf(PDF_path, TEX_Path):
     current_list = 1
     current_list_items = []
     lists_coordinates = []
+
+
+    tables_coordinates = []
     #FIRST PHASE: GENERATE IMAGES TO BE ANNOTATED AND EXTRACT ALL TEX ISTANCES INSIDE TEX FILE
     generate_images(PDF_path)
     tex_instances = find_tex_istances(TEX_Path)
@@ -68,7 +71,7 @@ def parse_pdf(PDF_path, TEX_Path):
     # Create a PDF device object.
     # Set parameters for analysis.
     laparams = LAParams()
-    laparams.line_margin = 0.1
+    laparams.line_margin = 0.4
     # Create a PDF page aggregator object.
     device = PDFPageAggregator(rsrcmgr, laparams=laparams)
     interpreter = PDFPageInterpreter(rsrcmgr, device)
@@ -117,11 +120,24 @@ def parse_pdf(PDF_path, TEX_Path):
                                 current_list = instance[1]
                                 current_list_items.append(calculate_object_coordinates(page_counter, lines[i].bbox, page_length))
 
+                    # for j in range (len(tex_instances[3])):
+                    #     table_columns = 0
+                    #     table_columns_found_counter = 0
+                    #     table_columns += len(tex_instances[3][j][1])
+                    #     for column_name in tex_instances[3][j][1]:
+                    #         column_name = column_name.lower().strip()
+                    #         table_columns_found_counter += pdf_line_result.count(column_name)
+                    #     if table_columns_found_counter / table_columns >= 1:
+                    #         tables_coordinates.append(calculate_object_coordinates(page_counter, lines[i].bbox, page_length))
+
             #FIGURES
             elif isinstance(x, LTImage) or isinstance(x, LTFigure):
                 print('Image num: ', images_counter + 1)            #, tex_instances[1][images_counter][2] verify tex parser for images
                 images_counter += 1
                 images_coordinates.append(calculate_object_coordinates(page_counter, x.bbox, page_length))
+
+            elif isinstance(x, LTLine) or isinstance(x, LTRect):
+                tables_coordinates.append(calculate_object_coordinates(page_counter,x.bbox, page_length))
     #SAVE CORRECT LISTS COORDINATES
     if len(current_list_items) > 0 and len(lists_coordinates) == 0:
         lists_coordinates.append(current_list_items)
@@ -134,9 +150,11 @@ def parse_pdf(PDF_path, TEX_Path):
     if len(titles_coordinates) != 0: annotate_img(filename, titles_coordinates, titles_coordinates[0][0], (0,0,255))
     if len(images_coordinates) != 0: annotate_img(filename, images_coordinates, images_coordinates[0][0], (0,255,0))
     if len(lists_coordinates) != 0 : annotate_img(filename, lists_coordinates, lists_coordinates[0][0], (255,0,0))
+    if len(tables_coordinates) !=0 : annotate_img(filename, tables_coordinates, tables_coordinates[0][0], (230, 255, 102))
 
 
 
-PDF_path = 'pdf_files/2001.08688.pdf'
-TEX_path = 'tex_files/2001.08688.tex'
+
+PDF_path = 'pdf_files/2001.10284.pdf'
+TEX_path = 'tex_files/2001.10284.tex'
 parse_pdf(PDF_path, TEX_path)
