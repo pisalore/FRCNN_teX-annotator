@@ -146,6 +146,6 @@ def parse_pdf(PDF_path, TEX_Path):
 
 
 
-PDF_path = 'pdf_files/2001.10284.pdf'
-TEX_path = 'tex_files/2001.10284.tex'
+PDF_path = 'pdf_files/2002.04108.pdf'
+TEX_path = 'tex_files/2002.04108_tex_files'
 parse_pdf(PDF_path, TEX_path)
