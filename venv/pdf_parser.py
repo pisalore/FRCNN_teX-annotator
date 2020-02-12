@@ -54,7 +54,8 @@ def parse_pdf(PDF_path, TEX_Path):
 
     tables_coordinates = []
     #FIRST PHASE: GENERATE IMAGES TO BE ANNOTATED AND EXTRACT ALL TEX ISTANCES INSIDE TEX FILE
-    generate_images(PDF_path)
+    generate_images(PDF_path, filename)
+    #TODO: Iterate over a collection of tex files
     tex_instances = find_tex_istances(TEX_Path)
     # Open a PDF file.
     fp = open(PDF_path, 'rb')
@@ -119,16 +120,6 @@ def parse_pdf(PDF_path, TEX_Path):
                                 list_id += 1 if len(lists_coordinates) > 0 else 0
                                 current_list = instance[1]
                                 current_list_items.append(calculate_object_coordinates(page_counter, lines[i].bbox, page_length))
-
-                    # for j in range (len(tex_instances[3])):
-                    #     table_columns = 0
-                    #     table_columns_found_counter = 0
-                    #     table_columns += len(tex_instances[3][j][1])
-                    #     for column_name in tex_instances[3][j][1]:
-                    #         column_name = column_name.lower().strip()
-                    #         table_columns_found_counter += pdf_line_result.count(column_name)
-                    #     if table_columns_found_counter / table_columns >= 1:
-                    #         tables_coordinates.append(calculate_object_coordinates(page_counter, lines[i].bbox, page_length))
 
             #FIGURES
             elif isinstance(x, LTImage) or isinstance(x, LTFigure):

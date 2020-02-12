@@ -5,7 +5,8 @@ import matplotlib.pyplot as plt
 
 def annotate_img(filename, coordinates, first_page, color):
     current_page = first_page
-    file_path = 'png_files/' + filename + '_'
+    save_directory = filename + '_annotated_images/'
+    file_path = 'png_files/' + save_directory + filename + '_'
     img = cv2.imread(file_path + str(current_page) + '.png')
     for i in range(len(coordinates)):
         page = coordinates[i][0]
