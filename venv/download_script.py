@@ -11,7 +11,7 @@ pdf_download_url = 'https://arxiv.org/pdf/'
 source_download_url = 'https://arxiv.org/e-print/'
 year = 10
 month = 2
-file_counter = 1
+file_counter = 0
 file_identifier = ''
 
 while year <=20:
@@ -39,7 +39,7 @@ while year <=20:
             urllib.request.urlretrieve(source_download_url + file_identifier, downloaded_tar_file_path)
             extract_tar_dir_path = test + file_identifier + '_tex_files'
             os.mkdir(extract_tar_dir_path)
-            tar = tarfile.open(downloaded_tar_file_path, mode='r:')
+            tar = tarfile.open(downloaded_tar_file_path)
             tar.extractall(path=extract_tar_dir_path)
             tar.close()
 
