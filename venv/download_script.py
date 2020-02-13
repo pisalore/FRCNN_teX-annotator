@@ -1,5 +1,6 @@
 #tes per scaricare files da arXIv
 import urllib.request
+import urllib.error
 import os
 import tarfile
 
@@ -9,7 +10,7 @@ tex_files_path = 'tex_files/'
 
 pdf_download_url = 'https://arxiv.org/pdf/'
 source_download_url = 'https://arxiv.org/e-print/'
-year = 10
+year = 20
 month = 2
 file_counter = 0
 file_identifier = ''
@@ -32,20 +33,22 @@ while year <=20:
 
     print('Downloading ' + file_identifier + '.pdf and its source files from arXiv...')
     downloaded_pdf_file_path = test + file_identifier +".pdf"
-    downloaded_tar_file_path = test + file_identifier + ".tar"
+    downloaded_source_file_path = test + file_identifier + ".tar"
+    extract_tar_dir_path = test + file_identifier + '_tex_files'
     try:
         urllib.request.urlretrieve(pdf_download_url + file_identifier, downloaded_pdf_file_path)
         if os.path.exists(downloaded_pdf_file_path):
-            urllib.request.urlretrieve(source_download_url + file_identifier, downloaded_tar_file_path)
-            extract_tar_dir_path = test + file_identifier + '_tex_files'
+            urllib.request.urlretrieve(source_download_url + file_identifier, downloaded_source_file_path)
             os.mkdir(extract_tar_dir_path)
-            tar = tarfile.open(downloaded_tar_file_path)
-            tar.extractall(path=extract_tar_dir_path)
-            tar.close()
-
-        print('Files succesfully downloaded. \n')
-    except:
-        print('PDF or Source files for ' + file_identifier + 'not found. Download the next file.')
+            downloaded_source_file = tarfile.open(downloaded_source_file_path)
+            downloaded_source_file.extractall(path=extract_tar_dir_path)
+            downloaded_source_file.close()
+            print('Files succesfully downloaded. \n')
+    except urllib.error.HTTPError:
+        print('404: Not Foud. The requested paper does not exist.')
+        if os.path.exists(downloaded_pdf_file_path):
+            os.remove(downloaded_pdf_file_path)
+        print('PDF or Source files for ' + file_identifier + 'not found. Download the next file.\n')
         file_counter = 0
         if month == 12:
             month = 1
@@ -54,6 +57,15 @@ while year <=20:
             month += 1
         if os.path.exists(downloaded_pdf_file_path):
             os.remove(downloaded_pdf_file_path)
+    except tarfile.ReadError:
+        print('Cannot read the tar file. Remove all its references (PDF and dir).\n')
+        if os.path.exists(downloaded_source_file_path):
+            os.remove(downloaded_source_file_path)
+        if os.path.exists(extract_tar_dir_path):
+            os.rmdir(extract_tar_dir_path)
+        if os.path.exists(downloaded_pdf_file_path):
+            os.remove(downloaded_pdf_file_path)
+
 
 
 # 2002.4425
