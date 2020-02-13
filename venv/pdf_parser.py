@@ -5,14 +5,8 @@ from pdfminer.converter import PDFPageAggregator
 from pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter
 from pdfminer.pdfparser import PDFParser
 from pdfminer.pdfdocument import PDFDocument, PDFTextExtractionNotAllowed
-from pdfminer.pdfdevice import PDFDevice
 import os.path
-from pdf2image import convert_from_path, convert_from_bytes
-from pdf2image.exceptions import (
-    PDFInfoNotInstalledError,
-    PDFPageCountError,
-    PDFSyntaxError
-)
+
 from pdf2image_converter import generate_images
 from tex_parser import find_tex_istances
 from images_annotator import annotate_img

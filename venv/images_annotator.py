@@ -1,7 +1,4 @@
-import numpy as np
 import cv2
-import matplotlib.pyplot as plt
-
 
 def annotate_img(filename, coordinates, first_page, color):
     current_page = first_page

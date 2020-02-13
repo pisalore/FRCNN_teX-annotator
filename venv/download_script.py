@@ -1,4 +1,3 @@
-#tes per scaricare files da arXIv
 import urllib.request
 import urllib.error
 import os
