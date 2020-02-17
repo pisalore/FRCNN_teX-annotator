@@ -93,7 +93,10 @@ def find_tex_istances(path):
                 fp = open(file_to_open_path, 'rb')
 
                 for line in fp:
-                    string_line = line.decode("utf-8")
+                    try:
+                        string_line = line.decode("utf-8")
+                    except UnicodeDecodeError:
+                        string_line = line.decode("latin-1")
                     # 1 category 1: titles
                     if string_line.count(section) or string_line.count(subsection) or string_line.count(
                             title) or string_line.count(abstract):
@@ -195,16 +198,6 @@ def find_tex_istances(path):
                 all_tex_objects.append(all_lists)  # LISTS      2
                 all_tex_objects.append(all_tables)  # TABLES     3
 
-                print('Titles:    ', num_sections)
-                print('Figures:     ', num_figures)
-                print('Subfigures:  ', num_sub_figure)
-                print('List:        ', num_lists)
-                print('Tables:      ', num_tables)
-
-
-
     return all_tex_objects
 
-#
-# path = 'tex_files/2001.10284.tex'  # path to .tex file
-# objects = find_tex_istances(path)
+find_tex_istances('tex_files/1901.0406_tex_files')

@@ -75,9 +75,9 @@ def parse_pdf(PDF_path, TEX_Path):
         interpreter.process_page(page)
         # receive the LTPage object for the page.
         layout = device.get_result()
-        print('##########################################################################################################')
-        print('PAGE NUMBER: ', page_counter)
-        print('##########################################################################################################', '\n')
+        # print('##########################################################################################################')
+        # print('PAGE NUMBER: ', page_counter)
+        # print('##########################################################################################################', '\n')
         for x in layout:
             # TEXTS (TITLES AND LISTS)
             if isinstance(x, LTTextBoxHorizontal):
@@ -93,7 +93,7 @@ def parse_pdf(PDF_path, TEX_Path):
                         if are_similar(tex_title, pdf_line_result) and pdf_line_result != '':
                             titles_counter += 1
                             titles_found = True
-                            print('Title num: ', titles_counter, pdf_line_result)
+                            # print('Title num: ', titles_counter, pdf_line_result)
                             titles_coordinates.append(calculate_object_coordinates(page_counter, lines[i].bbox, page_length))
 
                 for i in range(len(lines)):
@@ -115,7 +115,7 @@ def parse_pdf(PDF_path, TEX_Path):
 
             #FIGURES
             elif isinstance(x, LTImage) or isinstance(x, LTFigure):
-                print('Image num: ', images_counter + 1)            #, tex_instances[1][images_counter][2] verify tex parser for images
+              #  print('Image num: ', images_counter + 1)            #, tex_instances[1][images_counter][2] verify tex parser for images
                 images_counter += 1
                 images_coordinates.append(calculate_object_coordinates(page_counter, x.bbox, page_length))
 
@@ -134,3 +134,5 @@ def parse_pdf(PDF_path, TEX_Path):
     if len(images_coordinates) != 0: annotate_img(filename, images_coordinates, images_coordinates[0][0], (0,255,0))
     if len(lists_coordinates) != 0 : annotate_img(filename, lists_coordinates, lists_coordinates[0][0], (255,0,0))
     if len(tables_coordinates) !=0 : annotate_img(filename, tables_coordinates, tables_coordinates[0][0], (230, 255, 102))
+
+parse_pdf('pdf_files/1901.0406.pdf', 'tex_files/1901.0406_tex_files')
