@@ -135,7 +135,3 @@ def parse_pdf(PDF_path, TEX_Path):
     if len(images_coordinates) != 0: annotate_img(filename, images_coordinates, images_coordinates[0][0], (0,255,0))
     if len(lists_coordinates) != 0 : annotate_img(filename, lists_coordinates, lists_coordinates[0][0], (255,0,0))
     if len(tables_coordinates) !=0 : annotate_img(filename, tables_coordinates, tables_coordinates[0][0], (230, 255, 102))
-
-PDF_path = 'pdf_files/2002.04108.pdf'
-TEX_path = 'tex_files/2002.04108_tex_files'
-parse_pdf(PDF_path, TEX_path)
