@@ -24,8 +24,10 @@ def refactor_tabular_string(string_line):
     return string_line
 
 def string_refactor(string_line):
-    string_line = string_line.replace('\\', '').split('{')[1].split('}')[0]
     string_line = string_line.replace('  ', ' ')
+    if(string_line.count('{') and string_line.count('}')):
+        string_line = string_line.replace('\\', '').split('{')[1].split('}')[0]
+
     return string_line
 
 def clean_tex_item(string_line):

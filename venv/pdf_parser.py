@@ -48,7 +48,6 @@ def parse_pdf(PDF_path, TEX_Path):
     tables_coordinates = []
     #FIRST PHASE: GENERATE IMAGES TO BE ANNOTATED AND EXTRACT ALL TEX ISTANCES INSIDE TEX FILE
     generate_images(PDF_path, filename)
-    #TODO: Iterate over a collection of tex files
     tex_instances = find_tex_istances(TEX_Path)
     # Open a PDF file.
     fp = open(PDF_path, 'rb')
