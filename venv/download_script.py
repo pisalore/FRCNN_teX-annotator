@@ -14,7 +14,6 @@ def check_next_paper(file_identifier):
     return True
 
 pdf_files_path = 'pdf_files/'
-test = 'test_dw_pdf/'
 tex_files_path = 'tex_files/'
 
 pdf_download_url = 'https://arxiv.org/pdf/'
@@ -40,16 +39,15 @@ while year <=20:
     elif file_counter_digits == 4 or file_counter_digits == 5:
         file_identifier += '.' + str(file_counter)
 
-
     print('Downloading ' + file_identifier + '.pdf and its source files from arXiv...')
-    downloaded_pdf_file_path = test + file_identifier +".pdf"
-    downloaded_source_file_path = test + file_identifier + ".tar"
-    extract_tar_dir_path = test + file_identifier + '_tex_files'
+    downloaded_pdf_file_path = pdf_files_path + file_identifier +".pdf"
+    extract_tar_dir_path = tex_files_path + file_identifier + '_tex_files'
+    downloaded_source_file_path = extract_tar_dir_path + file_identifier + ".tar"
     try:
         urllib.request.urlretrieve(pdf_download_url + file_identifier, downloaded_pdf_file_path)
         if os.path.exists(downloaded_pdf_file_path):
-            urllib.request.urlretrieve(source_download_url + file_identifier, downloaded_source_file_path)
             os.mkdir(extract_tar_dir_path)
+            urllib.request.urlretrieve(source_download_url + file_identifier, downloaded_source_file_path)
             downloaded_source_file = tarfile.open(downloaded_source_file_path)
             downloaded_source_file.extractall(path=extract_tar_dir_path)
             downloaded_source_file.close()
@@ -78,4 +76,3 @@ while year <=20:
             os.rmdir(extract_tar_dir_path)
         if os.path.exists(downloaded_pdf_file_path):
             os.remove(downloaded_pdf_file_path)
-# 2002.4425
