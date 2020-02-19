@@ -46,6 +46,7 @@ def find_tex_istances(path):
     abstract = '\\begin{abstract}'
     section = '\\section'
     subsection = '\\subsection'
+    subsubsection = '\\subsubsection'
     num_sections = 0
     all_titles = []
 
@@ -99,7 +100,7 @@ def find_tex_istances(path):
                         string_line = line.decode("latin-1")
                     # 1 category 1: titles
                     if string_line.count(section) or string_line.count(subsection) or string_line.count(
-                            title) or string_line.count(abstract):
+                            title) or string_line.count(abstract) or string_line.count(subsubsection):
                         num_sections += 1
                         if ('textit' in string_line):
                             string_line = refactor_coursive_text(string_line)
@@ -200,4 +201,4 @@ def find_tex_istances(path):
 
     return all_tex_objects
 
-find_tex_istances('tex_files/1901.0406_tex_files')
+# find_tex_istances('tex_files/1901.0416_tex_files')
