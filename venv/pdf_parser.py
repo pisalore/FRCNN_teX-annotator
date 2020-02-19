@@ -75,9 +75,9 @@ def parse_pdf(PDF_path, TEX_Path):
         interpreter.process_page(page)
         # receive the LTPage object for the page.
         layout = device.get_result()
-        # print('##########################################################################################################')
-        # print('PAGE NUMBER: ', page_counter)
-        # print('##########################################################################################################', '\n')
+        print('##########################################################################################################')
+        print('PAGE NUMBER: ', page_counter)
+        print('##########################################################################################################', '\n')
         for x in layout:
             # TEXTS (TITLES AND LISTS)
             if isinstance(x, LTTextBoxHorizontal):
@@ -119,8 +119,11 @@ def parse_pdf(PDF_path, TEX_Path):
                 images_counter += 1
                 images_coordinates.append(calculate_object_coordinates(page_counter, x.bbox, page_length))
 
-            elif isinstance(x, LTLine) or isinstance(x, LTRect):
-                tables_coordinates.append(calculate_object_coordinates(page_counter,x.bbox, page_length))
+            elif isinstance(x, LTLine):
+                if (x.height == 0 and x.width < 30) or (x.height < 30 and x.width == 0) :
+                    pass
+                else:
+                    tables_coordinates.append(calculate_object_coordinates(page_counter,x.bbox, page_length))
     #SAVE CORRECT LISTS COORDINATES
     if len(current_list_items) > 0 and len(lists_coordinates) == 0:
         lists_coordinates.append(current_list_items)
@@ -135,4 +138,4 @@ def parse_pdf(PDF_path, TEX_Path):
     if len(lists_coordinates) != 0 : annotate_img(filename, lists_coordinates, lists_coordinates[0][0], (255,0,0))
     if len(tables_coordinates) !=0 : annotate_img(filename, tables_coordinates, tables_coordinates[0][0], (230, 255, 102))
 
-parse_pdf('pdf_files/1901.0406.pdf', 'tex_files/1901.0406_tex_files')
+parse_pdf('pdf_files/1901.0410.pdf', 'tex_files/1901.0410_tex_files')
