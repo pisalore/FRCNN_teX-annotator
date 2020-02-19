@@ -124,5 +124,3 @@ def parse_pdf(PDF_path, TEX_Path):
     if len(images_coordinates) != 0: annotate_img(filename, images_coordinates, images_coordinates[0][0], (0,255,0))
     if len(lists_coordinates) != 0 : annotate_img(filename, lists_coordinates, lists_coordinates[0][0], (255,0,0))
     if len(tables_coordinates) !=0 : annotate_img(filename, tables_coordinates, tables_coordinates[0][0], (230, 255, 102))
-
-#parse_pdf('pdf_files/1901.0401.pdf', 'tex_files/1901.0401_tex_files')

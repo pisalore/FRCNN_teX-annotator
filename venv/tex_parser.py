@@ -200,5 +200,3 @@ def find_tex_istances(path):
                 all_tex_objects.append(all_tables)  # TABLES     3
 
     return all_tex_objects
-
-# find_tex_istances('tex_files/1901.0416_tex_files')
