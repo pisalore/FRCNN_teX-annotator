@@ -103,15 +103,7 @@ def parse_pdf(PDF_path, TEX_Path):
                     for instance in tex_instances[2]:
                         tex_list_item = instance[3]
                         if are_similar(tex_list_item[0:50], pdf_line_result[0:50]) and pdf_line_result != '':
-                            if current_list == instance[1]:
-                                current_list_items.append(calculate_object_coordinates(page_counter, lines[i].bbox, page_length))
-                            else:
-                                if len(current_list_items) > 0:
-                                    lists_coordinates.append(current_list_items)
-                                    current_list_items = []
-                                list_id += 1 if len(lists_coordinates) > 0 else 0
-                                current_list = instance[1]
-                                current_list_items.append(calculate_object_coordinates(page_counter, lines[i].bbox, page_length))
+                            lists_coordinates.append(calculate_object_coordinates(page_counter, lines[i].bbox, page_length))
 
             #FIGURES
             elif isinstance(x, LTImage) or isinstance(x, LTFigure):
@@ -127,18 +119,10 @@ def parse_pdf(PDF_path, TEX_Path):
                     pass
                 else:
                     tables_coordinates.append(calculate_object_coordinates(page_counter,x.bbox, page_length))
-    #SAVE CORRECT LISTS COORDINATES
-    if len(current_list_items) > 0 and len(lists_coordinates) == 0:
-        lists_coordinates.append(current_list_items)
-    if len(lists_coordinates) > 0:
-        for i in range(len(lists_coordinates)):
-            lower_left_point = lists_coordinates[i][-1][:3]
-            right_upper_point = lists_coordinates[i][0][3:5]
-            single_list_coordinates = lower_left_point + right_upper_point
-            lists_coordinates[i] = single_list_coordinates
+
     if len(titles_coordinates) != 0: annotate_img(filename, titles_coordinates, titles_coordinates[0][0], (0,0,255))
     if len(images_coordinates) != 0: annotate_img(filename, images_coordinates, images_coordinates[0][0], (0,255,0))
     if len(lists_coordinates) != 0 : annotate_img(filename, lists_coordinates, lists_coordinates[0][0], (255,0,0))
     if len(tables_coordinates) !=0 : annotate_img(filename, tables_coordinates, tables_coordinates[0][0], (230, 255, 102))
 
-parse_pdf('pdf_files/1901.0401.pdf', 'tex_files/1901.0401_tex_files')
+#parse_pdf('pdf_files/1901.0401.pdf', 'tex_files/1901.0401_tex_files')
