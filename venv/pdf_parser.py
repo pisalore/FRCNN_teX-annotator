@@ -116,8 +116,11 @@ def parse_pdf(PDF_path, TEX_Path):
             #FIGURES
             elif isinstance(x, LTImage) or isinstance(x, LTFigure):
               #  print('Image num: ', images_counter + 1)            #, tex_instances[1][images_counter][2] verify tex parser for images
-                images_counter += 1
-                images_coordinates.append(calculate_object_coordinates(page_counter, x.bbox, page_length))
+              if (x.width / x.height > 5) or (x.height / x.width >5):
+                  pass
+              else:
+                  images_counter += 1
+                  images_coordinates.append(calculate_object_coordinates(page_counter, x.bbox, page_length))
 
             elif isinstance(x, LTLine):
                 if (x.height == 0 and x.width < 30) or (x.height < 30 and x.width == 0) :
@@ -138,4 +141,4 @@ def parse_pdf(PDF_path, TEX_Path):
     if len(lists_coordinates) != 0 : annotate_img(filename, lists_coordinates, lists_coordinates[0][0], (255,0,0))
     if len(tables_coordinates) !=0 : annotate_img(filename, tables_coordinates, tables_coordinates[0][0], (230, 255, 102))
 
-parse_pdf('pdf_files/1901.0410.pdf', 'tex_files/1901.0410_tex_files')
+parse_pdf('pdf_files/1901.0423.pdf', 'tex_files/1901.0423_tex_files')
