@@ -2,6 +2,7 @@ import urllib.request
 import urllib.error
 import os
 import tarfile
+from utils import parse_args
 
 def check_next_paper(file_identifier):
     p1 = file_identifier.split('.')[0]
@@ -13,14 +14,16 @@ def check_next_paper(file_identifier):
         return False
     return True
 
+args = parse_args()
+
 pdf_files_path = 'pdf_files/'
 tex_files_path = 'tex_files/'
 
 pdf_download_url = 'https://arxiv.org/pdf/'
 source_download_url = 'https://arxiv.org/e-print/'
-year = 19
-month = 1
-file_counter = 400
+year = int(args.year)
+month = int(args.month)
+file_counter = int(args.counter)
 file_identifier = ''
 
 while year <=20:
