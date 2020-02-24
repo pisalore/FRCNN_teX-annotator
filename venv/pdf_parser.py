@@ -37,18 +37,23 @@ def extract_tables_coordinates(tables_coordinates):
     extracted_tables_coordinates = []
     current_page = 1
     current_width = 0
+    table_id = 0
 
     for line in tables_coordinates:
         if line[0] != current_page:
             current_page = line[0]
             current_width = 0
+            table_id += 1
         if current_width == 0:
             current_width = line[3] - line[1]
+            line.append(table_id)
             extracted_tables_coordinates.append(line)
         elif abs(current_width - (line[3] - line[1])) <= 1:
+            line.append(table_id)
             extracted_tables_coordinates.append(line)
         else:
             current_width = line[3] - line[1]
+            table_id += 1
 
     return extracted_tables_coordinates
 
