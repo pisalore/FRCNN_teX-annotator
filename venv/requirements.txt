@@ -1,0 +1,11 @@
+pandas
+matplotlib
+tensorflow
+keras==2.0.3
+numpy
+opencv-python
+sklearn
+h5py
+pdfminer
+pdf2image
+PyPDF2
