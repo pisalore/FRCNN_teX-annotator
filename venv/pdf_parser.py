@@ -34,6 +34,7 @@ def calculate_object_coordinates(page_counter, bbox, document_length, obj_catego
     return computed_coordinates
 
 def extract_tables_coordinates(tables_coordinates):
+    tmp_extracted_tables_coordinates = []
     extracted_tables_coordinates = []
     current_page = 1
     current_width = 0
@@ -47,13 +48,32 @@ def extract_tables_coordinates(tables_coordinates):
         if current_width == 0:
             current_width = line[3] - line[1]
             line.append(table_id)
-            extracted_tables_coordinates.append(line)
+            tmp_extracted_tables_coordinates.append(line)
         elif abs(current_width - (line[3] - line[1])) <= 1:
             line.append(table_id)
-            extracted_tables_coordinates.append(line)
+            tmp_extracted_tables_coordinates.append(line)
         else:
             current_width = line[3] - line[1]
             table_id += 1
+
+    for i in range(len(tmp_extracted_tables_coordinates)):
+        added_table_ids = []
+        table_id = tmp_extracted_tables_coordinates[i][6]
+        page = tmp_extracted_tables_coordinates[i][0]
+        table_xmin = []
+        table_ymin = []
+        table_xmax = []
+        table_ymax = []
+        for line in tmp_extracted_tables_coordinates:
+            if line[6] == table_id and not(line[6] in added_table_ids):
+                table_xmin.append(line[1])
+                table_ymin.append(line[2])
+                table_xmax.append(line[3])
+                table_ymax.append(line[4])
+        table_to_add = [page, min(table_xmin), min(table_ymin), max(table_xmax), max(table_ymax), 4]
+        extracted_tables_coordinates.append(table_to_add)
+        added_table_ids.append(table_id)
+
 
     return extracted_tables_coordinates
 
@@ -154,7 +174,8 @@ def parse_pdf(PDF_path, TEX_Path):
     if len(titles_coordinates) != 0: annotate_img(filename, titles_coordinates, titles_coordinates[0][0], (0,0,255))
     if len(images_coordinates) != 0: annotate_img(filename, images_coordinates, images_coordinates[0][0], (0,255,0))
     if len(lists_coordinates) != 0 : annotate_img(filename, lists_coordinates, lists_coordinates[0][0], (255,0,0))
-    if len(extracted_tables_coordinates) !=0 : annotate_img(filename, tables_coordinates, tables_coordinates[0][0], (230, 255, 102))
+    if len(extracted_tables_coordinates) !=0 : annotate_img(filename, extracted_tables_coordinates,
+                                                            extracted_tables_coordinates[0][0], (230, 255, 102))
 
     all_objects_coordinates.extend(titles_coordinates)
     all_objects_coordinates.extend(images_coordinates)
