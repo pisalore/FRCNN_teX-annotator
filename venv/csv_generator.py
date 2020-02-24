@@ -11,7 +11,5 @@ def generate_csv_annotations(csv_filename):
     else:
         with open(csv_filename + '.csv', 'a+', newline='') as write_obj:
             filewriter = csv.writer(write_obj)
-            filewriter.writerow(['1', '2', '3', '4', '5', '6'])
-            filewriter.writerow(['7', '8', '9', '10', '11', '12'])
 
 generate_csv_annotations('prova')

@@ -6,16 +6,18 @@ from pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter
 from pdfminer.pdfparser import PDFParser
 from pdfminer.pdfdocument import PDFDocument, PDFTextExtractionNotAllowed
 import os.path
-
 from pdf2image_converter import generate_images
 from tex_parser import find_tex_istances
 from images_annotator import annotate_img
 from difflib import SequenceMatcher
+from csv_generator import generate_csv_annotations
+from operator import itemgetter
+
 def are_similar(string_a, string_b):
     if SequenceMatcher(None, string_a, string_b).ratio() >= 0.75:
         return True
 
-def calculate_object_coordinates(page_counter, bbox, document_length):
+def calculate_object_coordinates(page_counter, bbox, document_length, obj_category):
     computed_coordinates = []
     computed_coordinates.append(page_counter)
 
@@ -26,6 +28,8 @@ def calculate_object_coordinates(page_counter, bbox, document_length):
     computed_coordinates.append(bbox[2])
     computed_y_right = document_length - bbox[3]
     computed_coordinates.append(computed_y_right)
+
+    computed_coordinates.append(obj_category)
 
     return computed_coordinates
 
@@ -39,13 +43,13 @@ def parse_pdf(PDF_path, TEX_Path):
     images_counter = 0
     images_coordinates = []
 
-    list_id = 0
-    current_list = 1
-    current_list_items = []
     lists_coordinates = []
 
 
     tables_coordinates = []
+
+    all_objects_coordinates = []
+
     #FIRST PHASE: GENERATE IMAGES TO BE ANNOTATED AND EXTRACT ALL TEX ISTANCES INSIDE TEX FILE
     generate_images(PDF_path, filename)
     tex_instances = find_tex_istances(TEX_Path)
@@ -94,7 +98,7 @@ def parse_pdf(PDF_path, TEX_Path):
                             titles_counter += 1
                             titles_found = True
                             # print('Title num: ', titles_counter, pdf_line_result)
-                            titles_coordinates.append(calculate_object_coordinates(page_counter, lines[i].bbox, page_length))
+                            titles_coordinates.append(calculate_object_coordinates(page_counter, lines[i].bbox, page_length, instance[0]))
 
                 for i in range(len(lines)):
                     pdf_line_result = lines[i].get_text().split('\n')[0].lower()
@@ -103,7 +107,7 @@ def parse_pdf(PDF_path, TEX_Path):
                     for instance in tex_instances[2]:
                         tex_list_item = instance[3]
                         if are_similar(tex_list_item[0:50], pdf_line_result[0:50]) and pdf_line_result != '':
-                            lists_coordinates.append(calculate_object_coordinates(page_counter, lines[i].bbox, page_length))
+                            lists_coordinates.append(calculate_object_coordinates(page_counter, lines[i].bbox, page_length, instance[0]))
 
             #FIGURES
             elif isinstance(x, LTImage) or isinstance(x, LTFigure):
@@ -112,15 +116,27 @@ def parse_pdf(PDF_path, TEX_Path):
                   pass
               else:
                   images_counter += 1
-                  images_coordinates.append(calculate_object_coordinates(page_counter, x.bbox, page_length))
+                  images_coordinates.append(calculate_object_coordinates(page_counter, x.bbox, page_length, 2))
 
             elif isinstance(x, LTLine):
                 if (x.height == 0 and x.width < 30) or (x.height < 30 and x.width == 0) :
                     pass
                 else:
-                    tables_coordinates.append(calculate_object_coordinates(page_counter,x.bbox, page_length))
+                    tables_coordinates.append(calculate_object_coordinates(page_counter,x.bbox, page_length, 4))
 
     if len(titles_coordinates) != 0: annotate_img(filename, titles_coordinates, titles_coordinates[0][0], (0,0,255))
     if len(images_coordinates) != 0: annotate_img(filename, images_coordinates, images_coordinates[0][0], (0,255,0))
     if len(lists_coordinates) != 0 : annotate_img(filename, lists_coordinates, lists_coordinates[0][0], (255,0,0))
     if len(tables_coordinates) !=0 : annotate_img(filename, tables_coordinates, tables_coordinates[0][0], (230, 255, 102))
+
+    all_objects_coordinates.extend(titles_coordinates)
+    all_objects_coordinates.extend(images_coordinates)
+    all_objects_coordinates.extend(lists_coordinates)
+    all_objects_coordinates.extend(tables_coordinates)
+    all_objects_coordinates = sorted(all_objects_coordinates, key = itemgetter(0))
+    print(all_objects_coordinates)
+
+
+
+
+parse_pdf('pdf_files/1901.0423.pdf', 'tex_files/1901.0423_tex_files')

@@ -194,9 +194,9 @@ def find_tex_istances(path):
                         item_counter = 0
 
                 # SAVE ALL OBJECTS AND RETURN
-                all_tex_objects.append(all_titles)  # TITLES     0
-                all_tex_objects.append(all_figures)  # FIGURES    1
-                all_tex_objects.append(all_lists)  # LISTS      2
-                all_tex_objects.append(all_tables)  # TABLES     3
+                all_tex_objects.append(all_titles)  # TITLES     1
+                all_tex_objects.append(all_figures)  # FIGURES    2
+                all_tex_objects.append(all_lists)  # LISTS      3
+                all_tex_objects.append(all_tables)  # TABLES     4
 
     return all_tex_objects
