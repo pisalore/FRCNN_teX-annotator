@@ -36,6 +36,7 @@ def calculate_object_coordinates(page_counter, bbox, document_length, obj_catego
 def extract_tables_coordinates(tables_coordinates):
     tmp_extracted_tables_coordinates = []
     extracted_tables_coordinates = []
+    added_table_ids = []
     current_page = 1
     current_width = 0
     table_id = 0
@@ -57,7 +58,6 @@ def extract_tables_coordinates(tables_coordinates):
             table_id += 1
 
     for i in range(len(tmp_extracted_tables_coordinates)):
-        added_table_ids = []
         table_id = tmp_extracted_tables_coordinates[i][6]
         page = tmp_extracted_tables_coordinates[i][0]
         table_xmin = []
@@ -65,14 +65,15 @@ def extract_tables_coordinates(tables_coordinates):
         table_xmax = []
         table_ymax = []
         for line in tmp_extracted_tables_coordinates:
-            if line[6] == table_id and not(line[6] in added_table_ids):
+            if line[6] == table_id and (line[6] not in added_table_ids):
                 table_xmin.append(line[1])
                 table_ymin.append(line[2])
                 table_xmax.append(line[3])
                 table_ymax.append(line[4])
-        table_to_add = [page, min(table_xmin), min(table_ymin), max(table_xmax), max(table_ymax), 4]
-        extracted_tables_coordinates.append(table_to_add)
-        added_table_ids.append(table_id)
+        if table_xmin and table_ymin and table_xmax and table_ymax:
+            table_to_add = [page, min(table_xmin), min(table_ymin), max(table_xmax), max(table_ymax), 4]
+            extracted_tables_coordinates.append(table_to_add)
+            added_table_ids.append(table_id)
 
 
     return extracted_tables_coordinates
