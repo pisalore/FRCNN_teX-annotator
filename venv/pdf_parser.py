@@ -43,11 +43,12 @@ def extract_tables_coordinates(tables_coordinates):
             current_page = line[0]
             current_width = 0
         if current_width == 0:
-            current_width = line[4] - line[1]
+            current_width = line[3] - line[1]
             extracted_tables_coordinates.append(line)
-        elif abs(current_width - (line[4] - line[1])) <= 1:
+        elif abs(current_width - (line[3] - line[1])) <= 1:
             extracted_tables_coordinates.append(line)
-
+        else:
+            current_width = line[3] - line[1]
 
     return extracted_tables_coordinates
 
@@ -142,13 +143,13 @@ def parse_pdf(PDF_path, TEX_Path):
                 else:
                     tables_coordinates.append(calculate_object_coordinates(page_counter, x.bbox, page_length, 4))
 
-    tables_coordinates_prova = extract_tables_coordinates(tables_coordinates)
+    extracted_tables_coordinates = extract_tables_coordinates(tables_coordinates)
 
 
     if len(titles_coordinates) != 0: annotate_img(filename, titles_coordinates, titles_coordinates[0][0], (0,0,255))
     if len(images_coordinates) != 0: annotate_img(filename, images_coordinates, images_coordinates[0][0], (0,255,0))
     if len(lists_coordinates) != 0 : annotate_img(filename, lists_coordinates, lists_coordinates[0][0], (255,0,0))
-    if len(tables_coordinates) !=0 : annotate_img(filename, tables_coordinates, tables_coordinates[0][0], (230, 255, 102))
+    if len(extracted_tables_coordinates) !=0 : annotate_img(filename, tables_coordinates, tables_coordinates[0][0], (230, 255, 102))
 
     all_objects_coordinates.extend(titles_coordinates)
     all_objects_coordinates.extend(images_coordinates)
