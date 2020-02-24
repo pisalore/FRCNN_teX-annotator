@@ -21,7 +21,3 @@ def annotate_img(filename, coordinates, first_page, color):
         img = cv2.rectangle(img, start_point, end_point, color, 3)
         path = file_path + str(current_page) + '.png'
         cv2.imwrite(path, img)
-
-
-    # cv2.imshow('image', img)
-    # cv2.waitKey(0)

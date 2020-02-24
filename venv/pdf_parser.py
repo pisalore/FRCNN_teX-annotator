@@ -1,3 +1,4 @@
+import os.path
 from pdfminer.layout import LAParams
 from pdfminer.layout import LTTextBoxHorizontal, LTFigure, LTImage, LTLine, LTRect
 from pdfminer.pdfpage import PDFPage
@@ -5,7 +6,6 @@ from pdfminer.converter import PDFPageAggregator
 from pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter
 from pdfminer.pdfparser import PDFParser
 from pdfminer.pdfdocument import PDFDocument, PDFTextExtractionNotAllowed
-import os.path
 from pdf2image_converter import generate_images
 from tex_parser import find_tex_istances
 from images_annotator import annotate_img
@@ -32,6 +32,24 @@ def calculate_object_coordinates(page_counter, bbox, document_length, obj_catego
     computed_coordinates.append(obj_category)
 
     return computed_coordinates
+
+def extract_tables_coordinates(tables_coordinates):
+    extracted_tables_coordinates = []
+    current_page = 1
+    current_width = 0
+
+    for line in tables_coordinates:
+        if line[0] != current_page:
+            current_page = line[0]
+            current_width = 0
+        if current_width == 0:
+            current_width = line[4] - line[1]
+            extracted_tables_coordinates.append(line)
+        elif abs(current_width - (line[4] - line[1])) <= 1:
+            extracted_tables_coordinates.append(line)
+
+
+    return extracted_tables_coordinates
 
 def parse_pdf(PDF_path, TEX_Path):
     filename = os.path.basename(PDF_path).split('.pdf')[0]
@@ -119,10 +137,13 @@ def parse_pdf(PDF_path, TEX_Path):
                   images_coordinates.append(calculate_object_coordinates(page_counter, x.bbox, page_length, 2))
 
             elif isinstance(x, LTLine):
-                if (x.height == 0 and x.width < 30) or (x.height < 30 and x.width == 0) :
+                if (x.height == 0 and x.width < 30) or x.width <= 0 :
                     pass
                 else:
-                    tables_coordinates.append(calculate_object_coordinates(page_counter,x.bbox, page_length, 4))
+                    tables_coordinates.append(calculate_object_coordinates(page_counter, x.bbox, page_length, 4))
+
+    tables_coordinates_prova = extract_tables_coordinates(tables_coordinates)
+
 
     if len(titles_coordinates) != 0: annotate_img(filename, titles_coordinates, titles_coordinates[0][0], (0,0,255))
     if len(images_coordinates) != 0: annotate_img(filename, images_coordinates, images_coordinates[0][0], (0,255,0))
@@ -139,4 +160,4 @@ def parse_pdf(PDF_path, TEX_Path):
 
 
 
-parse_pdf('pdf_files/1901.0423.pdf', 'tex_files/1901.0423_tex_files')
+parse_pdf('pdf_files/1901.0401.pdf', 'tex_files/1901.0401_tex_files')
