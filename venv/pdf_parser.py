@@ -83,6 +83,7 @@ def extract_lists_coordinates(items_coordinates):
     if items_num:
         list_found = False
         is_last = False
+        are_adjacent = False
         counter = 0
         extracted_lists_coordinates = []
         current_page = items_coordinates[0][0]
@@ -93,7 +94,9 @@ def extract_lists_coordinates(items_coordinates):
             if counter == items_num - 1:
                 is_last = True
             if item[0] == current_page:
-                if abs(y_p2 - item[2]) <= 80:
+                if y_p2 >= item[2]:
+                    are_adjacent = True
+                if abs(y_p2 - item[2]) <= 80 and not are_adjacent:
                     x_p2 = item[1]
                     y_p2 = item[2]
                 else:
@@ -108,6 +111,7 @@ def extract_lists_coordinates(items_coordinates):
                 x_p2, y_p2 = item[1], item[2]
                 x_p1, y_p1 = item[3], item[4]
                 list_found = False
+                are_adjacent = False
         return extracted_lists_coordinates
 
 
