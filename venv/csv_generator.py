@@ -6,7 +6,7 @@ def generate_csv_annotations(csv_filename, file_id, detected_objects):
         with open(csv_filename + '.csv', 'w') as csvfile:
             filewriter = csv.writer(csvfile, delimiter=',',
                                 quotechar='|', quoting=csv.QUOTE_MINIMAL)
-            filewriter.writerow(['Images_name', 'paper_category', 'x_min', 'x_max', 'y_min', 'y_max'])
+            filewriter.writerow(['images_name', 'paper_category', 'x_min', 'x_max', 'y_min', 'y_max'])
 
             for object in detected_objects:
                 image_name = file_id + '_' + str(object[0]) + '.png'
