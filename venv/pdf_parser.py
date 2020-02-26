@@ -33,6 +33,23 @@ def calculate_object_coordinates(page_counter, bbox, document_length, obj_catego
 
     return computed_coordinates
 
+def clean_Tables(tmp_extracted_tables_coordinates):
+    table_id = 0
+    lines_counter = 0
+    selected_line = tmp_extracted_tables_coordinates[0]
+    lines_to_be_removed = []
+    for line in tmp_extracted_tables_coordinates:
+        if table_id == line[-1]:
+            lines_counter +=1
+        elif lines_counter <= 1:
+            lines_to_be_removed.append(selected_line)
+            lines_counter = 0
+        else:
+            lines_counter = 0
+        table_id = line[-1]
+        selected_line = line
+    return tmp_extracted_tables_coordinates
+
 def extract_tables_coordinates(tables_coordinates):
     tmp_extracted_tables_coordinates = []
     extracted_tables_coordinates = []
@@ -56,7 +73,7 @@ def extract_tables_coordinates(tables_coordinates):
         else:
             current_width = line[3] - line[1]
             table_id += 1
-
+    tmp_extracted_tables_coordinates = clean_Tables(tmp_extracted_tables_coordinates)
     for i in range(len(tmp_extracted_tables_coordinates)):
         table_id = tmp_extracted_tables_coordinates[i][6]
         page = tmp_extracted_tables_coordinates[i][0]
@@ -74,7 +91,6 @@ def extract_tables_coordinates(tables_coordinates):
             table_to_add = [page, min(table_xmin), max(table_ymax), max(table_xmax), min(table_ymin), 4]
             extracted_tables_coordinates.append(table_to_add)
             added_table_ids.append(table_id)
-
 
     return extracted_tables_coordinates
 
