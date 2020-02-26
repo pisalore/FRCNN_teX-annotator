@@ -1,6 +1,7 @@
-import pdf_parser
 import glob
 import os
+from pdf_parser import parse_pdf
+from csv_generator import generate_csv_annotations
 
 PDF_FILES = 'pdf_files/'
 TEX_FILES = 'tex_files/'
@@ -11,7 +12,9 @@ def main():
         tex_file_path = TEX_FILES + file_id + '_tex_files'
         if(os.path.exists(tex_file_path)):
             print('\nParsing ' + pdf_file_path +'...')
-            pdf_parser.parse_pdf(pdf_file_path, tex_file_path)
+            detected_objects = parse_pdf(pdf_file_path, tex_file_path)
+            generate_csv_annotations('prova', detected_objects)
+
 
 if __name__ == "__main__":
     main()
