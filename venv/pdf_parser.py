@@ -78,6 +78,39 @@ def extract_tables_coordinates(tables_coordinates):
 
     return extracted_tables_coordinates
 
+def extract_lists_coordinates(items_coordinates):
+    items_num = len(items_coordinates)
+    if items_num:
+        list_found = False
+        is_last = False
+        counter = 0
+        extracted_lists_coordinates = []
+        current_page = items_coordinates[0][0]
+        x_p2, y_p2 = items_coordinates[0][1], items_coordinates[0][2]
+        x_p1, y_p1 = items_coordinates[0][3], items_coordinates[0][4]
+        for item in items_coordinates[1:]:
+            counter += 1
+            if counter == items_num - 1:
+                is_last = True
+            if item[0] == current_page:
+                if abs(y_p1 - item[4]) <= 80:
+                    x_p2 = item[1]
+                    y_p2 = item[2]
+                else:
+                    list_found = True
+            else:
+                list_found = True
+
+            if list_found or is_last:
+                list_to_add = [current_page, x_p1, y_p1, x_p2, y_p2, 3]
+                extracted_lists_coordinates.append(list_to_add)
+                current_page = item[0]
+                x_p2, y_p2 = item[1], item[2]
+                x_p1, y_p1 = item[3], item[4]
+                list_found = False
+        return extracted_lists_coordinates
+
+
 def parse_pdf(PDF_path, TEX_Path):
     filename = os.path.basename(PDF_path).split('.pdf')[0]
 
@@ -170,11 +203,12 @@ def parse_pdf(PDF_path, TEX_Path):
                     tables_coordinates.append(calculate_object_coordinates(page_counter, x.bbox, page_length, 4))
 
     extracted_tables_coordinates = extract_tables_coordinates(tables_coordinates)
+    extracted_lists_coordinates = extract_lists_coordinates(lists_coordinates)
 
 
     if len(titles_coordinates) != 0: annotate_img(filename, titles_coordinates, titles_coordinates[0][0], (0,0,255))
     if len(images_coordinates) != 0: annotate_img(filename, images_coordinates, images_coordinates[0][0], (0,255,0))
-    if len(lists_coordinates) != 0 : annotate_img(filename, lists_coordinates, lists_coordinates[0][0], (255,0,0))
+    if len(extracted_lists_coordinates) != 0 : annotate_img(filename, extracted_lists_coordinates, extracted_lists_coordinates[0][0], (255,0,0))
     if len(extracted_tables_coordinates) !=0 : annotate_img(filename, extracted_tables_coordinates,
                                                             extracted_tables_coordinates[0][0], (230, 255, 102))
 
