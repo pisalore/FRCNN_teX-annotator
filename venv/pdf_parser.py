@@ -93,7 +93,7 @@ def extract_lists_coordinates(items_coordinates):
             if counter == items_num - 1:
                 is_last = True
             if item[0] == current_page:
-                if abs(y_p1 - item[4]) <= 80:
+                if abs(y_p2 - item[2]) <= 80:
                     x_p2 = item[1]
                     y_p2 = item[2]
                 else:
