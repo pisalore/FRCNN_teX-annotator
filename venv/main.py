@@ -13,7 +13,7 @@ def main():
         if(os.path.exists(tex_file_path)):
             print('\nParsing ' + pdf_file_path +'...')
             detected_objects = parse_pdf(pdf_file_path, tex_file_path)
-            generate_csv_annotations('prova', detected_objects)
+            generate_csv_annotations('train_images', file_id, detected_objects)
 
 
 if __name__ == "__main__":

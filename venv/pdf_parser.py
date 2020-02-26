@@ -92,7 +92,7 @@ def extract_tables_coordinates(tables_coordinates):
                     table_xmax.append(line[3])
                     table_ymax.append(line[4])
             if table_xmin and table_ymin and table_xmax and table_ymax:
-                table_to_add = [page, min(table_xmin), max(table_ymax), max(table_xmax), min(table_ymin), 4]
+                table_to_add = [page, min(table_xmin), max(table_ymax), max(table_xmax), min(table_ymin), 'table']
                 extracted_tables_coordinates.append(table_to_add)
                 added_table_ids.append(table_id)
 
@@ -125,7 +125,7 @@ def extract_lists_coordinates(items_coordinates):
                 list_found = True
 
             if list_found or is_last:
-                list_to_add = [current_page, x_p2, y_p2, x_p1, y_p1, 3]
+                list_to_add = [current_page, x_p2, y_p2, x_p1, y_p1, 'list']
                 extracted_lists_coordinates.append(list_to_add)
                 current_page = item[0]
                 x_p2, y_p2 = item[1], item[2]
@@ -195,7 +195,7 @@ def parse_pdf(PDF_path, TEX_Path):
                         if are_similar(tex_title, pdf_line_result) and pdf_line_result != '':
                             titles_counter += 1
                             # print('Title num: ', titles_counter, pdf_line_result)
-                            titles_coordinates.append(calculate_object_coordinates(page_counter, lines[i].bbox, page_length, instance[0]))
+                            titles_coordinates.append(calculate_object_coordinates(page_counter, lines[i].bbox, page_length, 'title'))
                 lines_counter = 0
                 for i in range(len(lines)):
                     pdf_line_result = lines[i].get_text().split('\n')[0].lower()
@@ -204,9 +204,9 @@ def parse_pdf(PDF_path, TEX_Path):
                     for instance in tex_instances[2]:
                         tex_list_item = instance[3]
                         if are_similar(tex_list_item[0:50], pdf_line_result[0:50]) and pdf_line_result != '':
-                            lists_coordinates.append(calculate_object_coordinates(page_counter, lines[i].bbox, page_length, instance[0]))
+                            lists_coordinates.append(calculate_object_coordinates(page_counter, lines[i].bbox, page_length, 'list'))
                         elif lines_counter > 2:
-                            text_coordinates.append(calculate_object_coordinates(page_counter, lines[i].bbox, page_length, 5))
+                            text_coordinates.append(calculate_object_coordinates(page_counter, lines[i].bbox, page_length, 'text'))
                         lines_counter += 1
 
 
@@ -217,13 +217,13 @@ def parse_pdf(PDF_path, TEX_Path):
                   pass
               else:
                   images_counter += 1
-                  images_coordinates.append(calculate_object_coordinates(page_counter, x.bbox, page_length, 2))
+                  images_coordinates.append(calculate_object_coordinates(page_counter, x.bbox, page_length, 'image'))
 
             elif isinstance(x, LTLine):
                 if (x.height == 0 and x.width < 30) or x.width <= 0 :
                     pass
                 else:
-                    tables_coordinates.append(calculate_object_coordinates(page_counter, x.bbox, page_length, 4))
+                    tables_coordinates.append(calculate_object_coordinates(page_counter, x.bbox, page_length, 'table'))
 
     extracted_tables_coordinates = extract_tables_coordinates(tables_coordinates)
     extracted_lists_coordinates = extract_lists_coordinates(lists_coordinates)
@@ -241,6 +241,6 @@ def parse_pdf(PDF_path, TEX_Path):
     all_objects_coordinates = sorted(all_objects_coordinates, key = itemgetter(0))
 
     return all_objects_coordinates
-#
-# detected_objects = parse_pdf('pdf_files/1901.0401.pdf', 'tex_files/1901.0401_tex_files')
-# generate_csv_annotations('prova', '1', detected_objects)
+
+detected_objects = parse_pdf('pdf_files/1901.0401.pdf', 'tex_files/1901.0401_tex_files')
+generate_csv_annotations('train', '1901.0401', detected_objects)
