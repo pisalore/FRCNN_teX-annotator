@@ -8,6 +8,7 @@ def parse_args():
                                                      ' downloading papers from arXIv. Default 1(janaury)')
     parser.add_argument('--counter', default='0', help='Choose the starting file counter. With 0 you will download all files'
                                                        ' from the year and the month specified.Default 0.')
+    parser.add_argument('--max_items', default='1', help='Chose how many files you will download')
 
     args = parser.parse_args()
     return args

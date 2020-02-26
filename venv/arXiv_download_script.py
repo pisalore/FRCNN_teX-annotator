@@ -19,15 +19,22 @@ args = parse_args()
 pdf_files_path = 'pdf_files/'
 tex_files_path = 'tex_files/'
 
+if not os.path.exists(pdf_files_path):
+    os.mkdir(pdf_files_path)
+if not os.path.exists(tex_files_path):
+    os.mkdir(tex_files_path)
+
 pdf_download_url = 'https://arxiv.org/pdf/'
 source_download_url = 'https://arxiv.org/e-print/'
 year = int(args.year)
 month = int(args.month)
 file_counter = int(args.counter)
+max_items = int(args.max_items)
 file_identifier = ''
-
-while year <=20:
+num_downloaded_files = 1
+while num_downloaded_files <= max_items:
     file_counter += 1
+    num_downloaded_files += 1
     if len(str(month)) == 1:
         file_identifier =  str(year) + '0' +str(month)
     else:
