@@ -38,70 +38,74 @@ def clean_Tables(tmp_extracted_tables_coordinates):
     lines_counter = 0
     selected_line = tmp_extracted_tables_coordinates[0]
     lines_to_be_removed = []
-    for line in tmp_extracted_tables_coordinates:
+    for line in tmp_extracted_tables_coordinates[1:]:
         if table_id == line[-1]:
             lines_counter +=1
         elif lines_counter <= 1:
             lines_to_be_removed.append(selected_line)
-            lines_counter = 0
+            lines_counter = 1
         else:
-            lines_counter = 0
+            lines_counter = 1
         table_id = line[-1]
         selected_line = line
+
+    for line_to_be_removed in lines_to_be_removed:
+        tmp_extracted_tables_coordinates.remove(line_to_be_removed)
     return tmp_extracted_tables_coordinates
 
 def extract_tables_coordinates(tables_coordinates):
-    tmp_extracted_tables_coordinates = []
     extracted_tables_coordinates = []
-    added_table_ids = []
-    current_page = 1
-    current_width = 0
-    table_id = 0
+    if(len(tables_coordinates)):
+        tmp_extracted_tables_coordinates = []
+        added_table_ids = []
+        current_page = 1
+        current_width = 0
+        table_id = 0
 
-    for line in tables_coordinates:
-        if line[0] != current_page:
-            current_page = line[0]
-            current_width = 0
-            table_id += 1
-        if current_width == 0:
-            current_width = line[3] - line[1]
-            line.append(table_id)
-            tmp_extracted_tables_coordinates.append(line)
-        elif abs(current_width - (line[3] - line[1])) <= 1:
-            line.append(table_id)
-            tmp_extracted_tables_coordinates.append(line)
-        else:
-            current_width = line[3] - line[1]
-            table_id += 1
-    tmp_extracted_tables_coordinates = clean_Tables(tmp_extracted_tables_coordinates)
-    for i in range(len(tmp_extracted_tables_coordinates)):
-        table_id = tmp_extracted_tables_coordinates[i][6]
-        page = tmp_extracted_tables_coordinates[i][0]
-        table_xmin = []
-        table_ymin = []
-        table_xmax = []
-        table_ymax = []
-        for line in tmp_extracted_tables_coordinates:
-            if line[6] == table_id and (line[6] not in added_table_ids):
-                table_xmin.append(line[1])
-                table_ymin.append(line[2])
-                table_xmax.append(line[3])
-                table_ymax.append(line[4])
-        if table_xmin and table_ymin and table_xmax and table_ymax:
-            table_to_add = [page, min(table_xmin), max(table_ymax), max(table_xmax), min(table_ymin), 4]
-            extracted_tables_coordinates.append(table_to_add)
-            added_table_ids.append(table_id)
+        for line in tables_coordinates:
+            if line[0] != current_page:
+                current_page = line[0]
+                current_width = 0
+                table_id += 1
+            if current_width == 0:
+                current_width = line[3] - line[1]
+                line.append(table_id)
+                tmp_extracted_tables_coordinates.append(line)
+            elif abs(current_width - (line[3] - line[1])) <= 1:
+                line.append(table_id)
+                tmp_extracted_tables_coordinates.append(line)
+            else:
+                current_width = line[3] - line[1]
+                table_id += 1
+        tmp_extracted_tables_coordinates = clean_Tables(tmp_extracted_tables_coordinates)
+        for i in range(len(tmp_extracted_tables_coordinates)):
+            table_id = tmp_extracted_tables_coordinates[i][6]
+            page = tmp_extracted_tables_coordinates[i][0]
+            table_xmin = []
+            table_ymin = []
+            table_xmax = []
+            table_ymax = []
+            for line in tmp_extracted_tables_coordinates:
+                if line[6] == table_id and (line[6] not in added_table_ids):
+                    table_xmin.append(line[1])
+                    table_ymin.append(line[2])
+                    table_xmax.append(line[3])
+                    table_ymax.append(line[4])
+            if table_xmin and table_ymin and table_xmax and table_ymax:
+                table_to_add = [page, min(table_xmin), max(table_ymax), max(table_xmax), min(table_ymin), 4]
+                extracted_tables_coordinates.append(table_to_add)
+                added_table_ids.append(table_id)
 
     return extracted_tables_coordinates
 
 def extract_lists_coordinates(items_coordinates):
     items_num = len(items_coordinates)
+    extracted_lists_coordinates = []
     if items_num:
         list_found = False
         is_last = False
         are_adjacent = False
         counter = 0
-        extracted_lists_coordinates = []
         current_page = items_coordinates[0][0]
         x_p2, y_p2 = items_coordinates[0][1], items_coordinates[0][2]
         x_p1, y_p1 = items_coordinates[0][3], items_coordinates[0][4]
@@ -128,7 +132,8 @@ def extract_lists_coordinates(items_coordinates):
                 x_p1, y_p1 = item[3], item[4]
                 list_found = False
                 are_adjacent = False
-        return extracted_lists_coordinates
+
+    return extracted_lists_coordinates
 
 
 def parse_pdf(PDF_path, TEX_Path):
@@ -239,4 +244,4 @@ def parse_pdf(PDF_path, TEX_Path):
     all_objects_coordinates = sorted(all_objects_coordinates, key = itemgetter(0))
     print(all_objects_coordinates)
 
-parse_pdf('pdf_files/1901.0401.pdf', 'tex_files/1901.0401_tex_files')
+parse_pdf('pdf_files/1901.0430.pdf', 'tex_files/1901.0430_tex_files')
