@@ -223,7 +223,4 @@ def parse_pdf(PDF_path, TEX_Path):
     all_objects_coordinates = sorted(all_objects_coordinates, key = itemgetter(0))
     print(all_objects_coordinates)
 
-
-
-
-parse_pdf('pdf_files/1901.0401.pdf', 'tex_files/1901.0401_tex_files')
+# parse_pdf('pdf_files/test.pdf', 'tex_files/test')
