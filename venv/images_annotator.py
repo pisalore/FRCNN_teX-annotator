@@ -1,6 +1,6 @@
 import cv2
 
-def annotate_img(filename, coordinates, first_page, color):
+def annotate_img(filename, coordinates, first_page, color, thickness):
     current_page = first_page
     save_directory = filename + '_annotated_images/'
     file_path = 'png_files/' + save_directory + filename + '_'
@@ -18,6 +18,6 @@ def annotate_img(filename, coordinates, first_page, color):
         end_point.append(int(coordinates[i][4]))
         start_point = tuple(start_point)
         end_point = tuple(end_point)
-        img = cv2.rectangle(img, start_point, end_point, color, 3)
+        img = cv2.rectangle(img, start_point, end_point, color, thickness=thickness)
         path = file_path + str(current_page) + '.png'
         cv2.imwrite(path, img)
