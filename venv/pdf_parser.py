@@ -71,7 +71,7 @@ def extract_tables_coordinates(tables_coordinates):
                 table_xmax.append(line[3])
                 table_ymax.append(line[4])
         if table_xmin and table_ymin and table_xmax and table_ymax:
-            table_to_add = [page, min(table_xmin), min(table_ymin), max(table_xmax), max(table_ymax), 4]
+            table_to_add = [page, min(table_xmin), max(table_ymax), max(table_xmax), min(table_ymin), 4]
             extracted_tables_coordinates.append(table_to_add)
             added_table_ids.append(table_id)
 
@@ -105,7 +105,7 @@ def extract_lists_coordinates(items_coordinates):
                 list_found = True
 
             if list_found or is_last:
-                list_to_add = [current_page, x_p1, y_p1, x_p2, y_p2, 3]
+                list_to_add = [current_page, x_p2, y_p2, x_p1, y_p1, 3]
                 extracted_lists_coordinates.append(list_to_add)
                 current_page = item[0]
                 x_p2, y_p2 = item[1], item[2]
@@ -218,9 +218,9 @@ def parse_pdf(PDF_path, TEX_Path):
 
     all_objects_coordinates.extend(titles_coordinates)
     all_objects_coordinates.extend(images_coordinates)
-    all_objects_coordinates.extend(lists_coordinates)
-    all_objects_coordinates.extend(tables_coordinates)
+    all_objects_coordinates.extend(extracted_lists_coordinates)
+    all_objects_coordinates.extend(extracted_tables_coordinates)
     all_objects_coordinates = sorted(all_objects_coordinates, key = itemgetter(0))
     print(all_objects_coordinates)
 
-# parse_pdf('pdf_files/test.pdf', 'tex_files/test')
+parse_pdf('pdf_files/1901.0401.pdf', 'tex_files/1901.0401_tex_files')
