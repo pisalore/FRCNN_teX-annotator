@@ -2,7 +2,7 @@ import urllib.request
 import urllib.error
 import os
 import tarfile
-from utils import parse_args
+from utils import download_script_parse_args
 
 def check_next_paper(file_identifier):
     p1 = file_identifier.split('.')[0]
@@ -14,7 +14,7 @@ def check_next_paper(file_identifier):
         return False
     return True
 
-args = parse_args()
+args = download_script_parse_args()
 
 pdf_files_path = 'pdf_files/'
 tex_files_path = 'tex_files/'

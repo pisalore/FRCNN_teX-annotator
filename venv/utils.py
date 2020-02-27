@@ -1,6 +1,6 @@
 import argparse
 
-def parse_args():
+def download_script_parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('--year', default='20', help=' Choose the year from which you want to start'
                                                        ' downloading papers from arXIv. Default 20.')
