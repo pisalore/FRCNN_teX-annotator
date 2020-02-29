@@ -79,13 +79,14 @@ if year <= int(str(current_date.year)[-2:]):
                 os.rmdir(extract_tar_dir_path)
             if os.path.exists(downloaded_pdf_file_path):
                 os.remove(downloaded_pdf_file_path)
-            if num_errors == 4:
+            if num_errors == 3:
                 print(num_errors, ' encountered trying to fullfill the last request; exit.')
                 exit(-1)
             if http_error.code == 403:
                 print('Error 403: wait 3 minutes and then try again...')
-                sleep(180)
+                sleep(900)
                 file_counter -= 1
+                #urllib.request.urlcleanup()
 
             print('PDF or Source files for ' + file_identifier + ' not found. Download the next file.\n')
             if not check_next_paper(file_identifier):
