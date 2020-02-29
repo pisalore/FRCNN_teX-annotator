@@ -71,3 +71,7 @@ The most of the work is done by **PDF_parser.py**, which calls **tex_parser.py**
 3. BLUE ------------>  lists
 4. TURQUOISE ---> tables
 5. YELLOW --------> text **NOT USED IN FRCNN**.
+
+When the main termines, all is set-up for start with the fcrnn training.
+
+#### 3. Download files from arXiv.org
