@@ -27,8 +27,8 @@ if not os.path.exists(pdf_files_path):
 if not os.path.exists(tex_files_path):
     os.mkdir(tex_files_path)
 
-pdf_download_url = 'https://arxiv.org/pdf/'
-source_download_url = 'https://arxiv.org/e-print/'
+pdf_download_url = 'https://export.arxiv.org/pdf/'
+source_download_url = 'https://export.arxiv.org/e-print/'
 current_date = datetime.datetime.now()
 current_year = str(current_date.year)[-2:]
 year = int(args.year)
@@ -86,8 +86,7 @@ if year <= int(str(current_date.year)[-2:]):
                 print('Error 403: wait 15 minutes and then try again...')
                 sleep(900)
                 file_counter -= 1
-                urllib.request.urlcleanup()
-
+                # urllib.request.urlcleanup()
             print('PDF or Source files for ' + file_identifier + ' not found. Download the next file.\n')
             if not check_next_paper(file_identifier):
                 if month == 12:
