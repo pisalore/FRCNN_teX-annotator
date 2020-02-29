@@ -12,3 +12,11 @@ def download_script_parse_args():
 
     args = parser.parse_args()
     return args
+
+def pdf_parse_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--annotations', default='no', help='Choose if generate annotated images where:'
+                                                            ' red= titles; green= figures; blu= lists; aqua green= tables; yellow= text;'
+                                                            ' typing yes or no.')
+    args = parser.parse_args()
+    return args

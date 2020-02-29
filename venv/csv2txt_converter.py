@@ -1,5 +1,5 @@
 import pandas as pd
-train = pd.read_csv('train.csv')
+train = pd.read_csv('train_images.csv')
 train.head()
 data = pd.DataFrame()
 data['format'] = train['images_name']
@@ -12,4 +12,4 @@ for i in range(data.shape[0]):
 for i in range(data.shape[0]):
     data['format'][i] = data['format'][i] + ',' + str(train['x_min'][i]) + ',' + str(train['y_min'][i]) + ',' + str(train['x_max'][i]) + ',' + str(train['y_max'][i]) + ',' + train['paper_category'][i]
 
-data.to_csv('annotate.txt', header=None, index=None, sep=' ')
+data.to_csv('frcnn/annotate.txt', header=None, index=None, sep=' ')

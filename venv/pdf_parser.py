@@ -11,6 +11,7 @@ from tex_parser import find_tex_istances
 from images_annotator import annotate_img
 from difflib import SequenceMatcher
 from csv_generator import generate_csv_annotations
+from utils import pdf_parse_args
 from operator import itemgetter
 
 def are_similar(string_a, string_b):
@@ -147,6 +148,7 @@ def parse_pdf(PDF_path, TEX_Path):
     tables_coordinates = []
     text_coordinates = []
     all_objects_coordinates = []
+    with_annotations = pdf_parse_args().annotations
 
     #FIRST PHASE: GENERATE IMAGES TO BE ANNOTATED AND EXTRACT ALL TEX ISTANCES INSIDE TEX FILE
     generate_images(PDF_path, filename)
@@ -227,12 +229,13 @@ def parse_pdf(PDF_path, TEX_Path):
 
     extracted_tables_coordinates = extract_tables_coordinates(tables_coordinates)
     extracted_lists_coordinates = extract_lists_coordinates(lists_coordinates)
-
-    if len(text_coordinates) != 0: annotate_img(filename, text_coordinates, text_coordinates[0][0], (0, 255, 255), 1)
-    if len(titles_coordinates) != 0: annotate_img(filename, titles_coordinates, titles_coordinates[0][0], (0,0,255), 3)
-    if len(images_coordinates) != 0: annotate_img(filename, images_coordinates, images_coordinates[0][0], (0,255,0), 3)
-    if len(extracted_lists_coordinates) != 0 : annotate_img(filename, extracted_lists_coordinates, extracted_lists_coordinates[0][0], (255,0,0), 3)
-    if len(extracted_tables_coordinates) !=0 : annotate_img(filename, extracted_tables_coordinates, extracted_tables_coordinates[0][0], (230, 255, 102), 3)
+    if with_annotations == 'yes':
+        print('Generating annotations...')
+        if len(text_coordinates) != 0: annotate_img(filename, text_coordinates, text_coordinates[0][0], (0, 255, 255), 1)
+        if len(titles_coordinates) != 0: annotate_img(filename, titles_coordinates, titles_coordinates[0][0], (0,0,255), 3)
+        if len(images_coordinates) != 0: annotate_img(filename, images_coordinates, images_coordinates[0][0], (0,255,0), 3)
+        if len(extracted_lists_coordinates) != 0 : annotate_img(filename, extracted_lists_coordinates, extracted_lists_coordinates[0][0], (255,0,0), 3)
+        if len(extracted_tables_coordinates) !=0 : annotate_img(filename, extracted_tables_coordinates, extracted_tables_coordinates[0][0], (230, 255, 102), 3)
 
     all_objects_coordinates.extend(titles_coordinates)
     all_objects_coordinates.extend(images_coordinates)
@@ -242,5 +245,4 @@ def parse_pdf(PDF_path, TEX_Path):
 
     return all_objects_coordinates
 
-# detected_objects = parse_pdf('pdf_files/1901.0401.pdf', 'tex_files/1901.0401_tex_files')
-# generate_csv_annotations('train', '1901.0401', detected_objects)
+detected_objects = parse_pdf('pdf_files/1901.0401.pdf', 'tex_files/1901.0401_tex_files')
