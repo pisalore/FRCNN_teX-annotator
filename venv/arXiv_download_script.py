@@ -76,6 +76,8 @@ if year <= int(str(current_date.year)[-2:]):
                 os.rmdir(extract_tar_dir_path)
             if os.path.exists(downloaded_pdf_file_path):
                 os.remove(downloaded_pdf_file_path)
+            #TODO: handle various error which can be defined by the code
+            exit(-1)
             print('PDF or Source files for ' + file_identifier + ' not found. Download the next file.\n')
             if not check_next_paper(file_identifier):
                 if month == 12:
