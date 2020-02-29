@@ -119,3 +119,12 @@ This command will start training which will generate an h5 model, that is the in
 python3 test_frcnn.py -p ../test_images
 ```
 The **test** procedure will outputs the **annotated test images** basing on the training task results.
+
+#### 5. Requirements
+The dipendencies required for this project are listed inside **requirements.txt**; you should simply open a shell and
+use ***pip3** running:
+
+```
+pip3 install -r requirements.txt
+```
+For this project I used Python **3.7**
