@@ -83,7 +83,7 @@ if year <= int(str(current_date.year)[-2:]):
                 print(num_errors, ' encountered trying to fullfill the last request; exit.')
                 exit(-1)
             if http_error.code == 403:
-                print('Error 403: wait 3 minutes and then try again...')
+                print('Error 403: wait 15 minutes and then try again...')
                 sleep(900)
                 file_counter -= 1
                 #urllib.request.urlcleanup()
