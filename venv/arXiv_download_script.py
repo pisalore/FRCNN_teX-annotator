@@ -78,6 +78,7 @@ if year <= int(str(current_date.year)[-2:]):
             if os.path.exists(downloaded_pdf_file_path):
                 os.remove(downloaded_pdf_file_path)
             if http_error.code == 403:
+                print('Error 403: wait 3 minutes and then try again...')
                 sleep(180)
                 file_counter -= 1
             else:
