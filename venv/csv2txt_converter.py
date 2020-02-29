@@ -4,6 +4,7 @@ from utils import csv_converter_args
 csv_filename = csv_converter_args().filename
 train = pd.read_csv(csv_filename)
 train.head()
+
 data = pd.DataFrame()
 data['format'] = train['images_name']
 # as the images are in train_images folder, add train_images before the image name
