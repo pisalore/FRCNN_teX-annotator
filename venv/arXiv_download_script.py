@@ -69,7 +69,7 @@ if year <= int(str(current_date.year)[-2:]):
                     os.remove(downloaded_source_file_path)
                 print('Files succesfully downloaded. \n')
         except urllib.error.HTTPError :
-            print('404: Not Foud. The requested paper does not exist. Error code: ', urllib.error.HTTPError.code)
+            print(urllib.error.HTTPError.code, '. The requested paper does not exist or there are some problems with the internet connection.')
             if os.path.exists(downloaded_source_file_path):
                 os.remove(downloaded_source_file_path)
             if os.path.exists(extract_tar_dir_path):
