@@ -49,6 +49,7 @@ to the **frcnn**.
 
 The main.py can be launched from shell. There are two optioned commands: 
 ```
+python3 main.py --help
 usage: main.py [-h] [--csv_file_path CSV_FILE_PATH]
                [--annotations ANNOTATIONS]
 
@@ -75,3 +76,27 @@ The most of the work is done by **PDF_parser.py**, which calls **tex_parser.py**
 When the main termines, all is set-up for start with the fcrnn training.
 
 #### 3. Download files from arXiv.org
+The PDF and teX files are downloaded thanks to **the arXiv_download_script.py**. This script has to be launched before 
+the main one because it creates **PDF_files** and **TEX_files** populating them (unless you don't have >10K pdf and related
+teX).
+**arXiv_download_script.py** can be launched from bash; there are some optional commands:
+```
+python3 arXiv_download_script.py --h
+usage: arXiv_download_script.py [-h] [--year YEAR] [--month MONTH]
+                                [--counter COUNTER] [--max_items MAX_ITEMS]
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --year YEAR           Choose the year from which you want to start
+                        downloading papers from arXIv. Default 20.
+  --month MONTH         Choose the month, once you have choseh the year, from
+                        which you want to start downloading papers from arXIv.
+                        Default 1(janaury)
+  --counter COUNTER     Choose the starting file counter. With 0 you will
+                        download all files from the year and the month
+                        specified.Default 0.
+  --max_items MAX_ITEMS
+                        Chose how many files you will download
+
+```
+These commands take into accounts how papers are saved on arXiv.org.
