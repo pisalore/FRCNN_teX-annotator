@@ -27,4 +27,20 @@ detected_object = [page, x_min, x_max, y_min, y_max, object_category]
 * **object_category**: the object category
 
 These are used for ***annotations***: a summary *images_annotations.csv* file, from which is obtained a .txt file
-used to indicate to ne **Faster RCNN** the training images.
+used to indicate to the **Faster RCNN** the training images. The test images are produced during the main program runs.
+
+PDF files and their source files (lateX) have been downloaded from [arXiv.org](https://arxiv.org/); there were not
+document layout distinctions in downloading files. 
+
+#### 2. Project structure
+
+The scripts projects are organized as follows:
+```
+main.py
+```
+It's the **main**, and do the following operations:
+* It divides train and test images, parsing TEX and PDF files, which are stored in *PDF_files* and *TEX_files*
+ directories respectively. The **90%** of pdf files will generates **train images**, the rest **10%** the **test images** ones.
+* It does **parsing** tasks and **retrievs objects coordinates**.
+* It generates the ***annotations_images.csv** and ***annotated_train_images.txt***; this one will be given in input
+to the **frcnn**.
