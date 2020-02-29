@@ -60,6 +60,7 @@ if year <= int(str(current_date.year)[-2:]):
         extract_tar_dir_path = tex_files_path + file_identifier + '_tex_files'
         downloaded_source_file_path = extract_tar_dir_path + file_identifier + ".tar"
         try:
+            sleep(2)
             urllib.request.urlretrieve(pdf_download_url + file_identifier, downloaded_pdf_file_path)
             if os.path.exists(downloaded_pdf_file_path):
                 os.mkdir(extract_tar_dir_path)
