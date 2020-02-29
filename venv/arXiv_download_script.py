@@ -86,7 +86,7 @@ if year <= int(str(current_date.year)[-2:]):
                 print('Error 403: wait 15 minutes and then try again...')
                 sleep(900)
                 file_counter -= 1
-                #urllib.request.urlcleanup()
+                urllib.request.urlcleanup()
 
             print('PDF or Source files for ' + file_identifier + ' not found. Download the next file.\n')
             if not check_next_paper(file_identifier):
@@ -105,6 +105,7 @@ if year <= int(str(current_date.year)[-2:]):
                 os.rmdir(extract_tar_dir_path)
             if os.path.exists(downloaded_pdf_file_path):
                 os.remove(downloaded_pdf_file_path)
+        urllib.request.urlcleanup()
 else:
     print('You cannot download papers from future!')
     exit(0)
