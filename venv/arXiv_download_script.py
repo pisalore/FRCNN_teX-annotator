@@ -78,8 +78,8 @@ if year <= int(str(current_date.year)[-2:]):
             if os.path.exists(downloaded_pdf_file_path):
                 os.remove(downloaded_pdf_file_path)
             if http_error.code == 403:
-                sleep(300)
-                file_counter -=1
+                sleep(180)
+                file_counter -= 1
             else:
                 exit(-1)
 
