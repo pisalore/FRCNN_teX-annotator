@@ -107,3 +107,15 @@ detects **titles, figures, lists and tables**. For this task I've chosen the F-R
 are available on [R-CNN, Fast R-CNN, Faster R-CNN, YOLO — Object Detection Algorithms](https://towardsdatascience.com/r-cnn-fast-r-cnn-faster-r-cnn-yolo-object-detection-algorithms-36d53571365e).
 I've cloned the repo from this git repo [keras-frcnn](https://github.com/kbardool/keras-frcnn) and the I've followed
 this [guide](https://www.analyticsvidhya.com/blog/2018/11/implementation-faster-r-cnn-python-object-detection/) for implementation.
+Start with training is very easy: open the shell, go to /DDM_Project/venv/frcnn/ and start!
+
+```
+cd frcnn
+python3 train_frcnn.py -o simple -p annotated_train_images.txt
+```
+
+This command will start training which will generate an h5 model, that is the input for test:
+```
+python3 test_frcnn.py -p ../test_images
+```
+The **test** procedure will outputs the **annotated test images** basing on the training task results.
