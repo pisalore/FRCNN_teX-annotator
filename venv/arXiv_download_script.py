@@ -16,8 +16,9 @@ def check_next_paper(file_identifier):
         return False
     return True
 
-args = download_script_parse_args()
 
+args = download_script_parse_args()
+num_errors = 0
 pdf_files_path = 'pdf_files/'
 tex_files_path = 'tex_files/'
 
@@ -71,18 +72,20 @@ if year <= int(str(current_date.year)[-2:]):
                 print('Files succesfully downloaded. \n')
         except urllib.error.HTTPError as http_error:
             print(http_error.code, '. The requested paper does not exist or there are some problems with the internet connection.')
+            num_errors += 1
             if os.path.exists(downloaded_source_file_path):
                 os.remove(downloaded_source_file_path)
             if os.path.exists(extract_tar_dir_path):
                 os.rmdir(extract_tar_dir_path)
             if os.path.exists(downloaded_pdf_file_path):
                 os.remove(downloaded_pdf_file_path)
+            if num_errors == 4:
+                print(num_errors, ' encountered trying to fullfill the last request; exit.')
+                exit(-1)
             if http_error.code == 403:
                 print('Error 403: wait 3 minutes and then try again...')
                 sleep(180)
                 file_counter -= 1
-            else:
-                exit(-1)
 
             print('PDF or Source files for ' + file_identifier + ' not found. Download the next file.\n')
             if not check_next_paper(file_identifier):
