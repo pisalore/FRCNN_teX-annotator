@@ -137,7 +137,7 @@ def extract_lists_coordinates(items_coordinates):
     return extracted_lists_coordinates
 
 
-def parse_pdf(PDF_path, TEX_Path, is_train):
+def parse_pdf(PDF_path, TEX_Path, is_train_image):
     filename = os.path.basename(PDF_path).split('.pdf')[0]
     page_counter = 0
     titles_counter = 0
@@ -147,102 +147,105 @@ def parse_pdf(PDF_path, TEX_Path, is_train):
     lists_coordinates = []
     tables_coordinates = []
     text_coordinates = []
-    all_objects_coordinates = []
+    all_train_objects_coordinates = []
     with_annotations = pdf_parse_args().annotations
 
     #FIRST PHASE: GENERATE IMAGES TO BE ANNOTATED AND EXTRACT ALL TEX ISTANCES INSIDE TEX FILE
-    generate_images(PDF_path, filename, is_train)
-    tex_instances = find_tex_istances(TEX_Path)
-    # Open a PDF file.
-    fp = open(PDF_path, 'rb')
-    # Create a PDF parser object associated with the file object.
-    parser = PDFParser(fp)
-    # Create a PDF document object that stores the document structure.
-    # Supply the password for initialization.
-    document = PDFDocument(parser)
-    # Check if the document allows text extraction. If not, abort.
-    if not document.is_extractable:
-        raise PDFTextExtractionNotAllowed
-    # Create a PDF resource manager object that stores shared resources.
-    rsrcmgr = PDFResourceManager()
-    # Create a PDF device object.
-    # Set parameters for analysis.
-    laparams = LAParams()
-    laparams.line_margin = 0.4
-    # Create a PDF page aggregator object.
-    device = PDFPageAggregator(rsrcmgr, laparams=laparams)
-    interpreter = PDFPageInterpreter(rsrcmgr, device)
-    for page in PDFPage.create_pages(document):
-        page_counter += 1
-        page_length = page.mediabox[3]
+    generate_images(PDF_path, filename, is_train_image)
 
-        interpreter.process_page(page)
-        # receive the LTPage object for the page.
-        layout = device.get_result()
-        print('##########################################################################################################')
-        print('PAGE NUMBER: ', page_counter)
-        print('##########################################################################################################', '\n')
-        for x in layout:
-            # TEXTS (TITLES AND LISTS)
-            if isinstance(x, LTTextBoxHorizontal):
-                lines = x._objs
-                if '' in lines: lines.remove('')
-                for i in range(2 if len(lines) > 2 else len(lines)): #iterate over the first lines of a texbox since titles are always on the top
+    if is_train_image:
+        tex_instances = find_tex_istances(TEX_Path)
+        # Open a PDF file.
+        fp = open(PDF_path, 'rb')
+        # Create a PDF parser object associated with the file object.
+        parser = PDFParser(fp)
+        # Create a PDF document object that stores the document structure.
+        # Supply the password for initialization.
+        document = PDFDocument(parser)
+        # Check if the document allows text extraction. If not, abort.
+        if not document.is_extractable:
+            raise PDFTextExtractionNotAllowed
+        # Create a PDF resource manager object that stores shared resources.
+        rsrcmgr = PDFResourceManager()
+        # Create a PDF device object.
+        # Set parameters for analysis.
+        laparams = LAParams()
+        laparams.line_margin = 0.4
+        # Create a PDF page aggregator object.
+        device = PDFPageAggregator(rsrcmgr, laparams=laparams)
+        interpreter = PDFPageInterpreter(rsrcmgr, device)
+        for page in PDFPage.create_pages(document):
+            page_counter += 1
+            page_length = page.mediabox[3]
 
-                    pdf_line_result = lines[i].get_text().split('\n')[0].lower()
-                    pdf_line_result = ''.join([i for i in pdf_line_result if not i.isdigit()])
+            interpreter.process_page(page)
+            # receive the LTPage object for the page.
+            layout = device.get_result()
+            print('##########################################################################################################')
+            print('PAGE NUMBER: ', page_counter)
+            print('##########################################################################################################', '\n')
+            for x in layout:
+                # TEXTS (TITLES AND LISTS)
+                if isinstance(x, LTTextBoxHorizontal):
+                    lines = x._objs
+                    if '' in lines: lines.remove('')
+                    for i in range(2 if len(lines) > 2 else len(lines)): #iterate over the first lines of a texbox since titles are always on the top
 
-                    for instance in tex_instances[0]:
-                        tex_title = instance[2].lower()
-                        if are_similar(tex_title, pdf_line_result) and pdf_line_result != '':
-                            titles_counter += 1
-                            # print('Title num: ', titles_counter, pdf_line_result)
-                            titles_coordinates.append(calculate_object_coordinates(page_counter, lines[i].bbox, page_length, 'title'))
-                lines_counter = 0
-                for i in range(len(lines)):
-                    pdf_line_result = lines[i].get_text().split('\n')[0].lower()
-                    pdf_line_result = ''.join([i for i in pdf_line_result if not i.isdigit()])
+                        pdf_line_result = lines[i].get_text().split('\n')[0].lower()
+                        pdf_line_result = ''.join([i for i in pdf_line_result if not i.isdigit()])
 
-                    for instance in tex_instances[2]:
-                        tex_list_item = instance[3]
-                        if are_similar(tex_list_item[0:50], pdf_line_result[0:50]) and pdf_line_result != '':
-                            lists_coordinates.append(calculate_object_coordinates(page_counter, lines[i].bbox, page_length, 'list'))
-                        elif lines_counter > 2:
-                            text_coordinates.append(calculate_object_coordinates(page_counter, lines[i].bbox, page_length, 'text'))
-                        lines_counter += 1
+                        for instance in tex_instances[0]:
+                            tex_title = instance[2].lower()
+                            if are_similar(tex_title, pdf_line_result) and pdf_line_result != '':
+                                titles_counter += 1
+                                # print('Title num: ', titles_counter, pdf_line_result)
+                                titles_coordinates.append(calculate_object_coordinates(page_counter, lines[i].bbox, page_length, 'title'))
+                    lines_counter = 0
+                    for i in range(len(lines)):
+                        pdf_line_result = lines[i].get_text().split('\n')[0].lower()
+                        pdf_line_result = ''.join([i for i in pdf_line_result if not i.isdigit()])
+
+                        for instance in tex_instances[2]:
+                            tex_list_item = instance[3]
+                            if are_similar(tex_list_item[0:50], pdf_line_result[0:50]) and pdf_line_result != '':
+                                lists_coordinates.append(calculate_object_coordinates(page_counter, lines[i].bbox, page_length, 'list'))
+                            elif lines_counter > 2:
+                                text_coordinates.append(calculate_object_coordinates(page_counter, lines[i].bbox, page_length, 'text'))
+                            lines_counter += 1
 
 
-            #FIGURES
-            elif isinstance(x, LTImage) or isinstance(x, LTFigure):
-              #  print('Image num: ', images_counter + 1)            #, tex_instances[1][images_counter][2] verify tex parser for images
-              if (x.width / x.height > 5) or (x.height / x.width >5):
-                  pass
-              else:
-                  images_counter += 1
-                  images_coordinates.append(calculate_object_coordinates(page_counter, x.bbox, page_length, 'image'))
+                #FIGURES
+                elif isinstance(x, LTImage) or isinstance(x, LTFigure):
+                  #  print('Image num: ', images_counter + 1)            #, tex_instances[1][images_counter][2] verify tex parser for images
+                  if (x.width / x.height > 5) or (x.height / x.width >5):
+                      pass
+                  else:
+                      images_counter += 1
+                      images_coordinates.append(calculate_object_coordinates(page_counter, x.bbox, page_length, 'image'))
 
-            elif isinstance(x, LTLine):
-                if (x.height == 0 and x.width < 30) or x.width <= 0 :
-                    pass
-                else:
-                    tables_coordinates.append(calculate_object_coordinates(page_counter, x.bbox, page_length, 'table'))
+                elif isinstance(x, LTLine):
+                    if (x.height == 0 and x.width < 30) or x.width <= 0 :
+                        pass
+                    else:
+                        tables_coordinates.append(calculate_object_coordinates(page_counter, x.bbox, page_length, 'table'))
 
-    extracted_tables_coordinates = extract_tables_coordinates(tables_coordinates)
-    extracted_lists_coordinates = extract_lists_coordinates(lists_coordinates)
-    if with_annotations == 'yes' and is_train:
-        print('Generating annotations...')
-        if len(text_coordinates) != 0: annotate_img(filename, text_coordinates, text_coordinates[0][0], (0, 255, 255), 1)
-        if len(titles_coordinates) != 0: annotate_img(filename, titles_coordinates, titles_coordinates[0][0], (0,0,255), 3)
-        if len(images_coordinates) != 0: annotate_img(filename, images_coordinates, images_coordinates[0][0], (0,255,0), 3)
-        if len(extracted_lists_coordinates) != 0 : annotate_img(filename, extracted_lists_coordinates, extracted_lists_coordinates[0][0], (255,0,0), 3)
-        if len(extracted_tables_coordinates) !=0 : annotate_img(filename, extracted_tables_coordinates, extracted_tables_coordinates[0][0], (230, 255, 102), 3)
+            extracted_tables_coordinates = extract_tables_coordinates(tables_coordinates)
+            extracted_lists_coordinates = extract_lists_coordinates(lists_coordinates)
 
-    all_objects_coordinates.extend(titles_coordinates)
-    all_objects_coordinates.extend(images_coordinates)
-    all_objects_coordinates.extend(extracted_lists_coordinates)
-    all_objects_coordinates.extend(extracted_tables_coordinates)
-    all_objects_coordinates = sorted(all_objects_coordinates, key = itemgetter(0))
+            if with_annotations == 'yes':
+                print('Generating annotations...')
+                if len(text_coordinates) != 0: annotate_img(filename, text_coordinates, text_coordinates[0][0], (0, 255, 255), 1)
+                if len(titles_coordinates) != 0: annotate_img(filename, titles_coordinates, titles_coordinates[0][0], (0,0,255), 3)
+                if len(images_coordinates) != 0: annotate_img(filename, images_coordinates, images_coordinates[0][0], (0,255,0), 3)
+                if len(extracted_lists_coordinates) != 0 : annotate_img(filename, extracted_lists_coordinates, extracted_lists_coordinates[0][0], (255,0,0), 3)
+                if len(extracted_tables_coordinates) !=0 : annotate_img(filename, extracted_tables_coordinates, extracted_tables_coordinates[0][0], (230, 255, 102), 3)
 
-    return all_objects_coordinates
+            all_train_objects_coordinates.extend(titles_coordinates)
+            all_train_objects_coordinates.extend(images_coordinates)
+            all_train_objects_coordinates.extend(extracted_lists_coordinates)
+            all_train_objects_coordinates.extend(extracted_tables_coordinates)
+            all_train_objects_coordinates = sorted(all_train_objects_coordinates, key = itemgetter(0))
+
+    return all_train_objects_coordinates
 
 #detected_objects = parse_pdf('pdf_files/1901.0401.pdf', 'tex_files/1901.0401_tex_files')
