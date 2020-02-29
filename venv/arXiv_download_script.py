@@ -73,11 +73,12 @@ if year <= int(str(current_date.year)[-2:]):
             if os.path.exists(downloaded_pdf_file_path):
                 os.remove(downloaded_pdf_file_path)
             print('PDF or Source files for ' + file_identifier + ' not found. Download the next file.\n')
-            file_counter = 0
             if not check_next_paper(file_identifier):
                 if month == 12:
                     month = 1
                     year += 1
+                else:
+                    month += 1
             if os.path.exists(downloaded_pdf_file_path):
                 os.remove(downloaded_pdf_file_path)
         except tarfile.ReadError:
