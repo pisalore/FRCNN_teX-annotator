@@ -127,4 +127,4 @@ use ***pip3** running:
 ```
 pip3 install -r requirements.txt
 ```
-For this project I used Python **3.7**
+For this project I used Python **3.7**; I recommend to use PyCharm.
