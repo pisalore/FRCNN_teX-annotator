@@ -11,7 +11,6 @@ from tex_parser import find_tex_istances
 from images_annotator import annotate_img
 from difflib import SequenceMatcher
 from csv_generator import generate_csv_annotations
-from utils import pdf_parse_args
 from operator import itemgetter
 
 def are_similar(string_a, string_b):
@@ -137,7 +136,7 @@ def extract_lists_coordinates(items_coordinates):
     return extracted_lists_coordinates
 
 
-def parse_pdf(PDF_path, TEX_Path, is_train_image):
+def parse_pdf(PDF_path, TEX_Path, is_annotation, is_train_image):
     filename = os.path.basename(PDF_path).split('.pdf')[0]
     page_counter = 0
     titles_counter = 0
@@ -148,7 +147,7 @@ def parse_pdf(PDF_path, TEX_Path, is_train_image):
     tables_coordinates = []
     text_coordinates = []
     all_train_objects_coordinates = []
-    with_annotations = pdf_parse_args().annotations
+    with_annotations = is_annotation
 
     #FIRST PHASE: GENERATE IMAGES TO BE ANNOTATED AND EXTRACT ALL TEX ISTANCES INSIDE TEX FILE
     generate_images(PDF_path, filename, is_train_image)

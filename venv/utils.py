@@ -13,17 +13,13 @@ def download_script_parse_args():
     args = parser.parse_args()
     return args
 
-def pdf_parse_args():
+def main_args():
     parser = argparse.ArgumentParser()
+    parser.add_argument('--csv_file_path', default='images_annotations.csv',
+                        help='Type the .csv file name to convert. By default is: images_annotations. '
+                             'The converter then will generate test_annotations_images.txt and train_annotations_images.txt .')
     parser.add_argument('--annotations', default='no', help='Choose if generate annotated images where:'
                                                             ' red= titles; green= figures; blu= lists; aqua green= tables; yellow= text;'
                                                             ' typing yes or no.')
-    args = parser.parse_args()
-    return args
-
-def csv_converter_args():
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--filename', default='images_annotations.csv', help='Type the .csv file name to convert. By default is: images_annotations. '
-                                                                   'The converter then will generate test_annotations_images.txt and train_annotations_images.txt .')
     args = parser.parse_args()
     return args

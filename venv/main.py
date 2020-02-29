@@ -2,11 +2,16 @@ import glob
 import os
 from pdf_parser import parse_pdf
 from csv_generator import generate_csv_annotations
+from csv2txt_converter import obtain_txt_train_images_file
+from utils import main_args
 
 PDF_FILES = 'pdf_files/'
 TEX_FILES = 'tex_files/'
 
 def main():
+    args = main_args()
+    is_annotation = args.annotations
+    csv_file_path = args.csv_file_path
     num_files = len([f for f in os.listdir(PDF_FILES) if os.path.isfile(os.path.join(PDF_FILES, f))])
     num_train_images = num_files / 100 * 90
     files_processed = 0
@@ -20,8 +25,9 @@ def main():
         tex_file_path = TEX_FILES + file_id + '_tex_files'
         if(os.path.exists(tex_file_path)):
             print('\nParsing ' + pdf_file_path +'...')
-            detected_objects = parse_pdf(pdf_file_path, tex_file_path, is_train)
-            generate_csv_annotations('images_annotations', file_id, detected_objects)
+            detected_objects = parse_pdf(pdf_file_path, tex_file_path, is_annotation, is_train)
+            generate_csv_annotations(csv_file_path, file_id, detected_objects)
+            obtain_txt_train_images_file(csv_file_path)
 
 
 if __name__ == "__main__":
