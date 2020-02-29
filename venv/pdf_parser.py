@@ -137,7 +137,7 @@ def extract_lists_coordinates(items_coordinates):
     return extracted_lists_coordinates
 
 
-def parse_pdf(PDF_path, TEX_Path, papers_num):
+def parse_pdf(PDF_path, TEX_Path, is_train):
     filename = os.path.basename(PDF_path).split('.pdf')[0]
     page_counter = 0
     titles_counter = 0
@@ -149,10 +149,9 @@ def parse_pdf(PDF_path, TEX_Path, papers_num):
     text_coordinates = []
     all_objects_coordinates = []
     with_annotations = pdf_parse_args().annotations
-    are_train_images = True
 
     #FIRST PHASE: GENERATE IMAGES TO BE ANNOTATED AND EXTRACT ALL TEX ISTANCES INSIDE TEX FILE
-    generate_images(PDF_path, filename)
+    generate_images(PDF_path, filename, is_train)
     tex_instances = find_tex_istances(TEX_Path)
     # Open a PDF file.
     fp = open(PDF_path, 'rb')
@@ -230,7 +229,7 @@ def parse_pdf(PDF_path, TEX_Path, papers_num):
 
     extracted_tables_coordinates = extract_tables_coordinates(tables_coordinates)
     extracted_lists_coordinates = extract_lists_coordinates(lists_coordinates)
-    if with_annotations == 'yes' and are_train_images:
+    if with_annotations == 'yes' and is_train:
         print('Generating annotations...')
         if len(text_coordinates) != 0: annotate_img(filename, text_coordinates, text_coordinates[0][0], (0, 255, 255), 1)
         if len(titles_coordinates) != 0: annotate_img(filename, titles_coordinates, titles_coordinates[0][0], (0,0,255), 3)

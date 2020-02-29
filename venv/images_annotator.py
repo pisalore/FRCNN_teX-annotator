@@ -3,7 +3,7 @@ import cv2
 def annotate_img(filename, coordinates, first_page, color, thickness):
     current_page = first_page
     save_directory = filename + '_annotated_images/'
-    file_path = 'png_files/' + save_directory + filename + '_'
+    file_path = 'png_files/train_images/' + save_directory + filename + '_'
     img = cv2.imread(file_path + str(current_page) + '.png')
     for i in range(len(coordinates)):
         page = coordinates[i][0]
