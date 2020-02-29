@@ -73,7 +73,7 @@ The most of the work is done by **PDF_parser.py**, which calls **tex_parser.py**
 4. TURQUOISE ---> tables
 5. YELLOW --------> text **NOT USED IN FRCNN**.
 
-When the main termines, all is set-up for start with the fcrnn training.
+When the main termines, all is set-up for start with the frcnn training.
 
 #### 3. Download files from arXiv.org
 The PDF and teX files are downloaded thanks to **the arXiv_download_script.py**. This script has to be launched before 
@@ -101,3 +101,9 @@ optional arguments:
 ```
 These commands take into accounts how papers are saved on arXiv.org.
 
+### 4. F-RCNN 
+The annotated images serve as F-RCNN input data; the goal of this project is to test how much correctly the net can
+detects **titles, figures, lists and tables**. For this task I've chosen the F-RCNN net; further informations about it 
+are available on [R-CNN, Fast R-CNN, Faster R-CNN, YOLO — Object Detection Algorithms](https://towardsdatascience.com/r-cnn-fast-r-cnn-faster-r-cnn-yolo-object-detection-algorithms-36d53571365e).
+I've cloned the repo from this git repo [keras-frcnn](https://github.com/kbardool/keras-frcnn) and the I've followed
+this [guide](https://www.analyticsvidhya.com/blog/2018/11/implementation-faster-r-cnn-python-object-detection/) for implementation.
