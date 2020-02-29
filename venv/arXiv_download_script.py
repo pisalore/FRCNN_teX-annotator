@@ -74,8 +74,6 @@ while num_downloaded_files <= max_items:
             if month == 12:
                 month = 1
                 year += 1
-            else:
-                month += 1
         if os.path.exists(downloaded_pdf_file_path):
             os.remove(downloaded_pdf_file_path)
     except tarfile.ReadError:
