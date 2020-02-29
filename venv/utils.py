@@ -20,3 +20,10 @@ def pdf_parse_args():
                                                             ' typing yes or no.')
     args = parser.parse_args()
     return args
+
+def csv_converter_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--filename', default='images_annotations.csv', help='Type the .csv file name to convert. By default is: images_annotations. '
+                                                                   'The converter then will generate test_annotations_images.txt and train_annotations_images.txt .')
+    args = parser.parse_args()
+    return args

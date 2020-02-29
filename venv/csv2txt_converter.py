@@ -1,9 +1,11 @@
 import pandas as pd
-train = pd.read_csv('train_images.csv')
+from utils import csv_converter_args
+
+csv_filename = csv_converter_args().filename
+train = pd.read_csv(csv_filename)
 train.head()
 data = pd.DataFrame()
 data['format'] = train['images_name']
-
 # as the images are in train_images folder, add train_images before the image name
 for i in range(data.shape[0]):
     data['format'][i] = '../png_files/1901.0401_annotated_images/' + data['format'][i] #TODO: GENERALIZE THIS
