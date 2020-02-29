@@ -34,13 +34,40 @@ document layout distinctions in downloading files.
 
 #### 2. Project structure
 
-The scripts projects are organized as follows:
+The project is organized as follows:
 ```
 main.py
 ```
-It's the **main**, and do the following operations:
-* It divides train and test images, parsing TEX and PDF files, which are stored in *PDF_files* and *TEX_files*
- directories respectively. The **90%** of pdf files will generates **train images**, the rest **10%** the **test images** ones.
+It's the **main**, and does the following operations:
+* It generates as many **.png files** as many pdf pages for each downloaded paper.
 * It does **parsing** tasks and **retrievs objects coordinates**.
-* It generates the ***annotations_images.csv** and ***annotated_train_images.txt***; this one will be given in input
+* It divides train and test images, listed inside *PNG_files* dir, parsing TEX and PDF files, which are stored in
+ *PDF_files* and *TEX_files* directories respectively. The **90%** of pdf files will generates **train images**,
+  the rest **10%** the **test images** ones.
+* It generates ***annotations_images.csv*** and ***annotated_train_images.txt*** files; this last one will be given in input
 to the **frcnn**.
+
+The main.py can be launched from shell. There are two optioned commands: 
+```
+usage: main.py [-h] [--csv_file_path CSV_FILE_PATH]
+               [--annotations ANNOTATIONS]
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --csv_file_path CSV_FILE_PATH
+                        Type the .csv file name to convert. By default is:
+                        images_annotations. The converter then will generate
+                        test_annotations_images.txt and
+                        train_annotations_images.txt .
+  --annotations ANNOTATIONS
+                        Choose if generate annotated images where: red=
+                        titles; green= figures; blu= lists; aqua green=
+                        tables; yellow= text; typing yes or no.
+```
+The most of the work is done by **PDF_parser.py**, which calls **tex_parser.py** and optionally the 
+**images_annotator.py**. images_annotator.py highlights different objects categories whit different colors:
+1. RED -------------> titles
+2. GREEN ---------> images
+3. BLUE ------------>  lists
+4. TURQUOISE ---> tables
+5. YELLOW --------> text **NOT USED IN FRCNN**.
