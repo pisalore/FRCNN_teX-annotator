@@ -246,5 +246,3 @@ def parse_pdf(PDF_path, TEX_Path, is_annotation, is_train_image):
             all_train_objects_coordinates = sorted(all_train_objects_coordinates, key = itemgetter(0))
 
     return all_train_objects_coordinates
-
-#detected_objects = parse_pdf('pdf_files/1901.0401.pdf', 'tex_files/1901.0401_tex_files')

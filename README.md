@@ -73,7 +73,9 @@ The most of the work is done by **PDF_parser.py**, which calls **tex_parser.py**
 4. TURQUOISE ---> tables
 5. YELLOW --------> text **NOT USED IN FRCNN**.
 
-When the main termines, all is set-up for start with the frcnn training.
+When the main finishes, all is set-up for start with the frcnn training.
+
+**NB**: the graphic pages annotations (specifying *--annotations=yes*) could be slow since also text is annotated.
 
 #### 3. Download files from arXiv.org
 The PDF and teX files are downloaded thanks to **the arXiv_download_script.py**. This script has to be launched before 
@@ -122,9 +124,14 @@ The **test** procedure will outputs the **annotated test images** basing on the 
 
 #### 5. Requirements
 The dipendencies required for this project are listed inside **requirements.txt**; you should simply open a shell and
-use ***pip3** running:
+use ***pip3*** running:
 
 ```
 pip3 install -r requirements.txt
 ```
 For this project I used Python **3.7**; I recommend to use PyCharm.
+
+#### 6. References
+This project has been inspired by **PubLayNet**, a project where PDF taken from the PubMed Central dataset
+(over 360 thousands of articles!) are annotated with theirs relative XML files. PubLayNet paper is
+available [here](https://arxiv.org/pdf/1908.07836.pdf).
