@@ -95,6 +95,7 @@ if year <= int(str(current_date.year)[-2:]):
                     year += 1
                 else:
                     month += 1
+                file_counter = 0
             if os.path.exists(downloaded_pdf_file_path):
                 os.remove(downloaded_pdf_file_path)
         except tarfile.ReadError:
