@@ -137,3 +137,8 @@ For this project I used Python **3.7**; I recommend to use PyCharm.
 This project has been inspired by **PubLayNet**, a project where PDF taken from the PubMed Central dataset
 (over 360 thousands of articles!) are annotated with theirs relative XML files. PubLayNet paper is
 available [here](https://arxiv.org/pdf/1908.07836.pdf).
+
+Here an example of the PubLayNet paper annotated using tex-annotator!
+
+![publaynet-ann](https://github.com/pisalore/FRCNN_teX-annotator/blob/master/images/publaynet_ann.jpg)
+
