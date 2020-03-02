@@ -18,7 +18,10 @@ def generate_images(path, save_dir_name, is_train):
     filename = path
     print("Converting " + filename + " from pdf to PNG...")
     reader = PdfFileReader(open(filename, mode="rb"))
-    page_number = reader.getNumPages()
+    try:
+        page_number = reader.getNumPages()
+    except:
+        page_number = reader.getNumPages()
     with tempfile.TemporaryDirectory() as path:
         images_from_path = convert_from_path(filename, dpi=72, output_folder=path, last_page=page_number, first_page=0)
     i = 0
