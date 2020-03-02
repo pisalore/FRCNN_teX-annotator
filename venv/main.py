@@ -15,7 +15,7 @@ def main():
     num_files = len([f for f in os.listdir(PDF_FILES) if os.path.isfile(os.path.join(PDF_FILES, f))])
     num_train_images = num_files / 100 * 90
     files_processed = 0
-    if (not os.path.exists(csv_file_path)):
+    if (os.path.exists(csv_file_path)):
         os.remove(csv_file_path)
     for pdf_file_path in glob.glob(os.path.join(PDF_FILES, '*.pdf')):
         if files_processed < num_train_images:
