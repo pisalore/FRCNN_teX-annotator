@@ -27,7 +27,8 @@ def main():
             print('\nParsing ' + pdf_file_path +'...')
             detected_objects = parse_pdf(pdf_file_path, tex_file_path, is_annotation, is_train)
             generate_csv_annotations(csv_file_path, file_id, detected_objects)
-            obtain_txt_train_images_file(csv_file_path)
+
+    obtain_txt_train_images_file(csv_file_path)
 
 
 if __name__ == "__main__":

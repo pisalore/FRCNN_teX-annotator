@@ -1,6 +1,6 @@
 pandas
 matplotlib
-tensorflow
+tensorflow==1.14.0
 keras==2.0.3
 numpy
 opencv-python
@@ -9,3 +9,4 @@ h5py
 pdfminer
 pdf2image
 PyPDF2
+Pillow
