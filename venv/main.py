@@ -31,12 +31,12 @@ def main():
                 detected_objects = parse_pdf(pdf_file_path, tex_file_path, is_annotation, is_train)
             except:
                 detected_objects = []
+                print('Timeout error, go on.')
             if(detected_objects):
                 print('Save annotations...')
                 generate_csv_annotations(csv_file_path, file_id, detected_objects)
             else:
-                print ('Not detected objects for this papaer; It is possible '
-                       'that there were not tex files in source paper folder')
+                print ('ERROR IN PARSING FILES, GO ON.')
             print('Num paper processed: ', files_processed)
     if os.path.exists(csv_file_path):
         obtain_txt_train_images_file(csv_file_path)
