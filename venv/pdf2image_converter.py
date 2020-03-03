@@ -21,7 +21,7 @@ def generate_images(path, save_dir_name, is_train):
     try:
         page_number = reader.getNumPages()
     except:
-        page_number = reader.getNumPages()
+        page_number = reader.getNumPages() #PyPDF2 bug
     with tempfile.TemporaryDirectory() as path:
         images_from_path = convert_from_path(filename, dpi=72, output_folder=path, last_page=page_number, first_page=0)
     i = 0
