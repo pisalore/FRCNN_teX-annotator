@@ -1,21 +1,18 @@
 import os
+import re
 
 def refactor_coursive_text(string_line):
-    replaces_coursive_values = []
-    for i in range(string_line.count('textit')):
-        replace_coursive_value = string_line.split('textit{')[i + 1].split('}')[0]
-        replaces_coursive_values.append(replace_coursive_value)
-    for replace_coursive_value in replaces_coursive_values:
-        string_line = string_line.replace('\\textit{' + replace_coursive_value + '}', replace_coursive_value)
+    string_line = string_line.replace('&', '')
+    re.sub(r'\\textit{([^}]*)}', '\\1', string_line)
+    string_line = string_line.replace('textbf', '')
+
     return string_line
 
 def refactor_bold_text(string_line):
-    replaces_bold_values = []
-    for i in range(string_line.count('textbf')):
-        replace_bold_value = string_line.split('textbf{')[i + 1].split('}')[0]
-        replaces_bold_values.append(replace_bold_value)
-    for replace_bold_value in replaces_bold_values:
-        string_line = string_line.replace('\\textbf{' + replace_bold_value + '}', replace_bold_value)
+    string_line = string_line.replace('&', '')
+    re.sub(r'\\textbf{([^}]*)}', '\\1', string_line)
+    string_line = string_line.replace('textbf', '')
+
     return string_line
 
 def refactor_tabular_string(string_line):
