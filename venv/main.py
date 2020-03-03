@@ -34,9 +34,9 @@ def main():
             else:
                 print ('Not detected objects for this papaer; It is possible '
                        'that there were not tex files in source paper folder')
+            print('Num paper processed: ', files_processed)
     if os.path.exists(csv_file_path):
         obtain_txt_train_images_file(csv_file_path)
-
 
 if __name__ == "__main__":
     main()
