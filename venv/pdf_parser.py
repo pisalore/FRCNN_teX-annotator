@@ -11,8 +11,8 @@ from pdf2image_converter import generate_images
 from tex_parser import find_tex_istances
 from images_annotator import annotate_img
 from difflib import SequenceMatcher
-from csv_generator import generate_csv_annotations
 from operator import itemgetter
+from timeout import timeout
 
 def are_similar(string_a, string_b):
     if SequenceMatcher(None, string_a, string_b).ratio() >= 0.75:
@@ -136,7 +136,7 @@ def extract_lists_coordinates(items_coordinates):
 
     return extracted_lists_coordinates
 
-
+@timeout(60)
 def parse_pdf(PDF_path, TEX_Path, is_annotation, is_train_image):
     filename = os.path.basename(PDF_path).split('.pdf')[0]
     page_counter = 0
@@ -184,7 +184,6 @@ def parse_pdf(PDF_path, TEX_Path, is_annotation, is_train_image):
         for page in PDFPage.create_pages(document):
             page_counter += 1
             page_length = page.mediabox[3]
-
             interpreter.process_page(page)
             # receive the LTPage object for the page.
             layout = device.get_result()

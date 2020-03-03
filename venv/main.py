@@ -27,7 +27,10 @@ def main():
         tex_file_path = TEX_FILES + file_id + '_tex_files'
         if(os.path.exists(tex_file_path)):
             print('\nParsing ' + pdf_file_path +'...')
-            detected_objects = parse_pdf(pdf_file_path, tex_file_path, is_annotation, is_train)
+            try:
+                detected_objects = parse_pdf(pdf_file_path, tex_file_path, is_annotation, is_train)
+            except:
+                detected_objects = []
             if(detected_objects):
                 print('Save annotations...')
                 generate_csv_annotations(csv_file_path, file_id, detected_objects)
