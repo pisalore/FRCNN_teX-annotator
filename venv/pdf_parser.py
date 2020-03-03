@@ -155,6 +155,8 @@ def parse_pdf(PDF_path, TEX_Path, is_annotation, is_train_image):
 
     if is_train_image:
         tex_instances = find_tex_istances(TEX_Path)
+        if not tex_instances:
+            return all_train_objects_coordinates
         # Open a PDF file.
         fp = open(PDF_path, 'rb')
         # Create a PDF parser object associated with the file object.
@@ -165,7 +167,7 @@ def parse_pdf(PDF_path, TEX_Path, is_annotation, is_train_image):
             document = PDFDocument(parser)
         except PSSyntaxError:
             print('Invalid PDF structure')
-            return []
+            return all_train_objects_coordinates
 
         # Check if the document allows text extraction. If not, abort.
         if not document.is_extractable:
