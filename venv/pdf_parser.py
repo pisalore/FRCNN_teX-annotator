@@ -136,7 +136,7 @@ def extract_lists_coordinates(items_coordinates):
 
     return extracted_lists_coordinates
 
-@timeout(60)
+@timeout(300)
 def parse_pdf(PDF_path, TEX_Path, is_annotation, is_train_image):
     filename = os.path.basename(PDF_path).split('.pdf')[0]
     page_counter = 0
