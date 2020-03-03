@@ -6,6 +6,7 @@ from pdfminer.converter import PDFPageAggregator
 from pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter
 from pdfminer.pdfparser import PDFParser
 from pdfminer.pdfdocument import PDFDocument, PDFTextExtractionNotAllowed
+from pdfminer.psparser import PSSyntaxError
 from pdf2image_converter import generate_images
 from tex_parser import find_tex_istances
 from images_annotator import annotate_img
@@ -160,7 +161,12 @@ def parse_pdf(PDF_path, TEX_Path, is_annotation, is_train_image):
         parser = PDFParser(fp)
         # Create a PDF document object that stores the document structure.
         # Supply the password for initialization.
-        document = PDFDocument(parser)
+        try:
+            document = PDFDocument(parser)
+        except PSSyntaxError:
+            print('Invalid PDF structure')
+            return []
+
         # Check if the document allows text extraction. If not, abort.
         if not document.is_extractable:
             raise PDFTextExtractionNotAllowed
