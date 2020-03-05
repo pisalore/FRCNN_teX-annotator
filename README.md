@@ -133,14 +133,14 @@ pip3 install -r requirements.txt
 ```
 For this project I used Python **3.7**; I recommend to use PyCharm.
 
-#### 6: NUmbers, examples, results
+#### 6: Numbers, examples, results
 I would like to share with you some numbers:
 * **10.200** pdf files processed (papers and various scientific articles) downloaded from arXIv.
     * 9 180 for training set
     * 1 020 for test set
 * **204 658** relative papers source files downloaded from arXiv
 * **187 485** png files generated, one image for one paper page
-* **4194313** instances (titles, images, lists and tables) found and analyzed with frcnn.
+* **466452** instances (titles, images, lists and tables) found and analyzed with frcnn.
 
 
 #### 7. References
