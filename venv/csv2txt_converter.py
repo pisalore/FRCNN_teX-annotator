@@ -23,4 +23,4 @@ def obtain_txt_train_images_file(csv_file_path):
 
     data.to_csv('frcnn/annotated_train_images.txt', header=None, index=None, sep=' ')
 
-obtain_txt_train_images_file('images_annotations.csv')
+#obtain_txt_train_images_file('images_annotations.csv')
