@@ -32,9 +32,11 @@ def main():
             except:
                 detected_objects = []
                 print('Timeout error, go on.')
-            if(detected_objects):
+            if(detected_objects and is_train):
                 print('Save annotations...')
                 generate_csv_annotations(csv_file_path, file_id, detected_objects)
+            elif not is_train:
+                print ('Added test images.')
             else:
                 print ('ERROR IN PARSING FILES, GO ON.')
             print('Num paper processed: ', files_processed)
