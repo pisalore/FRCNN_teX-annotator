@@ -1,5 +1,6 @@
 import glob
 import os
+import shutil
 from pdf_parser import parse_pdf
 from csv_generator import generate_csv_annotations
 from csv2txt_converter import obtain_txt_train_images_file
@@ -7,6 +8,7 @@ from utils import main_args
 
 PDF_FILES = 'pdf_files/'
 TEX_FILES = 'tex_files/'
+PNG_FILES_TRAIN = 'png_files/train_images/'
 
 def main():
     args = main_args()
@@ -31,15 +33,19 @@ def main():
                 detected_objects = parse_pdf(pdf_file_path, tex_file_path, is_annotation, is_train)
             except:
                 detected_objects = []
-                print('Timeout error, go on.')
+                if os.path.exists(PNG_FILES_TRAIN + file_id + '_annotated_images'):
+                    shutil.rmtree(PNG_FILES_TRAIN + file_id + '_annotated_images')
             if(detected_objects and is_train):
                 print('Save annotations...')
                 generate_csv_annotations(csv_file_path, file_id, detected_objects)
             elif not is_train:
                 print ('Added test images.')
-            else:
+
+            elif not detected_objects:
                 print ('ERROR IN PARSING FILES, GO ON.')
+
             print('Num paper processed: ', files_processed)
+
     if os.path.exists(csv_file_path):
         obtain_txt_train_images_file(csv_file_path)
 
