@@ -250,4 +250,5 @@ for subdir in list_subfolders:
 		# cv2.imshow('img', img)
 		# cv2.waitKey(0)
 		cv2.imwrite('results_imgs/{}.png'.format(idx),img)
-		print('ok')
+		if os.path.exists('results_imgs/{}.png'):
+			print('results_imgs/{}.png' + ' saved')
