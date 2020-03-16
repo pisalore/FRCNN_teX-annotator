@@ -146,7 +146,8 @@ classes = {}
 bbox_threshold = 0.8
 
 visualise = True
-#TODO: iterate over 'annotated_images' dirs, then images
+if not os.path.exists('results_imgs'):
+    os.mkdir('results_imgs')
 
 list_subfolders = [f.path for f in os.scandir(img_path) if f.is_dir()]
 print(list_subfolders)
@@ -248,4 +249,5 @@ for subdir in list_subfolders:
 		print(all_dets)
 		# cv2.imshow('img', img)
 		# cv2.waitKey(0)
-		cv2.imwrite('./results_imgs/{}.png'.format(idx),img)
+		cv2.imwrite('results_imgs/{}.png'.format(idx),img)
+		print('ok')
