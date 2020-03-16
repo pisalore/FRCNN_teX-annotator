@@ -153,6 +153,9 @@ list_subfolders = [f.path for f in os.scandir(img_path) if f.is_dir()]
 print(list_subfolders)
 for subdir in list_subfolders:
 	for idx, img_name in enumerate(sorted(os.listdir(subdir))):
+		current_results_folder = subdir.split('/')[-1].split('_annotated_images')[0] + '_results'
+		if not os.path.exists('results_imgs/' + current_results_folder):
+			os.mkdir('results_imgs/' + current_results_folder)
 		if not img_name.lower().endswith(('.bmp', '.jpeg', '.jpg', '.png', '.tif', '.tiff')):
 			continue
 		print(img_name)
@@ -249,6 +252,4 @@ for subdir in list_subfolders:
 		print(all_dets)
 		# cv2.imshow('img', img)
 		# cv2.waitKey(0)
-		cv2.imwrite('results_imgs/{}.png'.format(idx),img)
-		if os.path.exists('results_imgs/{}.png'):
-			print('results_imgs/{}.png' + ' saved')
+		cv2.imwrite('results_imgs/' + current_results_folder + '/{}.png'.format(idx),img)
