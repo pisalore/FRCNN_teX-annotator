@@ -2,7 +2,7 @@ import pandas as pd
 
 
 def obtain_txt_train_images_file(csv_file_path, txt_path, files_path):
-    print('Creating annotated_train_images.txt for training task... \n')
+    print('Creating annotations in txt format.. \n')
     print('Reading csv file...')
     train = pd.read_csv(csv_file_path)
     print('Reading completed.')

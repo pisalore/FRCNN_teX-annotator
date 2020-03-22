@@ -10,6 +10,8 @@ csv_file_path = 'test_images_annotations.csv'
 txt_path = 'frcnn/annotated_test_images.txt'
 list_subfolders = [f.path for f in os.scandir(test_imgs_path) if f.is_dir()]
 file_processed = 0
+if os.path.exists('./frcnn/parse_error_test_files.txt'):
+    os.remove('./frcnn/parse_error_test_files.txt')
 errors = open('./frcnn/parse_error_test_files.txt', 'a+')
 for subdir in list_subfolders:
     file_id = os.path.basename(subdir).split('_annotated_images')[0]
@@ -20,8 +22,8 @@ for subdir in list_subfolders:
         detected_objects = parse_pdf(pdf_file_path, tex_file_path, 'no', True, False)
     except:
         detected_objects = []
-        errors.write('Error parsing ' + str(file_id))
-        print('Error in processing ' + file_id + '.')
+        errors.write('Error parsing ' + str(file_id) + '\n')
+        print('Error in processing ' + file_id)
 
     file_processed += 1
     if detected_objects: generate_csv_annotations(csv_file_path, file_id, detected_objects)
