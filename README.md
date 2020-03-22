@@ -132,11 +132,11 @@ use ***pip3*** running:
 pip3 install -r requirements.txt
 ```
 For this project I used Python **3.7**; I recommend to use PyCharm.
-In the annotations_images.csv could be cloned rows (it's a known bug); please, after the csv generation,
+In the annotated_train_images.txt rows could be cloned (it's a known bug); please, after the txt generation,
 run 
 
 ```
-sort -u -o images_annotations.csv images_annotations.csv
+sort -u -o annotated_train_images.txt annotated_train_images.txt
 ```
 in order to obtain a correct objects list. 
 #### 6: Numbers, examples, results
