@@ -29,6 +29,7 @@ parser.add_option("--network", dest="network", help="Base network to use. Suppor
 if not options.test_path:   # if filename is not given
 	parser.error('Error: path to test data must be specified. Pass --path to command line')
 
+predicted_annotations_txt = open('predicted_test_images.txt', 'a+')
 
 config_output_filename = options.config_filename
 
@@ -238,6 +239,7 @@ for subdir in list_subfolders:
 
 				cv2.rectangle(img,(real_x1, real_y1), (real_x2, real_y2), (int(class_to_color[key][0]), int(class_to_color[key][1]), int(class_to_color[key][2])),2)
 
+				predicted_annotations_txt.write(filepath + ',' + str(real_x1) + ',' + str(real_y1) + ',' + str(real_x2) + ',' + str(real_y2) + ',' + key + '\n')
 				textLabel = '{}: {}'.format(key,int(100*new_probs[jk]))
 				all_dets.append((key,100*new_probs[jk]))
 
