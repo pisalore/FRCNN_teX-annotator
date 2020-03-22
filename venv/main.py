@@ -30,7 +30,7 @@ def main():
         if(os.path.exists(tex_file_path)):
             print('\nParsing ' + pdf_file_path +'...')
             try:
-                detected_objects = parse_pdf(pdf_file_path, tex_file_path, is_annotation, is_train)
+                detected_objects = parse_pdf(pdf_file_path, tex_file_path, is_annotation, is_train, True)
             except:
                 detected_objects = []
                 if os.path.exists(PNG_FILES_TRAIN + file_id + '_annotated_images'):
@@ -47,7 +47,8 @@ def main():
             print('Num paper processed: ', files_processed)
 
     if os.path.exists(csv_file_path):
-        obtain_txt_train_images_file(csv_file_path)
+        txt_path = 'frcnn/annotated_train_images.txt'
+        obtain_txt_train_images_file(csv_file_path, txt_path, '..png_files/train_images/')
 
 if __name__ == "__main__":
     main()
