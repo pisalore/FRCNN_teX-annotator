@@ -234,21 +234,21 @@ def parse_pdf(PDF_path, TEX_Path, is_annotation, is_train_image, is_main):
                     else:
                         tables_coordinates.append(calculate_object_coordinates(page_counter, x.bbox, page_length, 'table'))
 
-            extracted_tables_coordinates = extract_tables_coordinates(tables_coordinates)
-            extracted_lists_coordinates = extract_lists_coordinates(lists_coordinates)
+        extracted_tables_coordinates = extract_tables_coordinates(tables_coordinates)
+        extracted_lists_coordinates = extract_lists_coordinates(lists_coordinates)
 
-            if with_annotations == 'yes':
-                print('Generating annotations...')
-                #if len(text_coordinates) != 0: annotate_img(filename, text_coordinates, text_coordinates[0][0], (0, 255, 255), 1)
-                if len(titles_coordinates) != 0: annotate_img(filename, titles_coordinates, titles_coordinates[0][0], (0,0,255), 3)
-                if len(images_coordinates) != 0: annotate_img(filename, images_coordinates, images_coordinates[0][0], (0,255,0), 3)
-                if len(extracted_lists_coordinates) != 0 : annotate_img(filename, extracted_lists_coordinates, extracted_lists_coordinates[0][0], (255,0,0), 3)
-                if len(extracted_tables_coordinates) !=0 : annotate_img(filename, extracted_tables_coordinates, extracted_tables_coordinates[0][0], (230, 255, 102), 3)
+        if with_annotations == 'yes':
+            print('Generating annotations...')
+            #if len(text_coordinates) != 0: annotate_img(filename, text_coordinates, text_coordinates[0][0], (0, 255, 255), 1)
+            if len(titles_coordinates) != 0: annotate_img(filename, titles_coordinates, titles_coordinates[0][0], (0,0,255), 3)
+            if len(images_coordinates) != 0: annotate_img(filename, images_coordinates, images_coordinates[0][0], (0,255,0), 3)
+            if len(extracted_lists_coordinates) != 0 : annotate_img(filename, extracted_lists_coordinates, extracted_lists_coordinates[0][0], (255,0,0), 3)
+            if len(extracted_tables_coordinates) !=0 : annotate_img(filename, extracted_tables_coordinates, extracted_tables_coordinates[0][0], (230, 255, 102), 3)
 
-            all_train_objects_coordinates.extend(titles_coordinates)
-            all_train_objects_coordinates.extend(images_coordinates)
-            all_train_objects_coordinates.extend(extracted_lists_coordinates)
-            all_train_objects_coordinates.extend(extracted_tables_coordinates)
-            all_train_objects_coordinates = sorted(all_train_objects_coordinates, key = itemgetter(0))
+        all_train_objects_coordinates.extend(titles_coordinates)
+        all_train_objects_coordinates.extend(images_coordinates)
+        all_train_objects_coordinates.extend(extracted_lists_coordinates)
+        all_train_objects_coordinates.extend(extracted_tables_coordinates)
+        all_train_objects_coordinates = sorted(all_train_objects_coordinates, key = itemgetter(0))
 
     return all_train_objects_coordinates
