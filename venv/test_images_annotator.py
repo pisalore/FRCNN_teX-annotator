@@ -26,7 +26,11 @@ for subdir in list_subfolders:
         print('Error in processing ' + file_id)
 
     file_processed += 1
-    if detected_objects: generate_csv_annotations(csv_file_path, file_id, detected_objects)
+    if detected_objects:
+        generate_csv_annotations(csv_file_path, file_id, detected_objects)
+    else:
+        errors.write('Error parsing ' + str(file_id) + '\n')
+        print('Error in processing ' + file_id)
     print(file_processed)
 
 errors.close()

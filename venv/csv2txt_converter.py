@@ -1,7 +1,11 @@
 import pandas as pd
-
+import os
 
 def obtain_txt_train_images_file(csv_file_path, txt_path, files_path):
+    if not os.path.isfile(csv_file_path):
+        print('.csv file does not exists.')
+        return
+
     print('Creating annotations in txt format.. \n')
     print('Reading csv file...')
     train = pd.read_csv(csv_file_path)
