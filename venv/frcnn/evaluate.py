@@ -1,4 +1,5 @@
 from os import path
+from evaluate_utils import evaluate_args
 
 
 # return the specified information from a line in order to correctly initialize an instance object
@@ -40,7 +41,6 @@ def add_pages(all_pages_instances):
             list_of_pages.append(page)
             page_instances = [line_instance]
             current_page = tmp_page
-
     return list_of_pages
 
 
@@ -49,7 +49,6 @@ def add_instances_to_page(page_instances):
     for instance_line in page_instances:
         page_instance = PageInstance(instance_line)
         list_of_instances.append(page_instance)
-
     return list_of_instances
 
 
@@ -93,7 +92,6 @@ def retrieve_papers_from_instances(instances, annotations_type):
             log_file.write(str(current_paper) + '\n')
             current_paper = tmp_paper
             paper = [instance_line]
-
     return list_of_papers
 
 
@@ -108,9 +106,20 @@ def load_annotations(ground_truth_path, predictions_path):
     return gt_instances, predicted_instances
 
 
-gt, pred = load_annotations('./annotated_test_images.txt', './predicted_test_images.txt')
-a = retrieve_papers_from_instances(gt, 'ground_truth')
-b = retrieve_papers_from_instances(pred, 'predictions')
+def main():
+    args = evaluate_args()
+    gt_papers = []
+    predictions_papers = []
+    gt_annotations, pred_annotations = load_annotations('./annotated_test_images.txt', './predicted_test_images.txt')
+    gt_papers_annotations = retrieve_papers_from_instances(gt_annotations, 'ground_truth')
+    pred_papers_annotations = retrieve_papers_from_instances(pred_annotations, 'predictions')
+    for gt, pred in gt_papers_annotations, pred_papers_annotations:
+        gt_paper, pred_paper = Paper(gt), Paper(pred)
+        gt_papers.append(gt_paper)
+        predictions_papers.append(pred_paper)
 
-prova = Paper(a[0])
-print(prova)
+    print('All papers generated.')
+
+
+if __name__ == "__main__":
+    main()
