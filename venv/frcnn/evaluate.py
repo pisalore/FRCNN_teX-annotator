@@ -36,9 +36,10 @@ class Paper:
             else:
                 page = Page(all_instances_of_page)
                 list_of_pages.append(page)
-                all_instances_of_page = []
-                all_instances_of_page.append(line_instance)
+                all_instances_of_page = [line_instance]
                 current_page = tmp_page
+
+        return list_of_pages
 
 
 class Page:
@@ -71,8 +72,7 @@ def retrieve_papers_from_instances(instances, type):
             list_of_papers.append(paper)
             log_file.write(str(current_paper) + '\n')
             current_paper = tmp_paper
-            paper = []
-            paper.append(instance_line)
+            paper = [instance_line]
 
     return list_of_papers
 
