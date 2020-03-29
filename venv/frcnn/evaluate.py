@@ -1,5 +1,5 @@
 import os
-from evaluate_utils import evaluate_args
+from intersection_over_union.evaluate_utils import evaluate_args
 
 
 # return the specified information from a line in order to correctly initialize an instance object
