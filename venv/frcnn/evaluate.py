@@ -116,20 +116,35 @@ def main():
     gt_path = args.gt_path
     gt_papers = []
     predictions_papers = []
+    papers_counter = 0
     gt_annotations, pred_annotations = load_annotations(gt_path, pred_path)
     gt_papers_annotations = retrieve_papers_from_instances(gt_annotations, 'ground_truth')
     pred_papers_annotations = retrieve_papers_from_instances(pred_annotations, 'predictions')
-    for gt, pred in gt_papers_annotations, pred_papers_annotations:
-        gt_paper, pred_paper = Paper(gt), Paper(pred)
+    print('Preparations of gt test papers objects...')
+    for gt in gt_papers_annotations:
+        gt_paper = Paper(gt)
+        print('Created paper object: ', gt_paper.paper_name)
         gt_papers.append(gt_paper)
+        papers_counter += 1
+        print('Processed ' + str(papers_counter) + ' gt papers')
+    print('Preparations of predictions test papers objects...')
+    papers_counter = 0
+    for pred in pred_papers_annotations:
+        pred_paper = Paper(pred)
+        print('Created paper object: ', pred_paper.paper_name)
         predictions_papers.append(pred_paper)
+        papers_counter += 1
+        print('Processed ' + str(papers_counter) + ' predictions papers')
 
     print('All papers generated.')
 
-#
-# if __name__ == "__main__":
-#     main()
-gt, pred = load_annotations('./annotated_test_images.txt', './predicted_test_images.txt')
-a = retrieve_papers_from_instances(gt, 'ground_truth')
-paper = Paper(a[0])
-print(a)
+
+if __name__ == "__main__":
+    main()
+
+
+# test purposes
+# gt, pred = load_annotations('./annotated_test_images.txt', './predicted_test_images.txt')
+# a = retrieve_papers_from_instances(gt, 'ground_truth')
+# paper = Paper(a[0])
+# print(a)
