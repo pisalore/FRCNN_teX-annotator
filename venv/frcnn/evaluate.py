@@ -108,9 +108,11 @@ def load_annotations(ground_truth_path, predictions_path):
 
 def main():
     args = evaluate_args()
+    pred_path = args.pred_path
+    gt_path = args.gt_path
     gt_papers = []
     predictions_papers = []
-    gt_annotations, pred_annotations = load_annotations('./annotated_test_images.txt', './predicted_test_images.txt')
+    gt_annotations, pred_annotations = load_annotations(gt_path, pred_path)
     gt_papers_annotations = retrieve_papers_from_instances(gt_annotations, 'ground_truth')
     pred_papers_annotations = retrieve_papers_from_instances(pred_annotations, 'predictions')
     for gt, pred in gt_papers_annotations, pred_papers_annotations:
