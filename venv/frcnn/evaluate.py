@@ -18,28 +18,29 @@ def obtain_paper_from_line(line):
     return path.basename(line).split(',')[0].split('_')[0]
 
 
+def add_pages(all_page_instances):
+    list_of_pages = []
+    all_instances_of_page = []
+    current_page = None
+    for line_instance in all_page_instances:
+        tmp_page = obtain_page_from_line(line_instance)
+        if not current_page:
+            current_page = tmp_page
+        if current_page == tmp_page:
+            all_instances_of_page.append(line_instance)
+        else:
+            page = Page(all_instances_of_page)
+            list_of_pages.append(page)
+            all_instances_of_page = [line_instance]
+            current_page = tmp_page
+
+    return list_of_pages
+
+
 class Paper:
     def __init__(self, all_paper_instances):
         self.all_paper_instances = all_paper_instances
-        self.pages = self.add_pages(self.all_paper_instances)
-
-    def add_pages(self, all_page_instances):
-        list_of_pages = []
-        all_instances_of_page = []
-        current_page = None
-        for line_instance in all_page_instances:
-            tmp_page = obtain_page_from_line(line_instance)
-            if not current_page:
-                current_page = tmp_page
-            if current_page == tmp_page:
-                all_instances_of_page.append(line_instance)
-            else:
-                page = Page(all_instances_of_page)
-                list_of_pages.append(page)
-                all_instances_of_page = [line_instance]
-                current_page = tmp_page
-
-        return list_of_pages
+        self.pages = add_pages(self.all_paper_instances)
 
 
 class Page:
