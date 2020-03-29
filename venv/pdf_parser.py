@@ -14,9 +14,11 @@ from difflib import SequenceMatcher
 from operator import itemgetter
 from timeout import timeout
 
+
 def are_similar(string_a, string_b):
     if SequenceMatcher(None, string_a, string_b).ratio() >= 0.75:
         return True
+
 
 def calculate_object_coordinates(page_counter, bbox, document_length, obj_category):
     computed_coordinates = []
@@ -34,6 +36,7 @@ def calculate_object_coordinates(page_counter, bbox, document_length, obj_catego
 
     return computed_coordinates
 
+
 def clean_Tables(tmp_extracted_tables_coordinates):
     table_id = 0
     lines_counter = 0
@@ -41,7 +44,7 @@ def clean_Tables(tmp_extracted_tables_coordinates):
     lines_to_be_removed = []
     for line in tmp_extracted_tables_coordinates[1:]:
         if table_id == line[-1]:
-            lines_counter +=1
+            lines_counter += 1
         elif lines_counter <= 1:
             lines_to_be_removed.append(selected_line)
             lines_counter = 1
@@ -54,9 +57,10 @@ def clean_Tables(tmp_extracted_tables_coordinates):
         tmp_extracted_tables_coordinates.remove(line_to_be_removed)
     return tmp_extracted_tables_coordinates
 
+
 def extract_tables_coordinates(tables_coordinates):
     extracted_tables_coordinates = []
-    if(len(tables_coordinates)):
+    if (len(tables_coordinates)):
         tmp_extracted_tables_coordinates = []
         added_table_ids = []
         current_page = 1
@@ -99,6 +103,7 @@ def extract_tables_coordinates(tables_coordinates):
 
     return extracted_tables_coordinates
 
+
 def extract_lists_coordinates(items_coordinates):
     items_num = len(items_coordinates)
     extracted_lists_coordinates = []
@@ -135,6 +140,7 @@ def extract_lists_coordinates(items_coordinates):
                 are_adjacent = False
 
     return extracted_lists_coordinates
+
 
 @timeout(300)
 def parse_pdf(PDF_path, TEX_Path, is_annotation, is_train_image, is_main):
@@ -186,15 +192,19 @@ def parse_pdf(PDF_path, TEX_Path, is_annotation, is_train_image, is_main):
             interpreter.process_page(page)
             # receive the LTPage object for the page.
             layout = device.get_result()
-            print('##########################################################################################################')
+            print(
+                '##########################################################################################################')
             print('PAGE NUMBER: ', page_counter)
-            print('##########################################################################################################', '\n')
+            print(
+                '##########################################################################################################',
+                '\n')
             for x in layout:
                 # TEXTS (TITLES AND LISTS)
                 if isinstance(x, LTTextBoxHorizontal):
                     lines = x._objs
                     if '' in lines: lines.remove('')
-                    for i in range(2 if len(lines) > 2 else len(lines)): #iterate over the first lines of a texbox since titles are always on the top
+                    for i in range(2 if len(lines) > 2 else len(
+                            lines)):  # iterate over the first lines of a texbox since titles are always on the top
 
                         pdf_line_result = lines[i].get_text().split('\n')[0].lower()
                         pdf_line_result = ''.join([i for i in pdf_line_result if not i.isdigit()])
@@ -203,8 +213,8 @@ def parse_pdf(PDF_path, TEX_Path, is_annotation, is_train_image, is_main):
                             tex_title = instance[2].lower()
                             if are_similar(tex_title, pdf_line_result) and pdf_line_result != '':
                                 titles_counter += 1
-                                # print('Title num: ', titles_counter, pdf_line_result)
-                                titles_coordinates.append(calculate_object_coordinates(page_counter, lines[i].bbox, page_length, 'title'))
+                                titles_coordinates.append(
+                                    calculate_object_coordinates(page_counter, lines[i].bbox, page_length, 'title'))
                     lines_counter = 0
                     for i in range(len(lines)):
                         pdf_line_result = lines[i].get_text().split('\n')[0].lower()
@@ -213,42 +223,49 @@ def parse_pdf(PDF_path, TEX_Path, is_annotation, is_train_image, is_main):
                         for instance in tex_instances[2]:
                             tex_list_item = instance[3]
                             if are_similar(tex_list_item[0:50], pdf_line_result[0:50]) and pdf_line_result != '':
-                                lists_coordinates.append(calculate_object_coordinates(page_counter, lines[i].bbox, page_length, 'list'))
+                                lists_coordinates.append(
+                                    calculate_object_coordinates(page_counter, lines[i].bbox, page_length, 'list'))
                             elif lines_counter > 2:
-                                text_coordinates.append(calculate_object_coordinates(page_counter, lines[i].bbox, page_length, 'text'))
+                                text_coordinates.append(
+                                    calculate_object_coordinates(page_counter, lines[i].bbox, page_length, 'text'))
                             lines_counter += 1
 
 
-                #FIGURES
+                # FIGURES
                 elif isinstance(x, LTImage) or isinstance(x, LTFigure):
-                  #  print('Image num: ', images_counter + 1)            #, tex_instances[1][images_counter][2] verify tex parser for images
-                  if (x.width / x.height > 5) or (x.height / x.width >5):
-                      pass
-                  else:
-                      images_counter += 1
-                      images_coordinates.append(calculate_object_coordinates(page_counter, x.bbox, page_length, 'image'))
-
-                elif isinstance(x, LTLine):
-                    if (x.height == 0 and x.width < 30) or x.width <= 0 :
+                    if (x.width / x.height > 5) or (x.height / x.width > 5):
                         pass
                     else:
-                        tables_coordinates.append(calculate_object_coordinates(page_counter, x.bbox, page_length, 'table'))
+                        images_counter += 1
+                        images_coordinates.append(
+                            calculate_object_coordinates(page_counter, x.bbox, page_length, 'image'))
+
+                elif isinstance(x, LTLine):
+                    if (x.height == 0 and x.width < 30) or x.width <= 0:
+                        pass
+                    else:
+                        tables_coordinates.append(
+                            calculate_object_coordinates(page_counter, x.bbox, page_length, 'table'))
 
         extracted_tables_coordinates = extract_tables_coordinates(tables_coordinates)
         extracted_lists_coordinates = extract_lists_coordinates(lists_coordinates)
 
         if with_annotations == 'yes':
             print('Generating annotations...')
-            #if len(text_coordinates) != 0: annotate_img(filename, text_coordinates, text_coordinates[0][0], (0, 255, 255), 1)
-            if len(titles_coordinates) != 0: annotate_img(filename, titles_coordinates, titles_coordinates[0][0], (0,0,255), 3)
-            if len(images_coordinates) != 0: annotate_img(filename, images_coordinates, images_coordinates[0][0], (0,255,0), 3)
-            if len(extracted_lists_coordinates) != 0 : annotate_img(filename, extracted_lists_coordinates, extracted_lists_coordinates[0][0], (255,0,0), 3)
-            if len(extracted_tables_coordinates) !=0 : annotate_img(filename, extracted_tables_coordinates, extracted_tables_coordinates[0][0], (230, 255, 102), 3)
+            if len(titles_coordinates) != 0: annotate_img(filename, titles_coordinates, titles_coordinates[0][0],
+                                                          (0, 0, 255), 3)
+            if len(images_coordinates) != 0: annotate_img(filename, images_coordinates, images_coordinates[0][0],
+                                                          (0, 255, 0), 3)
+            if len(extracted_lists_coordinates) != 0: annotate_img(filename, extracted_lists_coordinates,
+                                                                   extracted_lists_coordinates[0][0], (255, 0, 0), 3)
+            if len(extracted_tables_coordinates) != 0: annotate_img(filename, extracted_tables_coordinates,
+                                                                    extracted_tables_coordinates[0][0], (230, 255, 102),
+                                                                    3)
 
         all_train_objects_coordinates.extend(titles_coordinates)
         all_train_objects_coordinates.extend(images_coordinates)
         all_train_objects_coordinates.extend(extracted_lists_coordinates)
         all_train_objects_coordinates.extend(extracted_tables_coordinates)
-        all_train_objects_coordinates = sorted(all_train_objects_coordinates, key = itemgetter(0))
+        all_train_objects_coordinates = sorted(all_train_objects_coordinates, key=itemgetter(0))
 
     return all_train_objects_coordinates

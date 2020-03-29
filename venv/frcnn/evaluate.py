@@ -1,4 +1,4 @@
-from os import path
+import os
 from evaluate_utils import evaluate_args
 
 
@@ -9,12 +9,12 @@ def obtain_instance_value_from_line(line, pos):
 
 # return paper page from line
 def obtain_page_from_line(line):
-    return path.basename(line).split(',')[0].split('_')[1].split('.')[0]
+    return os.path.basename(line).split(',')[0].split('_')[1].split('.')[0]
 
 
 # return paper name from line
 def obtain_paper_from_line(line):
-    return path.basename(line).split(',')[0].split('_')[0]
+    return os.path.basename(line).split(',')[0].split('_')[0]
 
 
 # verifies if two instances are from the same paper page
@@ -57,11 +57,12 @@ class Paper:
         self.paper_name = obtain_paper_from_line(all_paper_instances[0])
         self.all_paper_instances = all_paper_instances
         self.pages = add_pages(self.all_paper_instances)
+        self.pages.sort(key=lambda x: x.page_number)
 
 
 class Page:
     def __init__(self, all_page_instances):
-        self.page_number = obtain_page_from_line(all_page_instances[0])
+        self.page_number = int(obtain_page_from_line(all_page_instances[0]))
         self.page_instances = add_instances_to_page(all_page_instances)
 
 
@@ -77,7 +78,10 @@ class PageInstance:
 
 # return a list of papers (instances is a list of strings; each string item is a line)
 def retrieve_papers_from_instances(instances, annotations_type):
-    log_file = open('./logs/' + annotations_type + '.txt', 'a+')
+    log_path = './logs/' + annotations_type + '.txt'
+    if os.path.exists(log_path):
+        os.remove(log_path)
+    log_file = open(log_path, 'a+')
     list_of_papers = []
     paper = []
     current_paper = None
@@ -122,6 +126,10 @@ def main():
 
     print('All papers generated.')
 
-
-if __name__ == "__main__":
-    main()
+#
+# if __name__ == "__main__":
+#     main()
+gt, pred = load_annotations('./annotated_test_images.txt', './predicted_test_images.txt')
+a = retrieve_papers_from_instances(gt, 'ground_truth')
+paper = Paper(a[0])
+print(a)
