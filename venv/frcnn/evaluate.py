@@ -1,8 +1,19 @@
 from os import path
 
+
+# return the specified information from a line in order to correctly initialize an instance object
+def obtain_instance_value_from_line(line, pos):
+    return line.split(',')[pos]
+
+
 # return paper page from line
 def obtain_page_from_line(line):
     return path.basename(line).split(',')[0].split('_')[1].split('.')[0]
+
+
+# return paper name from line
+def obtain_paper_from_line(line):
+    return path.basename(line).split(',')[0].split('_')[0]
 
 
 # verifies if two instances are from the same paper page
@@ -11,11 +22,6 @@ def are_instances_of_the_same_page(gt_line, pred_line):
     pred_pag = obtain_page_from_line(pred_line)
     if gt_pag == pred_pag:
         return True
-
-
-# return paper name from line
-def obtain_paper_from_line(line):
-    return path.basename(line).split(',')[0].split('_')[0]
 
 
 # add Pages objects to a Paper list of Pages from all instances (lines) of a paper
@@ -39,8 +45,12 @@ def add_pages(all_pages_instances):
 
 
 def add_instances_to_page(page_instances):
-    # TODO: from a line of page_instances generate a PageInstance object
-    print()
+    list_of_instances = []
+    for instance_line in page_instances:
+        page_instance = PageInstance(instance_line)
+        list_of_instances.append(page_instance)
+
+    return list_of_instances
 
 
 class Paper:
@@ -53,21 +63,22 @@ class Paper:
 class Page:
     def __init__(self, all_page_instances):
         self.page_number = obtain_page_from_line(all_page_instances[0])
-        self.all_page_instances = add_instances_to_page(self.all_page_instances)
+        self.page_instances = add_instances_to_page(all_page_instances)
 
 
 class PageInstance:
-    def __init__(self, page_objects_list):
-        self.x1 = page_objects_list[1]
-        self.y1 = page_objects_list[2]
-        self.x2 = page_objects_list[3]
-        self.y2 = documentObjectList[4]
-        self.instance_type = page_objects_list[5]
+    def __init__(self, page_instance):
+        self.filepath = obtain_instance_value_from_line(page_instance, 0)
+        self.x1 = obtain_instance_value_from_line(page_instance, 1)
+        self.y1 = obtain_instance_value_from_line(page_instance, 2)
+        self.x2 = obtain_instance_value_from_line(page_instance, 3)
+        self.y2 = obtain_instance_value_from_line(page_instance, 4)
+        self.instance_type = obtain_instance_value_from_line(page_instance, 5)
 
 
 # return a list of papers (instances is a list of strings; each string item is a line)
-def retrieve_papers_from_instances(instances, type):
-    log_file = open('./logs/' + type + '.txt', 'a+')
+def retrieve_papers_from_instances(instances, annotations_type):
+    log_file = open('./logs/' + annotations_type + '.txt', 'a+')
     list_of_papers = []
     paper = []
     current_paper = None
