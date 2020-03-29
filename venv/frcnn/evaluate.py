@@ -9,6 +9,7 @@ class PageInstance:
         self.y2 = documentObjectList[4]
         self.instance_type = page_objects_list[5]
 
+
 class Page:
     def __init__(self):
         a = 1
@@ -20,8 +21,26 @@ class Paper:
 
 
 # return a list of papers (instances is a list of strings; each string item is a line)
-def retrieve_papers_from_instances(instances):
-    return []
+def retrieve_papers_from_instances(instances, type):
+    log_file = open('./logs/' + type + '.txt', 'a+')
+    list_of_papers = []
+    paper = []
+    current_paper = None
+    for instance_line in instances:
+        tmp_paper = obtain_paper_from_line(instance_line)
+        if not current_paper:
+            current_paper = tmp_paper
+            paper.append(instance_line)
+        elif current_paper == tmp_paper:
+            paper.append(instance_line)
+        else:
+            list_of_papers.append(paper)
+            log_file.write(str(current_paper) + '\n')
+            current_paper = tmp_paper
+            paper = []
+            paper.append(instance_line)
+
+    return list_of_papers
 
 
 # load gt and predicted annotations
@@ -51,4 +70,7 @@ def obtain_page_from_line(line):
 def obtain_paper_from_line(line):
     return path.basename(line).split(',')[0].split('_')[0]
 
-load_annotations('./annotated_test_images.txt', './predicted_test_images.txt')
+
+gt, pred = load_annotations('./annotated_test_images.txt', './predicted_test_images.txt')
+a = retrieve_papers_from_instances(gt, 'ground_truth')
+b = retrieve_papers_from_instances(pred, 'predictions')
