@@ -1,7 +1,7 @@
 import numpy as np
 
 
-def evaluate_results(gt_papers_list, pred_papers_list):
+def evaluate_test_results(gt_papers_list, pred_papers_list):
     for gt, pred in zip(gt_papers_list, pred_papers_list):
         process_gt_and_pred_papers(gt, pred)
 

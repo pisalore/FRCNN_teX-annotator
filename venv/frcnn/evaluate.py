@@ -1,6 +1,6 @@
 import os
 from intersection_over_union.evaluate_utils import evaluate_args
-from intersection_over_union.intersection_over_union import evaluate_results
+from intersection_over_union.intersection_over_union import evaluate_test_results
 import numpy as np
 
 
@@ -140,7 +140,7 @@ def main():
     print('All papers generated.')
     # here I've correctly collected all my Papers object; now, I've to pass them to the IoU calculator.
     # The lists of papers are predictions_papers and gt_papers
-    evaluate_results(gt_papers, predictions_papers)
+    evaluate_test_results(gt_papers, predictions_papers)
 
 
 if __name__ == "__main__":
