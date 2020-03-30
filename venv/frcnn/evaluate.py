@@ -1,5 +1,7 @@
 import os
 from intersection_over_union.evaluate_utils import evaluate_args
+from intersection_over_union.intersection_over_union import evaluate_results
+import numpy as np
 
 
 # return the specified information from a line in order to correctly initialize an instance object
@@ -135,8 +137,10 @@ def main():
         predictions_papers.append(pred_paper)
         papers_counter += 1
         print('Processed ' + str(papers_counter) + ' predictions papers')
-
     print('All papers generated.')
+    # here I've correctly collected all my Papers object; now, I've to pass them to the IoU calculator.
+    # The lists of papers are predictions_papers and gt_papers
+    evaluate_results(gt_papers, predictions_papers)
 
 
 if __name__ == "__main__":
