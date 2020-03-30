@@ -13,17 +13,27 @@ def process_gt_and_pred_papers(gt_paper, pred_paper):
     gt_paper_pages = gt_paper.pages
     pred_paper_pages = pred_paper.pages
     paper_analytics.analyzed_paper_name = gt_paper.paper_name
-    for i, j in zip(range(len(gt_paper_pages)), range(len(pred_paper_pages))):
-        if gt_paper_pages[i].page_number == pred_paper_pages[j].page_number:
-            print('ok, evaluate')
-        elif gt_paper_pages[i].page_number > pred_paper_pages[j].page_number:
-            print('all pred page instances are false positives, iou is 0 for all of them')
-        else:
-            print('all gt page instances are false negatives, iou is 0 for all of them')
+    j = 0
+    for gt_page in gt_paper_pages:
+        for pred_page in pred_paper_pages:
+            if gt_page.page_number == pred_page.page_number:
+                print('ok, evaluate')
 
 
 def compute_iou(gt, pred):
     print()
+
+
+# return a list of three lists: match pages, paper1 pages not in paper2 pages, paper2 pages not in paper1 pages
+def verify_paper_pages_correspondences(paper1, paper2):
+    paper1_number_of_pages = [page.page_number for page in paper1.pages]
+    paper2_number_of_pages = [page.page_number for page in paper2.pages]
+    paper1_pages_not_in_paper2 = [value for value in paper1_number_of_pages if value not in paper2_number_of_pages]
+    paper2_pages_not_in_paper1 = [value for value in paper2_number_of_pages if value not in paper1_number_of_pages]
+    matched_pages = [value for value in paper1_number_of_pages if value in paper2_number_of_pages]
+    return matched_pages, paper1_pages_not_in_paper2, paper2_pages_not_in_paper1
+
+
 
 
 class PaperAnalytics:
@@ -41,4 +51,3 @@ class PageAnalytics:
         self.page_precision = None
         self.page_recall = None
         self.overall_iou = None
-
