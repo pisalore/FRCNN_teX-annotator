@@ -9,22 +9,22 @@ def evaluate_test_results(gt_papers_list, pred_papers_list):
 
 def process_gt_and_pred_papers(gt_paper, pred_paper):
     print('Processing papers... gt: ', gt_paper.paper_name, 'pred: ', pred_paper.paper_name)
+    matched_pages, additional_gt_pages, additional_pred_pages = verify_paper_pages_correspondences(gt_paper, pred_paper)
     paper_analytics = PaperAnalytics
-    gt_paper_pages = gt_paper.pages
-    pred_paper_pages = pred_paper.pages
     paper_analytics.analyzed_paper_name = gt_paper.paper_name
-    j = 0
-    for gt_page in gt_paper_pages:
-        for pred_page in pred_paper_pages:
-            if gt_page.page_number == pred_page.page_number:
-                print('ok, evaluate')
+    paper_analytics.additional_gt_pages = additional_gt_pages
+    paper_analytics.additional_pred_pages = additional_pred_pages
+    for page in matched_pages:
+        matched_gt_page = next(gt_page for gt_page in gt_paper.pages if gt_page.page_number == page)
+        matched_pred_page = next(pred_page for pred_page in pred_paper.pages if pred_page.page_number == page)
+        print()
 
 
 def compute_iou(gt, pred):
     print()
 
 
-# return a list of three lists: match pages, paper1 pages not in paper2 pages, paper2 pages not in paper1 pages
+# return three lists: match pages, paper1 pages not in paper2 pages, paper2 pages not in paper1 pages
 def verify_paper_pages_correspondences(paper1, paper2):
     paper1_number_of_pages = [page.page_number for page in paper1.pages]
     paper2_number_of_pages = [page.page_number for page in paper2.pages]
@@ -34,8 +34,6 @@ def verify_paper_pages_correspondences(paper1, paper2):
     return matched_pages, paper1_pages_not_in_paper2, paper2_pages_not_in_paper1
 
 
-
-
 class PaperAnalytics:
     def __init__(self):
         self.analyzed_paper_name = None
@@ -43,6 +41,8 @@ class PaperAnalytics:
         self.overall_precision = None
         self.overall_recall = None
         self.overall_iou = None
+        self.additional_gt_pages = None
+        self.additional_pred_pages = None
 
 
 class PageAnalytics:

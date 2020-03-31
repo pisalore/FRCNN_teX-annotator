@@ -66,6 +66,7 @@ class Page:
     def __init__(self, all_page_instances):
         self.page_number = int(obtain_page_from_line(all_page_instances[0]))
         self.page_instances = add_instances_to_page(all_page_instances)
+        self.paper = obtain_paper_from_line(all_page_instances[0])
 
 
 class PageInstance:
@@ -140,8 +141,8 @@ def main():
     print('All papers generated.')
     # here I've correctly collected all my Papers object; now, I've to pass them to the IoU calculator.
     # The lists of papers are predictions_papers and gt_papers
-    #evaluate_test_results(gt_papers, predictions_papers)
-    print(verify_paper_pages_correspondences(gt_papers[0], predictions_papers[0]))
+    evaluate_test_results(gt_papers, predictions_papers)
+    # print(verify_paper_pages_correspondences(gt_papers[0], predictions_papers[0]))
 
 
 if __name__ == "__main__":
