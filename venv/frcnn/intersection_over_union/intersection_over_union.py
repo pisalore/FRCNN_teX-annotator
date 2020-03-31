@@ -4,10 +4,11 @@
 import numpy as np
 import os
 
+log_path = './logs/test_results.txt'
+
 
 # iterate over any papers couple (gt, pred), calculates the iou, precision and recall
 def evaluate_test_results(gt_papers_list, pred_papers_list):
-    log_path = './logs/test_results.txt'
     if os.path.exists(log_path):
         os.remove(log_path)
     results_test_log_file = open(log_path, 'a+')
@@ -19,6 +20,9 @@ def evaluate_test_results(gt_papers_list, pred_papers_list):
 
 def process_gt_and_pred_papers(gt_paper, pred_paper):
     print('Processing papers... gt: ', gt_paper.paper_name, 'pred: ', pred_paper.paper_name)
+    results_test_log_file = open(log_path, 'a+')
+    results_test_log_file.write('ANALYZED PAPER: ' + gt_paper.paper_name + '\n')
+    results_test_log_file.close()
     # Loading pages matched between gt and pred papers and different pages
     matched_pages, additional_gt_pages, additional_pred_pages = verify_paper_pages_correspondences(gt_paper, pred_paper)
     # instantiate the paper analytics obj where save all the information collected for a paper in test analysis
