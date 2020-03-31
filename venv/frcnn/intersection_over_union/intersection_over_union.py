@@ -1,26 +1,43 @@
+# evaluate_test_results calculates iou for each instance, precision, recall; it also collects for each all different
+# pages (pages which belong to gt not in pred and viceversa). All progress are saved in a txt file. Precision and recall
+# results are also plotted.
 import numpy as np
+import os
 
 
 # iterate over any papers couple (gt, pred), calculates the iou, precision and recall
 def evaluate_test_results(gt_papers_list, pred_papers_list):
+    log_path = './logs/test_results.txt'
+    if os.path.exists(log_path):
+        os.remove(log_path)
+    results_test_log_file = open(log_path, 'a+')
+    results_test_log_file.write('TEST RESULTS LOG \n')
+    results_test_log_file.close()
     for gt, pred in zip(gt_papers_list, pred_papers_list):
         process_gt_and_pred_papers(gt, pred)
 
 
 def process_gt_and_pred_papers(gt_paper, pred_paper):
     print('Processing papers... gt: ', gt_paper.paper_name, 'pred: ', pred_paper.paper_name)
+    # Loading pages matched between gt and pred papers and different pages
     matched_pages, additional_gt_pages, additional_pred_pages = verify_paper_pages_correspondences(gt_paper, pred_paper)
+    # instantiate the paper analytics obj where save all the information collected for a paper in test analysis
     paper_analytics = PaperAnalytics
+    # name of analyzed paper
     paper_analytics.analyzed_paper_name = gt_paper.paper_name
+    # gt pages which are not in pred paper
     paper_analytics.additional_gt_pages = additional_gt_pages
+    # pred pages which are not in gt paper
     paper_analytics.additional_pred_pages = additional_pred_pages
+    # call compute_iou in order to calculate iou for each matched page; in page_analyzes of paper analytics I save all
+    # the statistics for that page for each instance
     for page in matched_pages:
         matched_gt_page = next(gt_page for gt_page in gt_paper.pages if gt_page.page_number == page)
         matched_pred_page = next(pred_page for pred_page in pred_paper.pages if pred_page.page_number == page)
-        print()
+        compute_iou(matched_gt_page, matched_pred_page)
 
 
-def compute_iou(gt, pred):
+def compute_iou(gt_page, pred_page):
     print()
 
 

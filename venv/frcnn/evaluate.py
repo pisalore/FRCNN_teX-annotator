@@ -81,7 +81,7 @@ class PageInstance:
 
 # return a list of papers (instances is a list of strings; each string item is a line)
 def retrieve_papers_from_instances(instances, annotations_type):
-    log_path = './logs/' + annotations_type + '.txt'
+    log_path = './logs/' + annotations_type + '_papers.txt'
     if os.path.exists(log_path):
         os.remove(log_path)
     log_file = open(log_path, 'a+')
