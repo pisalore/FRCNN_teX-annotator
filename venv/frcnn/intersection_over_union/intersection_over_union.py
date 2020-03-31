@@ -23,6 +23,7 @@ def process_gt_and_pred_papers(gt_paper, pred_paper):
     results_test_log_file = open(log_path, 'a+')
     results_test_log_file.write('ANALYZED PAPER: ' + gt_paper.paper_name + '\n')
     results_test_log_file.close()
+    analyzed_paper_pages = []
     # Loading pages matched between gt and pred papers and different pages
     matched_pages, additional_gt_pages, additional_pred_pages = verify_paper_pages_correspondences(gt_paper, pred_paper)
     # instantiate the paper analytics obj where save all the information collected for a paper in test analysis
@@ -38,11 +39,13 @@ def process_gt_and_pred_papers(gt_paper, pred_paper):
     for page in matched_pages:
         matched_gt_page = next(gt_page for gt_page in gt_paper.pages if gt_page.page_number == page)
         matched_pred_page = next(pred_page for pred_page in pred_paper.pages if pred_page.page_number == page)
-        compute_iou(matched_gt_page, matched_pred_page)
+        page_analytics = process_page_analysis(matched_gt_page, matched_pred_page)
+        analyzed_paper_pages.append(page_analytics)
 
 
-def compute_iou(gt_page, pred_page):
-    print()
+def process_page_analysis(gt_page, pred_page):
+    page_analytics = PageAnalytics()
+    return page_analytics
 
 
 # return three lists: match pages, paper1 pages not in paper2 pages, paper2 pages not in paper1 pages
