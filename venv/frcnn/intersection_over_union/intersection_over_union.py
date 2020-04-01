@@ -115,8 +115,8 @@ def intersection_over_union(gt_x1, gt_y1, gt_x2, gt_y2, pred_x1, pred_y1, pred_x
     inter_area = max(0, xB - xA + 1) * max(0, yB - yA + 1)
     # compute the area of both the prediction and ground-truth
     # rectangles
-    box_gt_area = (gt_box[2] - gt_box[0] + 1) * (gt_box[3] - gt_box[1] + 1)
-    box_pred_area = (pred_box[2] - pred_box[0] + 1) * (pred_box[3] - pred_box[1] + 1)
+    box_gt_area = (gt_x2 - gt_x1 + 1) * (gt_y2 - gt_y1 + 1)
+    box_pred_area = (pred_x2 - pred_x1 + 1) * (pred_y2 - pred_y1 + 1)
     # compute the intersection over union by taking the intersection
     # area and dividing it by the sum of prediction + ground-truth
     # areas - the intersection area

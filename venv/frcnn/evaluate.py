@@ -72,10 +72,10 @@ class Page:
 class PageInstance:
     def __init__(self, page_instance):
         self.filepath = obtain_instance_value_from_line(page_instance, 0)
-        self.x1 = obtain_instance_value_from_line(page_instance, 1)
-        self.y1 = obtain_instance_value_from_line(page_instance, 2)
-        self.x2 = obtain_instance_value_from_line(page_instance, 3)
-        self.y2 = obtain_instance_value_from_line(page_instance, 4)
+        self.x1 = float(obtain_instance_value_from_line(page_instance, 1))
+        self.y1 = float(obtain_instance_value_from_line(page_instance, 2))
+        self.x2 = float(obtain_instance_value_from_line(page_instance, 3))
+        self.y2 = float(obtain_instance_value_from_line(page_instance, 4))
         self.instance_type = obtain_instance_value_from_line(page_instance, 5)
 
 
@@ -147,10 +147,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
-# test purposes
-# gt, pred = load_annotations('./annotated_test_images.txt', './predicted_test_images.txt')
-# a = retrieve_papers_from_instances(gt, 'ground_truth')
-# paper = Paper(a[0])
-# print(a)
