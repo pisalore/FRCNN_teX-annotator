@@ -141,8 +141,7 @@ def main():
     print('All papers generated.')
     # here I've correctly collected all my Papers object; now, I've to pass them to the IoU calculator.
     # The lists of papers are predictions_papers and gt_papers
-    evaluate_test_results(gt_papers, predictions_papers)
-    # print(verify_paper_pages_correspondences(gt_papers[0], predictions_papers[0]))
+    analytics = evaluate_test_results(gt_papers, predictions_papers)
 
 
 if __name__ == "__main__":

@@ -158,3 +158,5 @@ class PageInstanceAnalytics:
     def __init__(self, ):
         self.iou = 0
         self.page_instance = None
+
+# TODO: add information to log file, prepare array for plot purposes
