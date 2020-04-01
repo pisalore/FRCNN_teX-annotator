@@ -148,7 +148,7 @@ class PaperAnalytics:
 
 class PageAnalytics:
     def __init__(self):
-        self.matched_instances = None
+        self.matched_instances = []
         self.page_precision = None
         self.page_recall = None
         self.overall_iou = None
