@@ -64,12 +64,12 @@ def process_page_analysis(gt_page, pred_page):
     return page_analytics
 
 
-def intersection_over_union(gt_box, pred_box):
+def intersection_over_union(gt_x1, gt_y1, gt_x2, gt_y2, pred_x1, pred_y1, pred_x2, pred_y2):
     # determine the (x, y)-coordinates of the intersection rectangle
-    xA = max(gt_box[0], pred_box[0])
-    yA = max(gt_box[1], pred_box[1])
-    xB = min(gt_box[2], pred_box[2])
-    yB = min(gt_box[3], pred_box[3])
+    xA = max(gt_x1, pred_x1)
+    yA = max(gt_y1, pred_y1)
+    xB = min(gt_x2, pred_x2)
+    yB = min(gt_y2, pred_y2)
     # compute the area of intersection rectangle
     inter_area = max(0, xB - xA + 1) * max(0, yB - yA + 1)
     # compute the area of both the prediction and ground-truth
