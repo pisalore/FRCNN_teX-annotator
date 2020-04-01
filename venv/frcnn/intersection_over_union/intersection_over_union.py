@@ -54,12 +54,25 @@ def process_gt_and_pred_papers(gt_paper, pred_paper):
 
 
 def process_page_analysis(gt_page, pred_page):
-    # Initialization of true positives, false positives and false negatives in order to calculate precision and recall
-    tp, fp, fn, precision, recall = 0
+    # Initialization of true positives, false positives and false negatives in order to calculate precision and recall;
+    # page instance analytics object initialization for the specific gt instance
+    tp, fp, fn, precision, recall = 0, 0, 0, 0, 0
     page_analytics = PageAnalytics()
     for gt_instance in gt_page.page_instances:
+        page_instance_analytics = PageInstanceAnalytics()
+        iou = 0
+        best_iou_pred_instance = None
+        # I iterate over all the prediction instances, calculating the iou only for the ones which are of the same
+        # gt_instance type; I save the instance wich realizes the max iou
         for pred_instance in pred_page.page_instances:
-            print()
+            if pred_instance.instance_type == gt_instance.instance_type:
+                tmp_iou = intersection_over_union(gt_instance.x1, gt_instance.y1,
+                                                  gt_instance.x2, gt_instance.y2, pred_instance.x1,
+                                                  pred_instance.y1, pred_instance.x2,
+                                                  pred_instance.y2)
+                if tmp_iou > iou:
+                    iou, best_iou_pred_instance = tmp_iou, pred_instance
+        print()
 
     return page_analytics
 
@@ -114,6 +127,6 @@ class PageAnalytics:
 
 
 class PageInstanceAnalytics:
-    def __init__(self):
+    def __init__(self, ):
         self.iou = 0
-        self.instance_type = None
+        self.page_instance = None
