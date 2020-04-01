@@ -54,10 +54,34 @@ def process_gt_and_pred_papers(gt_paper, pred_paper):
 
 
 def process_page_analysis(gt_page, pred_page):
-    # Page-> page_instances
+    # Initialization of true positives, false positives and false negatives in order to calculate precision and recall
+    tp, fp, fn, precision, recall = 0
     page_analytics = PageAnalytics()
+    for gt_instance in gt_page.page_instances:
+        for pred_instance in pred_page.page_instances:
+            print()
 
     return page_analytics
+
+
+def intersection_over_union(gt_box, pred_box):
+    # determine the (x, y)-coordinates of the intersection rectangle
+    xA = max(gt_box[0], pred_box[0])
+    yA = max(gt_box[1], pred_box[1])
+    xB = min(gt_box[2], pred_box[2])
+    yB = min(gt_box[3], pred_box[3])
+    # compute the area of intersection rectangle
+    inter_area = max(0, xB - xA + 1) * max(0, yB - yA + 1)
+    # compute the area of both the prediction and ground-truth
+    # rectangles
+    box_gt_area = (gt_box[2] - gt_box[0] + 1) * (gt_box[3] - gt_box[1] + 1)
+    box_pred_area = (pred_box[2] - pred_box[0] + 1) * (pred_box[3] - pred_box[1] + 1)
+    # compute the intersection over union by taking the intersection
+    # area and dividing it by the sum of prediction + ground-truth
+    # areas - the intersection area
+    iou = inter_area / float(box_gt_area + box_pred_area - inter_area)
+    # return the intersection over union value
+    return iou
 
 
 # return three lists: match pages, paper1 pages not in paper2 pages, paper2 pages not in paper1 pages
@@ -87,3 +111,9 @@ class PageAnalytics:
         self.page_precision = None
         self.page_recall = None
         self.overall_iou = None
+
+
+class PageInstanceAnalytics:
+    def __init__(self):
+        self.iou = 0
+        self.instance_type = None
