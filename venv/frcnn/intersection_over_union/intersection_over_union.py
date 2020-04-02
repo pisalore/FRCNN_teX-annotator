@@ -28,7 +28,7 @@ def process_gt_and_pred_papers(gt_paper, pred_paper):
     # In pages_analyzes all examined paper pages analytics will be saved
     pages_analyzes = []
     results_test_log_file = open(log_path, 'a+')
-    results_test_log_file.write('ANALYZED PAPER: ' + gt_paper.paper_name + '\n')
+    results_test_log_file.write('=================== ANALYZED PAPER: ' + gt_paper.paper_name + ' ===================\n')
     results_test_log_file.close()
     # Loading pages matched between gt and pred papers and different pages
     matched_pages, additional_gt_pages, additional_pred_pages = verify_paper_pages_correspondences(gt_paper, pred_paper)
@@ -62,6 +62,7 @@ def process_gt_and_pred_papers(gt_paper, pred_paper):
 def process_page_analysis(gt_page, pred_page):
     # Initialization of true positives, false positives and false negatives in order to calculate precision and recall;
     # page instance analytics object initialization for the specific gt instance
+    results_test_log_file = open(log_path, 'a+')
     tp, fp, fn = 0, 0, 0
     page_analytics = PageAnalytics()
     for gt_instance in gt_page.page_instances:
@@ -83,6 +84,13 @@ def process_page_analysis(gt_page, pred_page):
             page_instance_analytics.page_instance = best_iou_pred_instance
             page_instance_analytics.iou = iou
             page_analytics.matched_instances.append(page_instance_analytics)
+            results_test_log_file.write('TRUE POSITIVE INSTANCE.\n'
+                                        '\t Type: ' + page_instance_analytics.page_instance.instance_type + '\n' +
+                                        '\tiou: ' + str(page_instance_analytics.iou) + '\n' +
+                                        '\t(x1, y1) = (' + str(page_instance_analytics.page_instance.x1) +
+                                        str(page_instance_analytics.page_instance.y1) + ')' + ' (x2, y2) = (' +
+                                        str(page_instance_analytics.page_instance.x2) +
+                                        str(page_instance_analytics.page_instance.y2) + ') \n \n')
         else:
             fn += 1
     # Here I calculate the false positives, iterating for each pred instance over the gt instances; if not satisfying
