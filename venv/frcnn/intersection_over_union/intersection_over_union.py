@@ -101,6 +101,8 @@ def process_page_analysis(gt_page, pred_page):
 
     page_analytics.page_precision = float(tp / (tp + fp))
     page_analytics.page_recall = float(tp / (tp + fn))
+    page_analytics.overall_iou = np.mean([matched_instance.iou for matched_instance
+                                          in page_analytics.matched_instances])
 
     return page_analytics
 
