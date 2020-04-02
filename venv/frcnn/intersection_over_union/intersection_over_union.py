@@ -67,7 +67,7 @@ def process_gt_and_pred_papers(gt_paper, pred_paper):
                                 '\tTOTAL TRUE POSITIVES: ' + str(paper_analytics.overall_tp) + '\n' +
                                 '\tOVERALL FALSE POSITIVES: ' + str(paper_analytics.overall_fp) + '\n' +
                                 '\tOVERALL FALSE NEGATIVES: ' + str(paper_analytics.overall_fn) + '\n')
-    )
+
     results_test_log_file.close()
     return paper_analytics
 
