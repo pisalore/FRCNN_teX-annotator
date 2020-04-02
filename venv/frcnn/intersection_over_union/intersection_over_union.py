@@ -60,13 +60,15 @@ def process_gt_and_pred_papers(gt_paper, pred_paper):
     paper_analytics.overall_fn = np.sum([analyzed_page.fn for analyzed_page
                                          in paper_analytics.pages_analyzes])
     results_test_log_file = open(log_path, 'a+')
-    results_test_log_file.write('PAPER ANALYTICS:.\n'
+    results_test_log_file.write('<===========================================================================> \n '
+                                'PAPER ANALYTICS:.\n'
                                 '\tOVERALL PRECISION: ' + str(paper_analytics.overall_precision) + '\n' +
                                 '\tOVERALL RECALL: ' + str(paper_analytics.overall_recall) + '\n' +
                                 '\tOVERALL IOU: ' + str(paper_analytics.overall_iou) + '\n' +
                                 '\tTOTAL TRUE POSITIVES: ' + str(paper_analytics.overall_tp) + '\n' +
                                 '\tOVERALL FALSE POSITIVES: ' + str(paper_analytics.overall_fp) + '\n' +
-                                '\tOVERALL FALSE NEGATIVES: ' + str(paper_analytics.overall_fn) + '\n')
+                                '\tOVERALL FALSE NEGATIVES: ' + str(paper_analytics.overall_fn) + '\n'
+                                '<===========================================================================>\n \n ')
 
     results_test_log_file.close()
     return paper_analytics
@@ -122,7 +124,9 @@ def process_page_analysis(gt_page, pred_page):
 
         if iou < 0.4:
             fp += 1
-
+    page_analytics.tp = tp
+    page_analytics.fp = fp
+    page_analytics.fn = fn
     page_analytics.page_precision = float(tp / (tp + fp))
     page_analytics.page_recall = float(tp / (tp + fn))
     if page_analytics.matched_instances:
@@ -135,7 +139,7 @@ def process_page_analysis(gt_page, pred_page):
                                     '\tFN: ' + str(page_analytics.fn) + '\n' +
                                     '\tPrecision: ' + str(page_analytics.page_precision) + '\n' +
                                     '\tRecall: ' + str(page_analytics.page_recall) + '\n' +
-                                    '\tOverall iou: ' + str(page_analytics.overall_iou) + '\n')
+                                    '\tOverall iou: ' + str(page_analytics.overall_iou) + '\n \n')
 
     results_test_log_file.close()
     return page_analytics
