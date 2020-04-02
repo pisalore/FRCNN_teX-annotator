@@ -13,9 +13,6 @@ def evaluate_test_results(gt_papers_list, pred_papers_list):
     papers_analyzes = []
     if os.path.exists(log_path):
         os.remove(log_path)
-    results_test_log_file = open(log_path, 'a+')
-    results_test_log_file.write('TEST RESULTS LOG \n')
-    results_test_log_file.close()
     for gt, pred in zip(gt_papers_list, pred_papers_list):
         paper_analytics = process_gt_and_pred_papers(gt, pred)
         papers_analyzes.append(paper_analytics)
@@ -114,7 +111,7 @@ def process_page_analysis(gt_page, pred_page):
     if page_analytics.matched_instances:
         page_analytics.overall_iou = np.mean([matched_instance.iou for matched_instance
                                               in page_analytics.matched_instances])
-
+    results_test_log_file.close()
     return page_analytics
 
 
