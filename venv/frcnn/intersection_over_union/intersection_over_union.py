@@ -54,6 +54,8 @@ def process_gt_and_pred_papers(gt_paper, pred_paper):
                                                  in paper_analytics.pages_analyzes])
     paper_analytics.overall_recall = np.mean([analyzed_page.page_recall for analyzed_page
                                               in paper_analytics.pages_analyzes])
+    paper_analytics.overall_iou = np.mean([analyzed_page.overall_iou for analyzed_page
+                                           in paper_analytics.pages_analyzes])
     return paper_analytics
 
 
@@ -101,8 +103,9 @@ def process_page_analysis(gt_page, pred_page):
 
     page_analytics.page_precision = float(tp / (tp + fp))
     page_analytics.page_recall = float(tp / (tp + fn))
-    page_analytics.overall_iou = np.mean([matched_instance.iou for matched_instance
-                                          in page_analytics.matched_instances])
+    if page_analytics.matched_instances:
+        page_analytics.overall_iou = np.mean([matched_instance.iou for matched_instance
+                                              in page_analytics.matched_instances])
 
     return page_analytics
 
@@ -141,9 +144,9 @@ class PaperAnalytics:
     def __init__(self):
         self.analyzed_paper_name = None
         self.pages_analyzes = None
-        self.overall_precision = None
-        self.overall_recall = None
-        self.overall_iou = None
+        self.overall_precision = 0.0
+        self.overall_recall = 0.0
+        self.overall_iou = 0.0
         self.additional_gt_pages = None
         self.additional_pred_pages = None
 
@@ -151,14 +154,14 @@ class PaperAnalytics:
 class PageAnalytics:
     def __init__(self):
         self.matched_instances = []
-        self.page_precision = None
-        self.page_recall = None
-        self.overall_iou = None
+        self.page_precision = 0.0
+        self.page_recall = 0.0
+        self.overall_iou = 0.0
 
 
 class PageInstanceAnalytics:
     def __init__(self, ):
-        self.iou = 0
+        self.iou = 0.0
         self.page_instance = None
 
 # TODO: add information to log file, prepare array for plot purposes
