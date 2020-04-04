@@ -1,6 +1,6 @@
 import os
 from intersection_over_union.evaluate_utils import evaluate_args
-from intersection_over_union.intersection_over_union import evaluate_test_results, verify_paper_pages_correspondences,\
+from intersection_over_union.intersection_over_union import evaluate_test_results, verify_paper_pages_correspondences, \
     thresholds
 import numpy as np
 import matplotlib.pyplot as plt
@@ -153,6 +153,10 @@ def main():
     # The lists of papers are predictions_papers and gt_papers
     analytics = evaluate_test_results(gt_papers, predictions_papers)
     print('Analysis successfully terminated.')
+    for paper in analytics:
+        print(paper.analyzed_paper_name, ' f1', paper.f1_score)
+        print('recall: ', paper.overall_recall)
+        print('precision', paper.overall_precision)
     f1 = [np.mean([paper.f1_score[i] for paper
                    in analytics]) for i in range(len(thresholds))]
     precision = [np.mean([paper.overall_precision[i] for paper

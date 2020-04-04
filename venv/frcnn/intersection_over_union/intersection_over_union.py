@@ -15,12 +15,15 @@ def evaluate_test_results(gt_papers_list, pred_papers_list):
     if os.path.exists(log_path):
         os.remove(log_path)
     for gt, pred in zip(gt_papers_list, pred_papers_list):
-        papers_analyzes.append(process_gt_and_pred_papers(gt, pred))
+        matched_pages, additional_gt_pages, additional_pred_pages = verify_paper_pages_correspondences(gt, pred)
+        if matched_pages:
+            papers_analyzes.append(process_gt_and_pred_papers(gt, pred, matched_pages, additional_gt_pages,
+                                                              additional_pred_pages))
 
     return papers_analyzes
 
 
-def process_gt_and_pred_papers(gt_paper, pred_paper):
+def process_gt_and_pred_papers(gt_paper, pred_paper, matched, additional_gt, additional_pred):
     print('Processing papers... gt: ', gt_paper.paper_name, 'pred: ', pred_paper.paper_name)
     # In pages_analyzes all examined paper pages analytics will be saved
     pages_analyzes = []
@@ -28,7 +31,7 @@ def process_gt_and_pred_papers(gt_paper, pred_paper):
     results_test_log_file.write('=================== ANALYZED PAPER: ' + gt_paper.paper_name + ' ===================\n')
     results_test_log_file.close()
     # Loading pages matched between gt and pred papers and different pages
-    matched_pages, additional_gt_pages, additional_pred_pages = verify_paper_pages_correspondences(gt_paper, pred_paper)
+    matched_pages, additional_gt_pages, additional_pred_pages = matched, additional_gt, additional_pred
     # instantiate the paper analytics obj where save all the information collected for a paper in test analysis
     paper_analytics = PaperAnalytics()
     # name of analyzed paper
@@ -59,13 +62,9 @@ def process_gt_and_pred_papers(gt_paper, pred_paper):
                                           in paper_analytics.pages_analyzes]) for i in range(len(thresholds))]
     paper_analytics.overall_fn = [np.sum([analyzed_page.fn[i] for analyzed_page
                                           in paper_analytics.pages_analyzes]) for i in range(len(thresholds))]
-    if paper_analytics.overall_precision and paper_analytics.overall_recall:
-        paper_analytics.f1_score = [calculate_f1_score(paper_analytics.overall_recall[i],
-                                                       paper_analytics.overall_precision[i]) for i in
-                                    range(len(thresholds)) if
-                                    paper_analytics.overall_precision[i] and paper_analytics.overall_recall[i]]
-    else:
-        paper_analytics.f1_score = 0.0
+    paper_analytics.f1_score = [calculate_f1_score(paper_analytics.overall_recall[i],
+                                                   paper_analytics.overall_precision[i]) for i in
+                                range(len(thresholds))]
     results_test_log_file = open(log_path, 'a+')
     results_test_log_file.write('<===========================================================================> \n '
                                 'PAPER ANALYTICS:.\n'
@@ -182,6 +181,8 @@ def intersection_over_union(gt_x1, gt_y1, gt_x2, gt_y2, pred_x1, pred_y1, pred_x
 
 
 def calculate_f1_score(precision, recall):
+    if not precision or not recall:
+        return 0.0
     return 2 * (1 / (1 / precision + 1 / recall))
 
 
