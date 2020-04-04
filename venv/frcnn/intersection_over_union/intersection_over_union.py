@@ -5,6 +5,7 @@ import numpy as np
 import os
 
 log_path = './logs/test_results.txt'
+thresholds = [0.1, 0.15, 0.20, 0.25, 0.30, 0.35, 0.40, 0.45, 0.50, 0.55, 0.60, 0.65, 0.70, 0.75, 0.80]
 
 
 # iterate over any papers couple (gt, pred), calculates the iou, precision and recall
@@ -58,6 +59,9 @@ def process_gt_and_pred_papers(gt_paper, pred_paper):
                                          in paper_analytics.pages_analyzes])
     paper_analytics.overall_fn = np.sum([analyzed_page.fn for analyzed_page
                                          in paper_analytics.pages_analyzes])
+    if paper_analytics.overall_precision and paper_analytics.overall_recall:
+        paper_analytics.f1_score = 2 * (
+                1 / (1 / paper_analytics.overall_precision + 1 / paper_analytics.overall_recall))
     results_test_log_file = open(log_path, 'a+')
     results_test_log_file.write('<===========================================================================> \n '
                                 'PAPER ANALYTICS:.\n'
@@ -65,8 +69,9 @@ def process_gt_and_pred_papers(gt_paper, pred_paper):
                                 '\tOVERALL RECALL: ' + str(paper_analytics.overall_recall) + '\n' +
                                 '\tOVERALL IOU: ' + str(paper_analytics.overall_iou) + '\n' +
                                 '\tTOTAL TRUE POSITIVES: ' + str(paper_analytics.overall_tp) + '\n' +
-                                '\tOVERALL FALSE POSITIVES: ' + str(paper_analytics.overall_fp) + '\n' +
-                                '\tOVERALL FALSE NEGATIVES: ' + str(paper_analytics.overall_fn) + '\n'
+                                '\tTOTAL FALSE POSITIVES: ' + str(paper_analytics.overall_fp) + '\n' +
+                                '\tTOTAL FALSE NEGATIVES: ' + str(paper_analytics.overall_fn) + '\n' +
+                                '\tF1 SCORE: ' + str(paper_analytics.f1_score) + '\n' +
                                 '<===========================================================================>\n \n ')
 
     results_test_log_file.close()
@@ -80,65 +85,66 @@ def process_page_analysis(gt_page, pred_page):
     tp, fp, fn = 0, 0, 0
     page_analytics = PageAnalytics()
     page_analytics.page_number = gt_page.page_number
-    for gt_instance in gt_page.page_instances:
-        page_instance_analytics = PageInstanceAnalytics()
-        iou = 0
-        best_iou_pred_instance = None
-        # I iterate over all the prediction instances, calculating the iou only for the ones which are of the same
-        # gt_instance type; I save the instance which realizes the max iou
-        for pred_instance in pred_page.page_instances:
-            if pred_instance.instance_type == gt_instance.instance_type:
-                tmp_iou = intersection_over_union(gt_instance.x1, gt_instance.y1,
-                                                  gt_instance.x2, gt_instance.y2, pred_instance.x1,
-                                                  pred_instance.y1, pred_instance.x2,
-                                                  pred_instance.y2)
-                if tmp_iou > iou:
-                    iou, best_iou_pred_instance = tmp_iou, pred_instance
-        if iou > 0.4 and best_iou_pred_instance:
-            tp += 1
-            page_instance_analytics.page_instance = best_iou_pred_instance
-            page_instance_analytics.iou = iou
-            page_analytics.matched_instances.append(page_instance_analytics)
-            results_test_log_file.write('TRUE POSITIVE INSTANCE.\n'
-                                        '\tType: ' + page_instance_analytics.page_instance.instance_type + '\n' +
-                                        '\tiou: ' + str(page_instance_analytics.iou) + '\n' +
-                                        '\t(x1, y1) = (' + str(page_instance_analytics.page_instance.x1) +
-                                        str(page_instance_analytics.page_instance.y1) + ')' + ' (x2, y2) = (' +
-                                        str(page_instance_analytics.page_instance.x2) +
-                                        str(page_instance_analytics.page_instance.y2) + ') \n \n')
-        else:
-            fn += 1
-    # Here I calculate the false positives, iterating for each pred instance over the gt instances; if not satisfying
-    # iou, the a fp is found
-    for pred_instance in pred_page.page_instances:
-        iou = 0
+    for t in thresholds:
         for gt_instance in gt_page.page_instances:
-            if gt_instance.instance_type == pred_instance.instance_type:
-                tmp_iou = intersection_over_union(gt_instance.x1, gt_instance.y1,
-                                                  gt_instance.x2, gt_instance.y2, pred_instance.x1,
-                                                  pred_instance.y1, pred_instance.x2,
-                                                  pred_instance.y2)
-                if tmp_iou > iou:
-                    iou = tmp_iou
+            page_instance_analytics = PageInstanceAnalytics()
+            iou = 0
+            best_iou_pred_instance = None
+            # I iterate over all the prediction instances, calculating the iou only for the ones which are of the same
+            # gt_instance type; I save the instance which realizes the max iou
+            for pred_instance in pred_page.page_instances:
+                if pred_instance.instance_type == gt_instance.instance_type:
+                    tmp_iou = intersection_over_union(gt_instance.x1, gt_instance.y1,
+                                                      gt_instance.x2, gt_instance.y2, pred_instance.x1,
+                                                      pred_instance.y1, pred_instance.x2,
+                                                      pred_instance.y2)
+                    if tmp_iou > iou:
+                        iou, best_iou_pred_instance = tmp_iou, pred_instance
+            if iou > t and best_iou_pred_instance:
+                tp += 1
+                page_instance_analytics.page_instance = best_iou_pred_instance
+                page_instance_analytics.iou = iou
+                page_analytics.matched_instances.append(page_instance_analytics)
+                # results_test_log_file.write('TRUE POSITIVE INSTANCE.\n'
+                #                             '\tType: ' + page_instance_analytics.page_instance.instance_type + '\n' +
+                #                             '\tiou: ' + str(page_instance_analytics.iou) + '\n' +
+                #                             '\t(x1, y1) = (' + str(page_instance_analytics.page_instance.x1) +
+                #                             str(page_instance_analytics.page_instance.y1) + ')' + ' (x2, y2) = (' +
+                #                             str(page_instance_analytics.page_instance.x2) +
+                #                             str(page_instance_analytics.page_instance.y2) + ') \n \n')
+            else:
+                fn += 1
+        # Here I calculate the false positives, iterating for each pred instance over the gt instances; if not
+        # satisfying iou, the a fp is found
+        for pred_instance in pred_page.page_instances:
+            iou = 0
+            for gt_instance in gt_page.page_instances:
+                if gt_instance.instance_type == pred_instance.instance_type:
+                    tmp_iou = intersection_over_union(gt_instance.x1, gt_instance.y1,
+                                                      gt_instance.x2, gt_instance.y2, pred_instance.x1,
+                                                      pred_instance.y1, pred_instance.x2,
+                                                      pred_instance.y2)
+                    if tmp_iou > iou:
+                        iou = tmp_iou
 
-        if iou < 0.4:
-            fp += 1
-    page_analytics.tp = tp
-    page_analytics.fp = fp
-    page_analytics.fn = fn
-    page_analytics.page_precision = float(tp / (tp + fp))
-    page_analytics.page_recall = float(tp / (tp + fn))
+            if iou < 0.4:
+                fp += 1
+            page_analytics.tp.append(tp)
+            page_analytics.fp.append(fp)
+            page_analytics.fn.append(fn)
+            page_analytics.page_precision.append(float(tp / (tp + fp)))
+            page_analytics.page_recall.append(float(tp / (tp + fn)))
     if page_analytics.matched_instances:
         page_analytics.overall_iou = np.mean([matched_instance.iou for matched_instance
                                               in page_analytics.matched_instances])
-        results_test_log_file.write('PAGE ANALYTICS:.\n'
-                                    '\tPage number: ' + str(page_analytics.page_number) + '\n' +
-                                    '\tTP: ' + str(page_analytics.tp) + '\n' +
-                                    '\tFP: ' + str(page_analytics.fp) + '\n' +
-                                    '\tFN: ' + str(page_analytics.fn) + '\n' +
-                                    '\tPrecision: ' + str(page_analytics.page_precision) + '\n' +
-                                    '\tRecall: ' + str(page_analytics.page_recall) + '\n' +
-                                    '\tOverall iou: ' + str(page_analytics.overall_iou) + '\n \n')
+    #     results_test_log_file.write('PAGE ANALYTICS:.\n'
+    #                                 '\tPage number: ' + str(page_analytics.page_number) + '\n' +
+    #                                 '\tTP: ' + str(page_analytics.tp) + '\n' +
+    #                                 '\tFP: ' + str(page_analytics.fp) + '\n' +
+    #                                 '\tFN: ' + str(page_analytics.fn) + '\n' +
+    #                                 '\tPrecision: ' + str(page_analytics.page_precision) + '\n' +
+    #                                 '\tRecall: ' + str(page_analytics.page_recall) + '\n' +
+    #                                 '\tOverall iou: ' + str(page_analytics.overall_iou) + '\n \n')
 
     results_test_log_file.close()
     return page_analytics
@@ -178,12 +184,13 @@ class PaperAnalytics:
     def __init__(self):
         self.analyzed_paper_name = None
         self.pages_analyzes = None
-        self.overall_precision = 0.0
-        self.overall_recall = 0.0
-        self.overall_iou = 0.0
-        self.overall_tp = 0
-        self.overall_fp = 0
-        self.overall_fn = 0
+        self.overall_precision = []
+        self.overall_recall = []
+        self.overall_iou = []
+        self.overall_tp = []
+        self.overall_fp = []
+        self.overall_fn = []
+        self.f1_score = []
         self.additional_gt_pages = None
         self.additional_pred_pages = None
 
@@ -191,13 +198,13 @@ class PaperAnalytics:
 class PageAnalytics:
     def __init__(self):
         self.matched_instances = []
-        self.page_precision = 0.0
-        self.page_recall = 0.0
-        self.overall_iou = 0.0
+        self.page_precision = []
+        self.page_recall = []
+        self.overall_iou = []
         self.page_number = None
-        self.tp = 0
-        self.fp = 0
-        self.fn = 0
+        self.tp = []
+        self.fp = []
+        self.fn = []
 
 
 class PageInstanceAnalytics:

@@ -2,6 +2,7 @@ import os
 from intersection_over_union.evaluate_utils import evaluate_args
 from intersection_over_union.intersection_over_union import evaluate_test_results, verify_paper_pages_correspondences
 import numpy as np
+import matplotlib.pyplot as plt
 
 
 # return the specified information from a line in order to correctly initialize an instance object
