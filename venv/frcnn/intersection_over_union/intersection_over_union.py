@@ -14,8 +14,7 @@ def evaluate_test_results(gt_papers_list, pred_papers_list):
     if os.path.exists(log_path):
         os.remove(log_path)
     for gt, pred in zip(gt_papers_list, pred_papers_list):
-        paper_analytics = process_gt_and_pred_papers(gt, pred)
-        papers_analyzes.append(paper_analytics)
+        papers_analyzes.append(process_gt_and_pred_papers(gt, pred))
 
     return papers_analyzes
 
@@ -30,7 +29,7 @@ def process_gt_and_pred_papers(gt_paper, pred_paper):
     # Loading pages matched between gt and pred papers and different pages
     matched_pages, additional_gt_pages, additional_pred_pages = verify_paper_pages_correspondences(gt_paper, pred_paper)
     # instantiate the paper analytics obj where save all the information collected for a paper in test analysis
-    paper_analytics = PaperAnalytics
+    paper_analytics = PaperAnalytics()
     # name of analyzed paper
     paper_analytics.analyzed_paper_name = gt_paper.paper_name
     # gt pages which are not in pred paper

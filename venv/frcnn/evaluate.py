@@ -142,6 +142,7 @@ def main():
     # here I've correctly collected all my Papers object; now, I've to pass them to the IoU calculator.
     # The lists of papers are predictions_papers and gt_papers
     analytics = evaluate_test_results(gt_papers, predictions_papers)
+    print('Analysis successfully terminated.')
 
 
 if __name__ == "__main__":
