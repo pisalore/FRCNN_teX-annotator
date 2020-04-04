@@ -47,21 +47,22 @@ def process_gt_and_pred_papers(gt_paper, pred_paper):
         pages_analyzes.append(page_analytics)
 
     paper_analytics.pages_analyzes = pages_analyzes
-    paper_analytics.overall_precision = np.mean([analyzed_page.page_precision for analyzed_page
-                                                 in paper_analytics.pages_analyzes])
-    paper_analytics.overall_recall = np.mean([analyzed_page.page_recall for analyzed_page
-                                              in paper_analytics.pages_analyzes])
-    paper_analytics.overall_iou = np.mean([analyzed_page.overall_iou for analyzed_page
-                                           in paper_analytics.pages_analyzes])
-    paper_analytics.overall_tp = np.sum([analyzed_page.tp for analyzed_page
-                                         in paper_analytics.pages_analyzes])
-    paper_analytics.overall_fp = np.sum([analyzed_page.fp for analyzed_page
-                                         in paper_analytics.pages_analyzes])
-    paper_analytics.overall_fn = np.sum([analyzed_page.fn for analyzed_page
-                                         in paper_analytics.pages_analyzes])
+    paper_analytics.overall_precision = [np.mean([analyzed_page.page_precision[i] for analyzed_page
+                                                  in paper_analytics.pages_analyzes]) for i in range(len(thresholds))]
+    paper_analytics.overall_recall = [np.mean([analyzed_page.page_recall[i] for analyzed_page
+                                               in paper_analytics.pages_analyzes]) for i in range(len(thresholds))]
+    paper_analytics.overall_iou = [np.mean([analyzed_page.overall_iou[i] for analyzed_page
+                                            in paper_analytics.pages_analyzes]) for i in range(len(thresholds))]
+    paper_analytics.overall_tp = [np.sum([analyzed_page.tp[i] for analyzed_page
+                                          in paper_analytics.pages_analyzes]) for i in range(len(thresholds))]
+    paper_analytics.overall_fp = [np.sum([analyzed_page.fp[i] for analyzed_page
+                                          in paper_analytics.pages_analyzes]) for i in range(len(thresholds))]
+    paper_analytics.overall_fn = [np.sum([analyzed_page.fn[i] for analyzed_page
+                                          in paper_analytics.pages_analyzes]) for i in range(len(thresholds))]
     if paper_analytics.overall_precision and paper_analytics.overall_recall:
-        paper_analytics.f1_score = 2 * (
-                1 / (1 / paper_analytics.overall_precision + 1 / paper_analytics.overall_recall))
+        paper_analytics.f1_score = [calculate_f1_score(paper_analytics.overall_recall[i],
+                                                       paper_analytics.overall_precision[i]) for i in
+                                    range(len(thresholds))]
     results_test_log_file = open(log_path, 'a+')
     results_test_log_file.write('<===========================================================================> \n '
                                 'PAPER ANALYTICS:.\n'
@@ -82,10 +83,10 @@ def process_page_analysis(gt_page, pred_page):
     # Initialization of true positives, false positives and false negatives in order to calculate precision and recall;
     # page instance analytics object initialization for the specific gt instance
     results_test_log_file = open(log_path, 'a+')
-    tp, fp, fn = 0, 0, 0
     page_analytics = PageAnalytics()
     page_analytics.page_number = gt_page.page_number
     for t in thresholds:
+        tp, fp, fn = 0, 0, 0
         for gt_instance in gt_page.page_instances:
             page_instance_analytics = PageInstanceAnalytics()
             iou = 0
@@ -127,16 +128,20 @@ def process_page_analysis(gt_page, pred_page):
                     if tmp_iou > iou:
                         iou = tmp_iou
 
-            if iou < 0.4:
+            if iou < t:
                 fp += 1
-            page_analytics.tp.append(tp)
-            page_analytics.fp.append(fp)
-            page_analytics.fn.append(fn)
-            page_analytics.page_precision.append(float(tp / (tp + fp)))
-            page_analytics.page_recall.append(float(tp / (tp + fn)))
-    if page_analytics.matched_instances:
-        page_analytics.overall_iou = np.mean([matched_instance.iou for matched_instance
-                                              in page_analytics.matched_instances])
+        # here I save the results for the given threshold
+        page_analytics.tp.append(tp)
+        page_analytics.fp.append(fp)
+        page_analytics.fn.append(fn)
+        page_analytics.page_precision.append(float(tp / (tp + fp)))
+        page_analytics.page_recall.append(float(tp / (tp + fn)))
+        if page_analytics.matched_instances:
+            page_analytics.overall_iou.append(np.mean([matched_instance.iou for matched_instance
+                                                       in page_analytics.matched_instances]))
+        else:
+            page_analytics.overall_iou.append(0.0)
+
     #     results_test_log_file.write('PAGE ANALYTICS:.\n'
     #                                 '\tPage number: ' + str(page_analytics.page_number) + '\n' +
     #                                 '\tTP: ' + str(page_analytics.tp) + '\n' +
@@ -168,6 +173,10 @@ def intersection_over_union(gt_x1, gt_y1, gt_x2, gt_y2, pred_x1, pred_y1, pred_x
     iou = inter_area / float(box_gt_area + box_pred_area - inter_area)
     # return the intersection over union value
     return iou
+
+
+def calculate_f1_score(precision, recall):
+    return 2 * (1 / (1 / precision + 1 / recall))
 
 
 # return three lists: match pages, paper1 pages not in paper2 pages, paper2 pages not in paper1 pages
