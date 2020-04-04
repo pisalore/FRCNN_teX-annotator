@@ -1,6 +1,7 @@
 import os
 from intersection_over_union.evaluate_utils import evaluate_args
-from intersection_over_union.intersection_over_union import evaluate_test_results, verify_paper_pages_correspondences
+from intersection_over_union.intersection_over_union import evaluate_test_results, verify_paper_pages_correspondences,\
+    thresholds
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -114,6 +115,14 @@ def load_annotations(ground_truth_path, predictions_path):
     return gt_instances, predicted_instances
 
 
+def precision_recall_plot(precision, recall):
+    fig, ax = plt.subplots()
+    ax.plot(recall, precision)  # Plot some data on the axes.
+    ax.set_xlabel('Recall')  # Add an x-label to the axes.
+    ax.set_ylabel('Precision')  # Add a y-label to the axes.
+    ax.set_title("Precision-Recall Curve")  # Add a title to the axes.
+
+
 def main():
     args = evaluate_args()
     pred_path = args.pred_path
@@ -144,6 +153,14 @@ def main():
     # The lists of papers are predictions_papers and gt_papers
     analytics = evaluate_test_results(gt_papers, predictions_papers)
     print('Analysis successfully terminated.')
+    f1 = [np.mean([paper.f1_score[i] for paper
+                   in analytics]) for i in range(len(thresholds))]
+    precision = [np.mean([paper.overall_precision[i] for paper
+                          in analytics]) for i in range(len(thresholds))]
+    recall = [np.mean([paper.overall_recall[i] for paper
+                       in analytics]) for i in range(len(thresholds))]
+    precision_recall_plot(precision, recall)
+    plt.show()
 
 
 if __name__ == "__main__":

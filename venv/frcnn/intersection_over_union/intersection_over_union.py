@@ -62,7 +62,10 @@ def process_gt_and_pred_papers(gt_paper, pred_paper):
     if paper_analytics.overall_precision and paper_analytics.overall_recall:
         paper_analytics.f1_score = [calculate_f1_score(paper_analytics.overall_recall[i],
                                                        paper_analytics.overall_precision[i]) for i in
-                                    range(len(thresholds))]
+                                    range(len(thresholds)) if
+                                    paper_analytics.overall_precision[i] and paper_analytics.overall_recall[i]]
+    else:
+        paper_analytics.f1_score = 0.0
     results_test_log_file = open(log_path, 'a+')
     results_test_log_file.write('<===========================================================================> \n '
                                 'PAPER ANALYTICS:.\n'
