@@ -85,6 +85,7 @@ def process_page_analysis(gt_page, pred_page):
     results_test_log_file = open(log_path, 'a+')
     page_analytics = PageAnalytics()
     page_analytics.page_number = gt_page.page_number
+    t_counter = 0
     for t in thresholds:
         tp, fp, fn = 0, 0, 0
         for gt_instance in gt_page.page_instances:
@@ -104,8 +105,9 @@ def process_page_analysis(gt_page, pred_page):
             if iou > t and best_iou_pred_instance:
                 tp += 1
                 page_instance_analytics.page_instance = best_iou_pred_instance
+                page_instance_analytics.threshold = t
                 page_instance_analytics.iou = iou
-                page_analytics.matched_instances.append(page_instance_analytics)
+                page_analytics.matched_instances[t_counter].append(page_instance_analytics)
                 # results_test_log_file.write('TRUE POSITIVE INSTANCE.\n'
                 #                             '\tType: ' + page_instance_analytics.page_instance.instance_type + '\n' +
                 #                             '\tiou: ' + str(page_instance_analytics.iou) + '\n' +
@@ -136,11 +138,12 @@ def process_page_analysis(gt_page, pred_page):
         page_analytics.fn.append(fn)
         page_analytics.page_precision.append(float(tp / (tp + fp)))
         page_analytics.page_recall.append(float(tp / (tp + fn)))
-        if page_analytics.matched_instances:
+        if page_analytics.matched_instances[t_counter]:
             page_analytics.overall_iou.append(np.mean([matched_instance.iou for matched_instance
-                                                       in page_analytics.matched_instances]))
+                                                       in page_analytics.matched_instances[t_counter]]))
         else:
             page_analytics.overall_iou.append(0.0)
+        t_counter += 1
 
     #     results_test_log_file.write('PAGE ANALYTICS:.\n'
     #                                 '\tPage number: ' + str(page_analytics.page_number) + '\n' +
@@ -206,7 +209,7 @@ class PaperAnalytics:
 
 class PageAnalytics:
     def __init__(self):
-        self.matched_instances = []
+        self.matched_instances = [[] for i in range(len(thresholds))]
         self.page_precision = []
         self.page_recall = []
         self.overall_iou = []
@@ -219,6 +222,7 @@ class PageAnalytics:
 class PageInstanceAnalytics:
     def __init__(self, ):
         self.iou = 0.0
+        self.threshold = None
         self.page_instance = None
 
 # TODO: add information to log file, prepare array for plot purposes
