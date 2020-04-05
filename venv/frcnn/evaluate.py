@@ -115,12 +115,16 @@ def load_annotations(ground_truth_path, predictions_path):
     return gt_instances, predicted_instances
 
 
-def precision_recall_plot(precision, recall):
+def precision_recall_plot(precision, recall, f1):
     fig, ax = plt.subplots()
-    ax.plot(recall, precision)  # Plot some data on the axes.
-    ax.set_xlabel('Recall')  # Add an x-label to the axes.
-    ax.set_ylabel('Precision')  # Add a y-label to the axes.
-    ax.set_title("Precision-Recall Curve")  # Add a title to the axes.
+    x = thresholds
+    ax.plot(x, precision, label='precision')
+    ax.plot(x, recall, label='recall')
+    ax.plot(x, f1, label='f1 score')
+    ax.set_xlabel('thresholds')  # Add an x-label to the axes.
+    ax.set_ylabel('Percentage')  # Add a y-label to the axes.
+    ax.set_title("Precision-Recall-F1 Plot")  # Add a title to the axes.
+    ax.legend()
 
 
 def main():
@@ -153,17 +157,15 @@ def main():
     # The lists of papers are predictions_papers and gt_papers
     analytics = evaluate_test_results(gt_papers, predictions_papers)
     print('Analysis successfully terminated.')
-    for paper in analytics:
-        print(paper.analyzed_paper_name, ' f1', paper.f1_score)
-        print('recall: ', paper.overall_recall)
-        print('precision', paper.overall_precision)
+    # Here I calculate the precision, recall and f1 score means considering all the papers for all the threshold, which
+    # are 15 number; changing the thresholds list obviously is possible to obtain different analysis
     f1 = [np.mean([paper.f1_score[i] for paper
-                   in analytics]) for i in range(len(thresholds))]
+                   in analytics]) * 100 for i in range(len(thresholds))]
     precision = [np.mean([paper.overall_precision[i] for paper
-                          in analytics]) for i in range(len(thresholds))]
+                          in analytics]) * 100 for i in range(len(thresholds))]
     recall = [np.mean([paper.overall_recall[i] for paper
-                       in analytics]) for i in range(len(thresholds))]
-    precision_recall_plot(precision, recall)
+                       in analytics]) * 100 for i in range(len(thresholds))]
+    precision_recall_plot(precision, recall, f1)
     plt.show()
 
 
