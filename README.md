@@ -3,7 +3,7 @@
 # teX-annotator for F-RCNN
 ### A PDF documents annotator, based on lateX files downloaded from arXiv.org, which outputs annotated documents' pages used for a Faster RCNN trainining.
 
-#### 1. Repo contents
+### 1. Repo contents
 In this repo I present a PDF annotator, used to obtains data input for F-RCNN training tasks.
 The PDF annotator has the aim to detect:
 1. Titles
@@ -34,7 +34,7 @@ used to indicate to the **Faster RCNN** the training images. The test images are
 PDF files and their source files (lateX) have been downloaded from [arXiv.org](https://arxiv.org/); there were not
 document layout distinctions in downloading files. 
 
-#### 2. Project structure
+### 2. Project structure
 
 The project is organized as follows:
 ```
@@ -79,7 +79,7 @@ When the main finishes, all is set-up for start with the frcnn training.
 
 **NB**: the graphic pages annotations (specifying *--annotations=yes*) could be slow since also text is annotated.
 
-#### 3. Download files from arXiv.org
+### 3. Download files from arXiv.org
 The PDF and teX files are downloaded thanks to **the arXiv_download_script.py**. This script has to be launched before 
 the main one because it creates **PDF_files** and **TEX_files** populating them (unless you don't have >10K pdf and related
 teX).
@@ -105,7 +105,7 @@ optional arguments:
 ```
 These commands take into accounts how papers are saved on arXiv.org.
 
-#### 4. F-RCNN 
+### 4. F-RCNN 
 The annotated images serve as F-RCNN input data; the goal of this project is to test how much correctly the net can
 detects **titles, figures, lists and tables**. For this task I've chosen the F-RCNN net; further informations about it 
 are available on [R-CNN, Fast R-CNN, Faster R-CNN, YOLO — Object Detection Algorithms](https://towardsdatascience.com/r-cnn-fast-r-cnn-faster-r-cnn-yolo-object-detection-algorithms-36d53571365e).
@@ -163,7 +163,7 @@ An F1-PRECISION-RECALL plot it is shown after the computation, giving an idea of
 
     
 
-#### 6. Requirements
+### 6. Requirements
 The dipendencies required for this project are listed inside **requirements.txt**; you should simply open a shell and
 use ***pip3*** running:
 
@@ -178,7 +178,7 @@ run
 sort -u -o annotated_train_images.txt annotated_train_images.txt
 ```
 in order to obtain a correct objects list. 
-#### 7: Numbers, examples, results
+### 7: Numbers, examples, results
 I would like to share with you some numbers:
 * **10.200** pdf files processed (papers and various scientific articles) downloaded from arXIv.
     * 9 180 for training set
@@ -188,7 +188,7 @@ I would like to share with you some numbers:
 * **466452** instances (titles, images, lists and tables) found and analyzed with frcnn.
 
 
-#### 8. References
+### 8. References
 This project has been inspired by **PubLayNet**, a project where PDF taken from the PubMed Central dataset
 (over 360 thousands of articles!) are annotated with theirs relative XML files. PubLayNet paper is
 available [here](https://arxiv.org/pdf/1908.07836.pdf).
