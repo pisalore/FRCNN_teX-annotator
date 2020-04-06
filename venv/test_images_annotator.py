@@ -35,6 +35,3 @@ for subdir in list_subfolders:
 
 errors.close()
 obtain_txt_train_images_file(csv_file_path, txt_path, '..png_files/test_images/')
-
-
-

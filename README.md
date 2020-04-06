@@ -124,7 +124,46 @@ python3 test_frcnn.py -p ..png_files/test_images/
 ```
 The **test** procedure will outputs the **annotated test images** basing on the training task results.
 
-#### 5. Requirements
+
+#### 7. Test evaluation 
+
+Test evaluation is available. After test task, a **.txt** file will be generated with the result images: **predicted_test_images.txt**.
+This file contains all the details about all the instances detected during the test (obviously concerning the test set). 
+Furthermore, it's important to generate a similar file which constitutes the Ground Truth. Such a file has to be created
+after the FRCNN test phase, running the **test_images_annotator.py** script.
+```
+python3 test_images_annotator.py
+```
+This script will generate the **annotated_test_images.txt** and the **parse_error_test_files.txt**, which will contains the paper name
+that have been badly elaborated (parsing errors); this file is very important because, before the test evaluation, it is crucial
+to remove all the lines which refers to the erroneous papers in the **annotated_test_images.txt**: such an operation insures
+an unique correspondence between the GT and the predictions (**annotated_test_images.txt** and **predicted_test_images.txt**).
+
+Once you have done this operation, you can evaluate your FRCNN predictions simply running the **evaluate.py** script:
+ ```
+python3 evaluate.py
+```
+
+This script will generate:
+- a log with all the GT papers and another with all the PREDICTION papers; these logs file 
+could be useful if correspondence problems occur.
+- a **test_results.txt** file which contains all the information about the test evaluation of all the single papers.
+This file is so constructed: 
+    - PRED and GT different pages lists
+    - Precision
+    - Recall
+    - True Positives, False Positives, False Negatives
+    - F1 score
+    
+All these statistics are evaluated varying a threshold value used in the **Intersection Over Union**
+(IoU) algorithm used for predicted papers instances classification. The used thresholds are:
+[0.1, 0.15, 0.20, 0.25, 0.30, 0.35, 0.40, 0.45, 0.50, 0.55, 0.60, 0.65, 0.70, 0.75, 0.80].
+
+An F1-PRECISION-RECALL plot it is shown after the computation, giving an idea of the test accuracy.
+
+    
+
+#### 6. Requirements
 The dipendencies required for this project are listed inside **requirements.txt**; you should simply open a shell and
 use ***pip3*** running:
 
@@ -139,7 +178,7 @@ run
 sort -u -o annotated_train_images.txt annotated_train_images.txt
 ```
 in order to obtain a correct objects list. 
-#### 6: Numbers, examples, results
+#### 7: Numbers, examples, results
 I would like to share with you some numbers:
 * **10.200** pdf files processed (papers and various scientific articles) downloaded from arXIv.
     * 9 180 for training set
@@ -149,7 +188,7 @@ I would like to share with you some numbers:
 * **466452** instances (titles, images, lists and tables) found and analyzed with frcnn.
 
 
-#### 7. References
+#### 8. References
 This project has been inspired by **PubLayNet**, a project where PDF taken from the PubMed Central dataset
 (over 360 thousands of articles!) are annotated with theirs relative XML files. PubLayNet paper is
 available [here](https://arxiv.org/pdf/1908.07836.pdf).

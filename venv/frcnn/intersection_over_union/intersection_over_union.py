@@ -68,6 +68,8 @@ def process_gt_and_pred_papers(gt_paper, pred_paper, matched, additional_gt, add
     results_test_log_file = open(log_path, 'a+')
     results_test_log_file.write('<===========================================================================> \n '
                                 'PAPER ANALYTICS:.\n'
+                                '\tGT PAGES NOT IN PRED PAGES: ' + str(paper_analytics.additional_gt_pages) +
+                                '\tPRED PAGES NOT IN GT PAGES:' + str(paper_analytics.additional_pred_pages) +
                                 '\tOVERALL PRECISION: ' + str(paper_analytics.overall_precision) + '\n' +
                                 '\tOVERALL RECALL: ' + str(paper_analytics.overall_recall) + '\n' +
                                 '\tOVERALL IOU: ' + str(paper_analytics.overall_iou) + '\n' +
