@@ -105,7 +105,7 @@ optional arguments:
 ```
 These commands take into accounts how papers are saved on arXiv.org.
 
-### 4. F-RCNN 
+#### 4. F-RCNN 
 The annotated images serve as F-RCNN input data; the goal of this project is to test how much correctly the net can
 detects **titles, figures, lists and tables**. For this task I've chosen the F-RCNN net; further informations about it 
 are available on [R-CNN, Fast R-CNN, Faster R-CNN, YOLO — Object Detection Algorithms](https://towardsdatascience.com/r-cnn-fast-r-cnn-faster-r-cnn-yolo-object-detection-algorithms-36d53571365e).
@@ -125,7 +125,7 @@ python3 test_frcnn.py -p ..png_files/test_images/
 The **test** procedure will outputs the **annotated test images** basing on the training task results.
 
 
-#### 7. Test evaluation 
+### 5. Test evaluation 
 
 Test evaluation is available. After test task, a **.txt** file will be generated with the result images: **predicted_test_images.txt**.
 This file contains all the details about all the instances detected during the test (obviously concerning the test set). 
