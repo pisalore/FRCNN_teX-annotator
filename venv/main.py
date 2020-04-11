@@ -49,7 +49,7 @@ def main():
 
     if os.path.exists(csv_file_path):
         txt_path = 'frcnn/annotated_train_images.txt'
-        obtain_txt_train_images_file(csv_file_path, txt_path, '..png_files/train_images/')
+        obtain_txt_train_images_file(csv_file_path, txt_path, '../png_files/train_images/')
 
 
 if __name__ == "__main__":
