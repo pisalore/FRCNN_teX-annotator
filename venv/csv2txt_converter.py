@@ -1,6 +1,7 @@
 import pandas as pd
 import os
 
+
 def obtain_txt_train_images_file(csv_file_path, txt_path, files_path):
     if not os.path.isfile(csv_file_path):
         print('.csv file does not exists.')
@@ -27,4 +28,3 @@ def obtain_txt_train_images_file(csv_file_path, txt_path, files_path):
 
     data.to_csv(txt_path, header=None, index=None, sep=' ')
 
-#obtain_txt_train_images_file('images_annotations.csv')
