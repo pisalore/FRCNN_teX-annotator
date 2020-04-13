@@ -171,13 +171,7 @@ use ***pip3*** running:
 pip3 install -r requirements.txt
 ```
 For this project I used Python **3.7**; I recommend to use PyCharm.
-In the annotated_train_images.txt rows could be cloned (it's a known bug); please, after the txt generation,
-run 
 
-```
-sort -u -o annotated_train_images.txt annotated_train_images.txt
-```
-in order to obtain a correct objects list. 
 ### 7: Numbers, examples, results
 I would like to share with you some numbers:
 * **10.200** pdf files processed (papers and various scientific articles) downloaded from arXIv.
