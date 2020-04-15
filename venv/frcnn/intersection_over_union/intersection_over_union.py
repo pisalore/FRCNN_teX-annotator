@@ -50,8 +50,16 @@ def process_gt_and_pred_papers(gt_paper, pred_paper, matched, additional_gt, add
         # here the page analysis is computed
         page_analytics = process_page_analysis(matched_gt_page, matched_pred_page)
         pages_analyzes.append(page_analytics)
-
     paper_analytics.pages_analyzes = pages_analyzes
+    all_gt_paper_instances_per_class = np.zeros((len(thresholds), class_num))
+    all_pred_paper_instances_per_class = np.zeros((len(thresholds), class_num))
+
+    for page in pages_analyzes:
+        all_gt_paper_instances_per_class = np.sum([all_gt_paper_instances_per_class,
+                                                   page.gt_instances_number_for_class], axis=0)
+        all_pred_paper_instances_per_class = np.sum([all_pred_paper_instances_per_class,
+                                                     page.true_positives_instances_for_class], axis=0)
+
     paper_analytics.overall_precision = [np.mean([analyzed_page.page_precision[i] for analyzed_page
                                                   in paper_analytics.pages_analyzes]) for i in range(len(thresholds))]
     paper_analytics.overall_recall = [np.mean([analyzed_page.page_recall[i] for analyzed_page
@@ -171,11 +179,14 @@ def process_page_analysis(gt_page, pred_page):
         page_analytics.page_precision.append(float(tp / (tp + fp)))
         page_analytics.page_recall.append(float(tp / (tp + fn)))
         gt_instances_per_class_given_threshold = np.sum([gt_instances_per_class_given_threshold,
-                                        [gt_titles, gt_figures, gt_tables, gt_lists]], axis=0)
-        all_gt_instances_per_class = np.append(all_gt_instances_per_class, [gt_instances_per_class_given_threshold], axis=0)
+                                                         [gt_titles, gt_figures, gt_tables, gt_lists]], axis=0)
+        all_gt_instances_per_class = np.append(all_gt_instances_per_class, [gt_instances_per_class_given_threshold],
+                                               axis=0)
         pred_instances_per_class_given_threshold = np.sum([pred_instances_per_class_given_threshold,
-                                          [pred_tp_titles, pred_tp_figures, pred_tp_tables, pred_tp_lists]], axis=0)
-        all_pred_instances_per_class = np.append(all_pred_instances_per_class, [pred_instances_per_class_given_threshold], axis=0)
+                                                           [pred_tp_titles, pred_tp_figures, pred_tp_tables,
+                                                            pred_tp_lists]], axis=0)
+        all_pred_instances_per_class = np.append(all_pred_instances_per_class,
+                                                 [pred_instances_per_class_given_threshold], axis=0)
 
         if page_analytics.matched_instances[t_counter]:
             page_analytics.overall_iou.append(np.mean([matched_instance.iou for matched_instance
