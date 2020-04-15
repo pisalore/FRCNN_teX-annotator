@@ -1,7 +1,7 @@
 import os
 from intersection_over_union.evaluate_utils import evaluate_args
 from intersection_over_union.intersection_over_union import evaluate_test_results, verify_paper_pages_correspondences, \
-    thresholds, class_num
+    thresholds, class_num, log_path
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -173,7 +173,13 @@ def main():
         all_pred_papers_instances_per_class = np.sum([all_pred_papers_instances_per_class,
                                                      paper.all_pred_paper_instances_per_class], axis=0)
     all_ratios_between_gt_and_pred_per_class_by_threshold = all_pred_papers_instances_per_class / all_gt_papers_instances_per_class
+    print(all_ratios_between_gt_and_pred_per_class_by_threshold)
+    results_test_log_file = open(log_path, 'a+')
 
+    results_test_log_file.write('Classes instances ratio divided by threshold:.\n'
+                                'Titles, Figures, Tables, Lists \n'
+                                '\tGT PAGES NOT IN PRED PAGES: ' + str(all_ratios_between_gt_and_pred_per_class_by_threshold))
+    results_test_log_file.close()
     precision_recall_plot(precision, recall, f1)
     plt.show()
 
