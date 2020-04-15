@@ -60,6 +60,10 @@ def process_gt_and_pred_papers(gt_paper, pred_paper, matched, additional_gt, add
         all_pred_paper_instances_per_class = np.sum([all_pred_paper_instances_per_class,
                                                      page.true_positives_instances_for_class], axis=0)
 
+    paper_analytics.all_gt_paper_instances_per_class = all_gt_paper_instances_per_class
+    paper_analytics.all_pred_paper_instances_per_class = all_pred_paper_instances_per_class
+    paper_analytics.overall_true_positive_ratios_for_class = all_pred_paper_instances_per_class / all_gt_paper_instances_per_class
+
     paper_analytics.overall_precision = [np.mean([analyzed_page.page_precision[i] for analyzed_page
                                                   in paper_analytics.pages_analyzes]) for i in range(len(thresholds))]
     paper_analytics.overall_recall = [np.mean([analyzed_page.page_recall[i] for analyzed_page
@@ -259,6 +263,8 @@ class PaperAnalytics:
         self.f1_score = []
         self.additional_gt_pages = None
         self.additional_pred_pages = None
+        self.all_gt_paper_instances_per_class = []
+        self.all_pred_paper_instances_per_class = []
         self.overall_true_positive_ratios_for_class = []
 
 
