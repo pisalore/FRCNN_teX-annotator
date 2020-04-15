@@ -6,7 +6,7 @@ import os
 
 log_path = './logs/test_results.txt'
 thresholds = [0.1, 0.15, 0.20, 0.25, 0.30, 0.35, 0.40, 0.45, 0.50, 0.55, 0.60, 0.65, 0.70, 0.75, 0.80]
-
+class_num = 4
 
 # iterate over any papers couple (gt, pred), calculates the iou, precision and recall
 def evaluate_test_results(gt_papers_list, pred_papers_list):
@@ -42,6 +42,7 @@ def process_gt_and_pred_papers(gt_paper, pred_paper, matched, additional_gt, add
     paper_analytics.additional_pred_pages = additional_pred_pages
     # call compute_iou in order to calculate iou for each matched page; in page_analyzes of paper analytics I save all
     # the statistics for that page for each instance
+    overall_true_positive_ratios_for_class = []
     for page in matched_pages:
         matched_gt_page = next(gt_page for gt_page in gt_paper.pages if gt_page.page_number == page)
         matched_pred_page = next(pred_page for pred_page in pred_paper.pages if pred_page.page_number == page)
@@ -65,6 +66,7 @@ def process_gt_and_pred_papers(gt_paper, pred_paper, matched, additional_gt, add
     paper_analytics.f1_score = [calculate_f1_score(paper_analytics.overall_recall[i],
                                                    paper_analytics.overall_precision[i]) for i in
                                 range(len(thresholds))]
+
     results_test_log_file = open(log_path, 'a+')
     results_test_log_file.write('<===========================================================================> \n '
                                 'PAPER ANALYTICS:.\n'
@@ -89,9 +91,22 @@ def process_page_analysis(gt_page, pred_page):
     results_test_log_file = open(log_path, 'a+')
     page_analytics = PageAnalytics()
     page_analytics.page_number = gt_page.page_number
+    gt_instances_per_class = np.zeros([thresholds, 4])
     t_counter = 0
     for t in thresholds:
         tp, fp, fn = 0, 0, 0
+        gt_titles, gt_figures, gt_tables, gt_lists = 0, 0, 0, 0
+        pred_tp_titles, pred_tp_figures, pred_tp_tables, pred_tp_lists = 0, 0, 0, 0
+        # Here I count how many instances for each type are presented in the analyzed page
+        for gt_instance in gt_page.page_instances:
+            if gt_instance.instance_type == 'title':
+                gt_titles += 1
+            elif gt_instance.instance_type == 'image':
+                gt_figures += 1
+            elif gt_instance.instance_type == 'table':
+                gt_tables += 1
+            elif gt_instance.instance_type == 'list':
+                gt_lists += 1
         for gt_instance in gt_page.page_instances:
             page_instance_analytics = PageInstanceAnalytics()
             iou = 0
@@ -112,6 +127,15 @@ def process_page_analysis(gt_page, pred_page):
                 page_instance_analytics.threshold = t
                 page_instance_analytics.iou = iou
                 page_analytics.matched_instances[t_counter].append(page_instance_analytics)
+                # Here a match is found: i increment the respective class match counter
+                if gt_instance.instance_type == 'title':
+                    pred_tp_titles += 1
+                elif gt_instance.instance_type == 'image':
+                    pred_tp_figures += 1
+                elif gt_instance.instance_type == 'table':
+                    pred_tp_tables += 1
+                elif gt_instance.instance_type == 'list':
+                    pred_tp_lists += 1
                 # results_test_log_file.write('TRUE POSITIVE INSTANCE.\n'
                 #                             '\tType: ' + page_instance_analytics.page_instance.instance_type + '\n' +
                 #                             '\tiou: ' + str(page_instance_analytics.iou) + '\n' +
@@ -142,6 +166,10 @@ def process_page_analysis(gt_page, pred_page):
         page_analytics.fn.append(fn)
         page_analytics.page_precision.append(float(tp / (tp + fp)))
         page_analytics.page_recall.append(float(tp / (tp + fn)))
+        gt_instances_per_class = np.array([gt_titles, gt_figures, gt_tables, gt_lists])
+        pred_instances_per_class = np.array([pred_tp_titles, pred_tp_figures, pred_tp_tables, pred_tp_lists])
+        page_analytics.gt_instances_number_for_class.append(gt_instances_per_class)
+        page_analytics.true_positives_instances_for_class.append(pred_instances_per_class)
         if page_analytics.matched_instances[t_counter]:
             page_analytics.overall_iou.append(np.mean([matched_instance.iou for matched_instance
                                                        in page_analytics.matched_instances[t_counter]]))
@@ -211,6 +239,7 @@ class PaperAnalytics:
         self.f1_score = []
         self.additional_gt_pages = None
         self.additional_pred_pages = None
+        self.overall_true_positive_ratios_for_class = []
 
 
 class PageAnalytics:
@@ -223,6 +252,8 @@ class PageAnalytics:
         self.tp = []
         self.fp = []
         self.fn = []
+        self.gt_instances_number_for_class = []
+        self.true_positives_instances_for_class = []
 
 
 class PageInstanceAnalytics:
