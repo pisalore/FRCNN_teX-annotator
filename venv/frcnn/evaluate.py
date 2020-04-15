@@ -178,7 +178,7 @@ def main():
 
     results_test_log_file.write('Classes instances ratio divided by threshold:.\n'
                                 'Titles, Figures, Tables, Lists \n'
-                                '\tGT PAGES NOT IN PRED PAGES: ' + str(all_ratios_between_gt_and_pred_per_class_by_threshold))
+                                + str(all_ratios_between_gt_and_pred_per_class_by_threshold))
     results_test_log_file.close()
     precision_recall_plot(precision, recall, f1)
     plt.show()
