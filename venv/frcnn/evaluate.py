@@ -172,11 +172,17 @@ def main():
                                                    paper.all_gt_paper_instances_per_class], axis=0)
         all_pred_papers_instances_per_class = np.sum([all_pred_papers_instances_per_class,
                                                      paper.all_pred_paper_instances_per_class], axis=0)
-    all_ratios_between_gt_and_pred_per_class_by_threshold = all_pred_papers_instances_per_class / all_gt_papers_instances_per_class
+    all_ratios_between_gt_and_pred_per_class_by_threshold = all_pred_papers_instances_per_class / all_gt_papers_instances_per_class * 100
     print(all_ratios_between_gt_and_pred_per_class_by_threshold)
     results_test_log_file = open(log_path, 'a+')
 
-    results_test_log_file.write('Classes instances ratio divided by threshold:.\n'
+    results_test_log_file.write('\nClasses instances divided by threshold: GT annotations.\n'
+                                'Titles, Figures, Tables, Lists \n'
+                                + str(all_gt_papers_instances_per_class))
+    results_test_log_file.write('\nClasses instances divided by threshold: PREDICTIONS.\n'
+                                'Titles, Figures, Tables, Lists \n'
+                                + str(all_pred_papers_instances_per_class))
+    results_test_log_file.write('\nClasses instances divided by threshold: RATIOS.\n'
                                 'Titles, Figures, Tables, Lists \n'
                                 + str(all_ratios_between_gt_and_pred_per_class_by_threshold))
     results_test_log_file.close()
