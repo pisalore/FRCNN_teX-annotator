@@ -127,6 +127,12 @@ def precision_recall_plot(precision, recall, f1):
     ax.legend()
 
 
+def heatmap2d(arr: np.ndarray):
+    plt.imshow(arr, cmap='jet')
+    plt.colorbar()
+    plt.show()
+
+
 def main():
     args = evaluate_args()
     pred_path = args.pred_path
@@ -186,7 +192,10 @@ def main():
                                 'Titles, Figures, Tables, Lists \n'
                                 + str(all_ratios_between_gt_and_pred_per_class_by_threshold))
     results_test_log_file.close()
-    precision_recall_plot(precision, recall, f1)
+    # precision_recall_plot(precision, recall, f1)
+    heatmap2d(all_ratios_between_gt_and_pred_per_class_by_threshold.reshape(15, 4))
+    # test_array = np.arange(100 * 100).reshape(100, 100)
+    # heatmap2d(test_array)
     plt.show()
 
 
