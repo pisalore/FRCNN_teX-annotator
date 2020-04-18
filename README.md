@@ -120,7 +120,7 @@ python3 train_frcnn.py -o simple -p annotated_train_images.txt
 
 This command will start training which will generate an h5 model, that is the input for test:
 ```
-python3 test_frcnn.py -p ..png_files/test_images/
+python3 test_frcnn.py -p ../png_files/test_images/
 ```
 The **test** procedure will outputs the **annotated test images** basing on the training task results.
 
