@@ -145,7 +145,7 @@ running this command:
 ```
 sort -u -o <file_to_sort> <file_where_output_sort_operation>
 ```
-THen, run:
+Then, run:
  ```
 python3 evaluate.py
 ```
