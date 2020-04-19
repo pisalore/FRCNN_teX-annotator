@@ -4,6 +4,9 @@ from intersection_over_union.intersection_over_union import evaluate_test_result
     thresholds, class_num, log_path
 import numpy as np
 import matplotlib.pyplot as plt
+import shutil
+
+log_dir = './logs/'
 
 
 # return the specified information from a line in order to correctly initialize an instance object
@@ -84,8 +87,6 @@ class PageInstance:
 # return a list of papers (instances is a list of strings; each string item is a line)
 def retrieve_papers_from_instances(instances, annotations_type):
     log_path = './logs/' + annotations_type + '_papers.txt'
-    if os.path.exists(log_path):
-        os.remove(log_path)
     log_file = open(log_path, 'a+')
     list_of_papers = []
     paper = []
@@ -125,6 +126,7 @@ def precision_recall_plot(precision, recall, f1):
     ax.set_ylabel('Percentage')  # Add a y-label to the axes.
     ax.set_title("Precision-Recall-F1 Plot")  # Add a title to the axes.
     ax.legend()
+    plt.show()
 
 
 def heatmap2d(arr: np.ndarray):
@@ -141,6 +143,9 @@ def main():
     predictions_papers = []
     papers_counter = 0
     gt_annotations, pred_annotations = load_annotations(gt_path, pred_path)
+    if os.path.exists(log_dir):
+        shutil.rmtree(log_dir)
+    os.mkdir(log_dir)
     gt_papers_annotations = retrieve_papers_from_instances(gt_annotations, 'ground_truth')
     pred_papers_annotations = retrieve_papers_from_instances(pred_annotations, 'predictions')
     print('Preparations of gt test papers objects...')
@@ -175,9 +180,9 @@ def main():
     all_pred_papers_instances_per_class = np.zeros((len(thresholds), class_num))
     for paper in analytics:
         all_gt_papers_instances_per_class = np.sum([all_gt_papers_instances_per_class,
-                                                   paper.all_gt_paper_instances_per_class], axis=0)
+                                                    paper.all_gt_paper_instances_per_class], axis=0)
         all_pred_papers_instances_per_class = np.sum([all_pred_papers_instances_per_class,
-                                                     paper.all_pred_paper_instances_per_class], axis=0)
+                                                      paper.all_pred_paper_instances_per_class], axis=0)
     all_ratios_between_gt_and_pred_per_class_by_threshold = all_pred_papers_instances_per_class / all_gt_papers_instances_per_class * 100
     print(all_ratios_between_gt_and_pred_per_class_by_threshold)
     results_test_log_file = open(log_path, 'a+')
@@ -192,11 +197,8 @@ def main():
                                 'Titles, Figures, Tables, Lists \n'
                                 + str(all_ratios_between_gt_and_pred_per_class_by_threshold))
     results_test_log_file.close()
-    # precision_recall_plot(precision, recall, f1)
+    precision_recall_plot(precision, recall, f1)
     heatmap2d(all_ratios_between_gt_and_pred_per_class_by_threshold.reshape(15, 4))
-    # test_array = np.arange(100 * 100).reshape(100, 100)
-    # heatmap2d(test_array)
-    plt.show()
 
 
 if __name__ == "__main__":

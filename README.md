@@ -140,6 +140,12 @@ to remove all the lines which refers to the erroneous papers in the **annotated_
 an unique correspondence between the GT and the predictions (**annotated_test_images.txt** and **predicted_test_images.txt**).
 
 Once you have done this operation, you can evaluate your FRCNN predictions simply running the **evaluate.py** script:
+NB: It is very important that you sort the **predicted_test_images.txt** and the **annotated_test_images.txt**
+running this command:
+```
+sort -u -o <file_to_sort> <file_where_output_sort_operation>
+```
+THen, run:
  ```
 python3 evaluate.py
 ```
