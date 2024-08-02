@@ -1,7 +1,7 @@
 pandas
 matplotlib
 tensorflow>=1.15.2
-keras==2.0.3
+keras==2.13.1
 numpy
 opencv-python
 sklearn
